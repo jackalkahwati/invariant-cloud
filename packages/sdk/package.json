@@ -1,0 +1,16 @@
+{
+  "name": "@coherence-engine/sdk",
+  "version": "1.0.0",
+  "description": "Agent SDK for the Coherence Engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}

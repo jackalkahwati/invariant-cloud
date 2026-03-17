@@ -1,0 +1,420 @@
+// Coherence Engine - PostgreSQL Schema
+// World state graph: G = (V, E, C, D, B)
+// V = entities, E = claims, C = constraints, D = dependencies, B = branches
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// ENTITIES (V) — persistent things in the world
+// ============================================================
+
+model Entity {
+  id          String   @id @default(cuid())
+  name        String
+  type        EntityType
+  description String?
+  metadata    Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  claims            Claim[]
+  dependenciesFrom  Dependency[] @relation("depFrom")
+  dependenciesTo    Dependency[] @relation("depTo")
+  auditEvents       AuditEvent[]
+
+  @@map("entities")
+}
+
+enum EntityType {
+  PERSON
+  PROJECT
+  REQUIREMENT
+  FILE
+  TASK
+  SUBSYSTEM
+  COMPONENT
+  EXPERIMENT
+  AGENT
+  HYPOTHESIS
+  CONSTRAINT_TARGET
+  ENVIRONMENT_STATE
+  GENERIC
+}
+
+// ============================================================
+// SOURCES — who or what asserted a claim
+// ============================================================
+
+model Source {
+  id          String     @id @default(cuid())
+  name        String
+  type        SourceType
+  trustScore  Float      @default(0.8)
+  metadata    Json?
+  createdAt   DateTime   @default(now())
+
+  claims       Claim[]
+  observations Observation[]
+
+  @@map("sources")
+}
+
+enum SourceType {
+  AGENT
+  HUMAN
+  TOOL
+  SYSTEM
+  SENSOR
+}
+
+// ============================================================
+// CLAIMS (E) — structured assertions about entities
+// ============================================================
+
+model Claim {
+  id           String      @id @default(cuid())
+  entityId     String
+  entity       Entity      @relation(fields: [entityId], references: [id])
+  predicate    String      // e.g. "status", "mass", "isCritical"
+  value        Json        // structured value
+  confidence   Float       @default(1.0)
+  sourceId     String
+  source       Source      @relation(fields: [sourceId], references: [id])
+  timestamp    DateTime    @default(now())
+  status       ClaimStatus @default(ACTIVE)
+  branchId     String?
+  branch       Branch?     @relation(fields: [branchId], references: [id])
+  supersededBy String?     // id of the claim that superseded this one
+  observationId String?
+  observation  Observation? @relation(fields: [observationId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  evidence            ClaimEvidence[]
+  provenanceAsTarget  ProvenanceEdge[] @relation("provenanceTarget")
+  provenanceAsSource  ProvenanceEdge[] @relation("provenanceSource")
+  contradictionsAsA   Contradiction[]  @relation("contradictionClaimA")
+  contradictionsAsB   Contradiction[]  @relation("contradictionClaimB")
+
+  @@map("claims")
+}
+
+enum ClaimStatus {
+  ACTIVE
+  SUPERSEDED
+  DISPUTED
+  INVALIDATED
+  BRANCH_SPECIFIC
+}
+
+// ============================================================
+// CLAIM EVIDENCE — links claims to supporting evidence
+// ============================================================
+
+model ClaimEvidence {
+  id          String   @id @default(cuid())
+  claimId     String
+  claim       Claim    @relation(fields: [claimId], references: [id])
+  type        String
+  reference   String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@map("claim_evidence")
+}
+
+// ============================================================
+// PROVENANCE EDGES — how claims derive from each other
+// ============================================================
+
+model ProvenanceEdge {
+  id            String   @id @default(cuid())
+  sourceClaimId String
+  targetClaimId String
+  sourceClaim   Claim    @relation("provenanceSource", fields: [sourceClaimId], references: [id])
+  targetClaim   Claim    @relation("provenanceTarget", fields: [targetClaimId], references: [id])
+  type          String   // derived_from, supports, contradicts, supersedes
+  createdAt     DateTime @default(now())
+
+  @@map("claim_provenance_edges")
+}
+
+// ============================================================
+// CONSTRAINTS (C) — rules that must hold
+// ============================================================
+
+model Constraint {
+  id          String         @id @default(cuid())
+  name        String
+  description String
+  type        ConstraintType
+  expression  Json           // structured rule expression
+  entityIds   String[]       // entities this constraint applies to
+  weight      Float          @default(1.0)
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  violations ConstraintViolation[]
+
+  @@map("constraints")
+}
+
+enum ConstraintType {
+  NUMERIC_RANGE
+  STATUS_DEPENDENCY
+  VERIFICATION_REQUIRED
+  MUTUAL_EXCLUSION
+  COMPLETENESS
+  CUSTOM
+}
+
+model ConstraintViolation {
+  id           String     @id @default(cuid())
+  constraintId String
+  constraint   Constraint @relation(fields: [constraintId], references: [id])
+  entityIds    String[]
+  claimIds     String[]
+  severity     Float
+  description  String
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+
+  @@map("constraint_violations")
+}
+
+// ============================================================
+// DEPENDENCIES (D) — signed typed relations
+// ============================================================
+
+model Dependency {
+  id           String         @id @default(cuid())
+  fromEntityId String
+  toEntityId   String
+  fromEntity   Entity         @relation("depFrom", fields: [fromEntityId], references: [id])
+  toEntity     Entity         @relation("depTo",   fields: [toEntityId],   references: [id])
+  type         DependencyType
+  weight       Float          @default(1.0)
+  description  String?
+  metadata     Json?
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+
+  @@unique([fromEntityId, toEntityId, type])
+  @@map("dependencies")
+}
+
+enum DependencyType {
+  SUPPORTS       // A supports B (positive consensus)
+  REQUIRES       // A requires B to hold
+  IMPLIES        // A being true implies B
+  INVALIDATES    // A being true invalidates B
+  EXCLUDES       // A and B cannot coexist
+  MUTEX          // A and B are mutually exclusive states
+  IMPLIES_NOT    // A implies B is false
+}
+
+// ============================================================
+// CONTRADICTIONS — detected inconsistencies
+// ============================================================
+
+model Contradiction {
+  id          String                @id @default(cuid())
+  claimAId    String
+  claimBId    String
+  claimA      Claim                 @relation("contradictionClaimA", fields: [claimAId], references: [id])
+  claimB      Claim                 @relation("contradictionClaimB", fields: [claimBId], references: [id])
+  score       Float                 // ContradictionScore(p,q)
+  severity    ContradictionSeverity
+  type        ContradictionType
+  status      ContradictionStatus   @default(OPEN)
+  branchId    String?               // branch created to house this contradiction
+  resolution  String?
+  description String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@map("contradictions")
+}
+
+enum ContradictionSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum ContradictionStatus {
+  OPEN
+  RESOLVED
+  BRANCHED
+}
+
+enum ContradictionType {
+  NUMERIC_CONFLICT
+  STATUS_CONFLICT
+  TEMPORAL_CONFLICT
+  MUTEX_TAG_CONFLICT
+  RANGE_THRESHOLD_CONFLICT
+  SEMANTIC       // stub only in v1
+}
+
+// ============================================================
+// BRANCHES (B) — alternative coherent state paths
+// ============================================================
+
+model Branch {
+  id              String       @id @default(cuid())
+  name            String
+  description     String?
+  parentBranchId  String?
+  status          BranchStatus @default(OPEN)
+  confidence      Float        @default(0.5)
+  contradictionId String?      // the contradiction that triggered this branch
+  metadata        Json?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  claims      Claim[]
+  auditEvents AuditEvent[]
+
+  @@map("branches")
+}
+
+enum BranchStatus {
+  OPEN
+  RESOLVED
+  MERGED
+  REJECTED
+}
+
+// ============================================================
+// OBSERVATIONS — raw inputs that generate claims
+// ============================================================
+
+model Observation {
+  id          String   @id @default(cuid())
+  sourceId    String
+  source      Source   @relation(fields: [sourceId], references: [id])
+  type        String
+  content     Json
+  entityIds   String[]
+  processed   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  claims Claim[]
+
+  @@map("observations")
+}
+
+// ============================================================
+// ACTION PROPOSALS — proposed actions to validate
+// ============================================================
+
+model ActionProposal {
+  id                String       @id @default(cuid())
+  operation         String
+  description       String?
+  parameters        Json
+  impactedEntityIds String[]
+  sourceId          String?
+  branchId          String?
+  provenanceChain   Json         @default("[]")
+  status            ActionStatus @default(PENDING)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  validations ActionValidation[]
+
+  @@map("action_proposals")
+}
+
+enum ActionStatus {
+  PENDING
+  VALID
+  RISKY
+  BLOCKED
+  BRANCH_DEPENDENT
+}
+
+// ============================================================
+// ACTION VALIDATIONS — results of coherence checks
+// ============================================================
+
+model ActionValidation {
+  id                      String       @id @default(cuid())
+  actionProposalId        String
+  actionProposal          ActionProposal @relation(fields: [actionProposalId], references: [id])
+  admissibility           ActionStatus
+
+  // DeltaPhi(a) = Phi(G after action) - Phi(G current)
+  deltaPhi                Float
+
+  // Psi(a,G) = mu1*CVR + mu2*DBR + mu3*CA + mu4*UE + mu5*PF
+  psiScore                Float
+  constraintViolationRisk Float
+  dependencyBreakageRisk  Float
+  contradictionAmplification Float
+  uncertaintyExposure     Float
+  provenanceFragility     Float
+
+  impactedEntityIds       String[]
+  provenanceChain         Json     @default("[]")
+  reasons                 String[]
+  createdAt               DateTime @default(now())
+
+  @@map("action_validations")
+}
+
+// ============================================================
+// STATE SNAPSHOTS — periodic world state captures
+// ============================================================
+
+model StateSnapshot {
+  id                       String   @id @default(cuid())
+  phi                      Float    // total incoherence energy
+  coherenceScore           Float    // CoherenceScore = 100 * exp(-k * Phi_norm)
+  entityCount              Int
+  claimCount               Int
+  activeClaimCount         Int
+  contradictionCount       Int
+  openContradictionCount   Int
+  branchCount              Int
+  openBranchCount          Int
+  constraintViolationCount Int
+  lambdaC                  Float
+  lambdaK                  Float
+  lambdaD                  Float
+  lambdaU                  Float
+  lambdaB                  Float
+  metadata                 Json?
+  createdAt                DateTime @default(now())
+
+  @@map("state_snapshots")
+}
+
+// ============================================================
+// AUDIT EVENTS — complete audit trail
+// ============================================================
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  type      String
+  entityId  String?
+  entity    Entity?  @relation(fields: [entityId], references: [id])
+  branchId  String?
+  branch    Branch?  @relation(fields: [branchId], references: [id])
+  actorId   String?
+  data      Json
+  createdAt DateTime @default(now())
+
+  @@map("audit_events")
+}

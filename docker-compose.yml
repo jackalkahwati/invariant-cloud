@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: coherence-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: coherence
+      POSTGRES_PASSWORD: coherence_secret
+      POSTGRES_DB: coherence_engine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coherence -d coherence_engine"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: coherence-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://coherence:coherence_secret@postgres:5432/coherence_engine
+      PORT: 3000
+      HOST: 0.0.0.0
+      API_KEY: dev-api-key-change-in-prod
+      LOG_LEVEL: info
+      COHERENCE_LAMBDA_C: 1.0
+      COHERENCE_LAMBDA_K: 1.5
+      COHERENCE_LAMBDA_D: 0.8
+      COHERENCE_LAMBDA_U: 0.5
+      COHERENCE_LAMBDA_B: 0.7
+      COHERENCE_K_SCALE: 2.0
+      STALENESS_LAMBDA: 0.001
+      CONTRADICTION_THRESHOLD: 0.5
+      BRANCH_THRESHOLD: 0.7
+      ACTION_BUDGET: 5.0
+      ACTION_EPSILON: 0.6
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
