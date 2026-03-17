@@ -11,7 +11,17 @@
     "eval:branch": "tsx src/main.ts --suite branch",
     "eval:drift": "tsx src/main.ts --suite drift",
     "eval:ablations": "tsx src/main.ts --ablations-only",
-    "report": "tsx src/main.ts --report-only"
+    "report": "tsx src/main.ts --report-only",
+    "eval:phase2": "tsx src/main-phase2.ts",
+    "eval:phase2:calibration": "tsx src/main-phase2.ts --family=calibration",
+    "eval:phase2:staleness": "tsx src/main-phase2.ts --family=staleness",
+    "eval:phase2:provenance": "tsx src/main-phase2.ts --family=provenance",
+    "eval:phase2:settling": "tsx src/main-phase2.ts --family=settling",
+    "eval:phase2:budget": "tsx src/main-phase2.ts --family=budget",
+    "eval:phase2:branching": "tsx src/main-phase2.ts --family=branching_ext",
+    "eval:phase2:signed-deps": "tsx src/main-phase2.ts --family=signed_deps",
+    "eval:phase2:long-horizon": "tsx src/main-phase2.ts --family=long_horizon",
+    "eval:all": "npm run eval:fast && npm run eval:phase2"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

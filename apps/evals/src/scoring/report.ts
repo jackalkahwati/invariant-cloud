@@ -13,7 +13,20 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import type {
   AggregateMetrics, AblationDelta, ScenarioCategory,
+  ScenarioV2, EvaluationResult,
 } from '../scenarios/types.js';
+import {
+  buildConfusionMatrix, computePerClassMetrics, perFamilyBreakdown,
+} from './metrics.js';
+import {
+  renderConfusionMatrix, renderPerClassMetrics, renderFamilyBreakdown,
+} from '../analysis/confusion.js';
+import {
+  sweepThresholds, renderThresholdRecommendation, renderTopThresholds,
+} from '../analysis/thresholds.js';
+import {
+  collectExamples, renderExamplesReport, examplesSummary,
+} from '../analysis/examples.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const RESULTS_DIR = join(__dirname, '../../results');
@@ -221,6 +234,94 @@ export function saveResults(
     console.log(`\n📊 Results saved to: ${filePath}`);
   } catch (err) {
     console.warn(`Warning: could not save results: ${err}`);
+  }
+}
+
+// ── Phase 2 Report ────────────────────────────────────────────────────────────
+
+export function printPhase2Report(
+  v2results: Array<{ scenario: ScenarioV2; result: EvaluationResult }>,
+  aggregates: AggregateMetrics,
+): void {
+  const WIDTH = 90;
+
+  console.log('\n' + '═'.repeat(WIDTH));
+  console.log('  PHASE 2 EVALUATION REPORT');
+  console.log('═'.repeat(WIDTH));
+  console.log(`  Scenarios: ${v2results.length}   Action Accuracy: ${pct(aggregates.actionAccuracy)}`);
+  console.log('');
+
+  // ── Confusion matrix ──
+  console.log('  ─ Confusion Matrix ─');
+  const matrix = buildConfusionMatrix(v2results);
+  for (const line of renderConfusionMatrix(matrix).split('\n')) {
+    console.log('  ' + line);
+  }
+  console.log('');
+
+  // ── Per-class metrics ──
+  console.log('  ─ Per-Class Precision / Recall / F1 ─');
+  const perClass = computePerClassMetrics(matrix);
+  for (const line of renderPerClassMetrics(perClass).split('\n')) {
+    console.log('  ' + line);
+  }
+  console.log('');
+
+  // ── Per-family breakdown ──
+  console.log('  ─ Per-Family Breakdown ─');
+  const families = perFamilyBreakdown(v2results);
+  for (const line of renderFamilyBreakdown(families).split('\n')) {
+    console.log('  ' + line);
+  }
+  console.log('');
+
+  // ── FP/FN examples ──
+  console.log('  ─ False Positive / False Negative Analysis ─');
+  const findings = collectExamples(v2results);
+  console.log('  ' + examplesSummary(findings));
+  console.log('');
+  console.log(renderExamplesReport(findings));
+
+  // ── Threshold sweep ──
+  const hasSomeRawScores = v2results.some(r => r.result.rawScores !== undefined);
+  if (hasSomeRawScores) {
+    console.log('  ─ Threshold Sweep ─');
+    const sweep = sweepThresholds(v2results);
+    console.log('\n  Top 10 configurations by BLOCKED recall:');
+    for (const line of renderTopThresholds(sweep.grid).split('\n')) {
+      console.log('  ' + line);
+    }
+    console.log('');
+    console.log(renderThresholdRecommendation(sweep));
+  } else {
+    console.log('  (Threshold sweep skipped: no rawScores available — engine must expose Psi components)');
+  }
+
+  console.log('═'.repeat(WIDTH) + '\n');
+}
+
+export function savePhase2Results(
+  runId: string,
+  v2results: Array<{ scenario: ScenarioV2; result: EvaluationResult; metrics: unknown }>,
+  aggregates: AggregateMetrics,
+): void {
+  try {
+    mkdirSync(RESULTS_DIR, { recursive: true });
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `eval-phase2-${runId}-${timestamp}.json`;
+    const filePath = join(RESULTS_DIR, fileName);
+
+    writeFileSync(filePath, JSON.stringify({
+      runId,
+      timestamp: new Date().toISOString(),
+      phase: 2,
+      summary: aggregates,
+      rawResults: v2results,
+    }, null, 2));
+
+    console.log(`\nPhase 2 results saved to: ${filePath}`);
+  } catch (err) {
+    console.warn(`Warning: could not save Phase 2 results: ${err}`);
   }
 }
 

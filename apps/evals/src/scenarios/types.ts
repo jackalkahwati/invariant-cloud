@@ -21,6 +21,21 @@ export type ScenarioCategory =
   | 'action_safety'      // Does it block locally plausible / globally invalid actions?
   | 'long_horizon';      // Does it stay coherent after many sequential updates?
 
+// ── Phase 2: Scenario Family ──────────────────────────────────
+
+export type ScenarioFamily =
+  | 'atlas'          // Phase 1: Project Atlas benchmark
+  | 'branch'         // Phase 1: branching scenarios
+  | 'drift'          // Phase 1: drift/long-horizon
+  | 'calibration'    // Phase 2: action admissibility calibration
+  | 'staleness'      // Phase 2: stale-claim stress
+  | 'provenance'     // Phase 2: provenance fragility
+  | 'settling'       // Phase 2: fixed-point settling vs single-pass
+  | 'budget'         // Phase 2: coherence budget (DeltaPhi)
+  | 'branching_ext'  // Phase 2: extended branching scenarios
+  | 'signed_deps'    // Phase 2: signed dependency invalidation
+  | 'long_horizon';  // Phase 2: multi-update horizon
+
 // ── Entity Setup ──────────────────────────────────────────────
 
 export interface EntitySetup {
@@ -129,6 +144,8 @@ export interface Scenario {
   id: string;
   name: string;
   category: ScenarioCategory;
+  /** Phase 2: which benchmark family this belongs to */
+  familyId?: ScenarioFamily;
   description: string;
   difficulty: 'easy' | 'medium' | 'hard';
 
@@ -154,6 +171,18 @@ export interface ContradictionDetected {
   severity?: string;
 }
 
+// ── Phase 2: Raw Psi Components ───────────────────────────────
+
+export interface RawScores {
+  psiScore: number;
+  deltaPhi: number;
+  constraintViolationRisk: number;
+  dependencyBreakageRisk: number;
+  contradictionAmplification: number;
+  uncertaintyExposure: number;
+  provenanceFragility: number;
+}
+
 export interface EvaluationResult {
   scenarioId: string;
   evaluatorId: string;
@@ -169,8 +198,55 @@ export interface EvaluationResult {
   explanation: string;
   rawOutput?: unknown;
 
+  /** Phase 2: raw Psi/DeltaPhi breakdown for threshold analysis */
+  rawScores?: RawScores;
+
   // Scored metrics (filled by scorer, not evaluator)
   metrics?: ScenarioMetrics;
+}
+
+// ── Phase 2: Confusion Matrix ─────────────────────────────────
+
+export interface ConfusionEntry {
+  actual: ActionAdmissibility;
+  predicted: ActionAdmissibility | 'UNKNOWN';
+  count: number;
+}
+
+export interface PerClassMetrics {
+  class: ActionAdmissibility;
+  precision: number;
+  recall: number;
+  f1: number;
+  support: number;  // GT instances of this class
+}
+
+// ── Phase 2: Threshold Recommendation ────────────────────────
+
+export interface ThresholdResult {
+  epsilon: number;
+  budget: number;
+  actionAccuracy: number;
+  blockedRecall: number;
+  blockedPrecision: number;
+  macroF1: number;
+  perClass: Record<string, { precision: number; recall: number; f1: number }>;
+}
+
+// ── Phase 2: False Positive / Negative Examples ───────────────
+
+export interface ExampleFinding {
+  scenarioId: string;
+  scenarioName: string;
+  familyId: string;
+  evaluatorId: string;
+  actual: ActionAdmissibility;
+  predicted: ActionAdmissibility | 'UNKNOWN';
+  psiScore: number;
+  deltaPhi: number;
+  psiComponents?: Partial<RawScores>;
+  explanation: string;
+  recommendation: string;
 }
 
 export interface ScenarioMetrics {
@@ -196,6 +272,108 @@ export interface ScenarioMetrics {
 
   // Composite
   overallScore: number;            // [0,1] weighted composite
+}
+
+// ── Phase 2 Scenario Schema (ScenarioV2) ──────────────────────
+//
+// Simplified schema used by Phase 2 benchmark families.
+// Entities are referenced by local id within the scenario.
+// A v2 harness adapter translates this into DB operations.
+
+export interface EntitySetupV2 {
+  id: string;         // local scenario-scoped id for cross-referencing
+  name: string;       // entity name registered in DB
+  type: string;
+}
+
+export interface ClaimSetupV2 {
+  entityId: string;           // references EntitySetupV2.id
+  attribute: string;          // predicate
+  value: string;
+  confidence?: number;        // default 0.9
+  source?: string;            // source name; default 'system'
+  /** How many seconds old this claim is (simulates staleness). */
+  staleness_s?: number;
+  /** Confidence of the provenance chain (0–1). Used for PF computation. */
+  provenanceConfidence?: number;
+}
+
+export interface ConstraintSetupV2 {
+  entityId: string;
+  attribute: string;
+  operator: '>=' | '<=' | '>' | '<' | '==' | '!=';
+  threshold: number;
+  description?: string;
+  /** Severity multiplier (0–1). Default 1.0. */
+  severity?: number;
+}
+
+export interface DependencySetupV2 {
+  fromEntityId: string;
+  toEntityId: string;
+  type: DependencyTypeSpec;
+  attribute?: string;
+}
+
+export interface ContradictionSetupV2 {
+  entityId: string;
+  attribute: string;
+  valueA: string;
+  valueB: string;
+  sourceA: string;
+  sourceB: string;
+}
+
+export interface BranchSetupV2 {
+  entityId: string;
+  attribute: string;
+  isOpen: boolean;
+  candidates: string[];
+}
+
+export interface InvalidationSetupV2 {
+  entityId: string;
+  attribute: string;
+  reason: string;
+}
+
+export interface ActionSetupV2 {
+  id: string;
+  name: string;
+  /** References EntitySetupV2.name (not id) */
+  impactedEntityNames: string[];
+}
+
+export interface UpdateHistoryEntryV2 {
+  entityId: string;
+  attribute: string;
+  values: string[];
+  /** Seconds offset from epoch start of scenario */
+  timestamps_s: number[];
+}
+
+export interface ScenarioSetupV2 {
+  entities: EntitySetupV2[];
+  claims: ClaimSetupV2[];
+  constraints?: ConstraintSetupV2[];
+  dependencies?: DependencySetupV2[];
+  contradictions?: ContradictionSetupV2[];
+  branches?: BranchSetupV2[];
+  invalidations?: InvalidationSetupV2[];
+  actions: ActionSetupV2[];
+  updateHistory?: UpdateHistoryEntryV2[];
+}
+
+export interface ScenarioV2 {
+  id: string;
+  name: string;
+  description: string;
+  familyId: ScenarioFamily;
+  category: string;
+  tags?: string[];
+  /** Ground-truth expected action classification. */
+  expectedAction: ActionAdmissibility;
+  setup: ScenarioSetupV2;
 }
 
 // ── Aggregate Metrics ─────────────────────────────────────────
@@ -224,5 +402,12 @@ export interface AggregateMetrics {
   byDifficulty: Record<string, {
     count: number;
     meanOverallScore: number;
+  }>;
+
+  // Phase 2: by family
+  byFamily?: Record<string, {
+    count: number;
+    meanOverallScore: number;
+    actionAccuracy: number;
   }>;
 }

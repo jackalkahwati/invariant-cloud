@@ -7,7 +7,8 @@
 
 import type {
   Scenario, EvaluationResult, ScenarioMetrics, AggregateMetrics,
-  ScenarioCategory,
+  ScenarioCategory, ScenarioV2, ActionAdmissibility,
+  ConfusionEntry, PerClassMetrics,
 } from '../scenarios/types.js';
 
 // ── Per-Scenario Scoring ──────────────────────────────────────
@@ -232,6 +233,174 @@ function emptyAggregate(evaluatorId: string): AggregateMetrics {
     meanReasoningCoverage: 0, meanOverallScore: 0,
     byCategory: {} as never, byDifficulty: {} as never,
   };
+}
+
+// ── Phase 2: ScenarioV2 Action Scoring ───────────────────────────────────────
+
+/**
+ * Score a single Phase 2 result by comparing the engine's actionAdmissibility
+ * against the scenario's expectedAction ground truth.
+ */
+export function scoreV2Result(
+  scenario: ScenarioV2,
+  result: EvaluationResult,
+): ScenarioMetrics {
+  const actionCorrect = scenario.expectedAction === result.actionAdmissibility;
+  const actionWithinRisk = isWithinOneRisk(scenario.expectedAction, result.actionAdmissibility ?? 'UNKNOWN');
+
+  const overallScore = actionCorrect ? 1.0 : actionWithinRisk ? 0.5 : 0.0;
+
+  return {
+    contradictionRecall: 0,
+    contradictionPrecision: 0,
+    contradictionF1: 0,
+    branchPrecision: 0,
+    branchRecall: 0,
+    actionCorrect,
+    actionWithinRisk,
+    invalidationRecall: 0,
+    invalidationPrecision: 0,
+    reasoningKeywordCoverage: 0,
+    overallScore,
+  };
+}
+
+// ── Phase 2: Aggregate V2 Metrics ────────────────────────────────────────────
+
+export function aggregateV2Metrics(
+  evaluatorId: string,
+  results: Array<{ scenario: ScenarioV2; result: EvaluationResult; metrics: ScenarioMetrics }>,
+): AggregateMetrics {
+  const n = results.length;
+  if (n === 0) return emptyAggregate(evaluatorId);
+
+  const sum = (getter: (m: ScenarioMetrics) => number) =>
+    results.reduce((acc, r) => acc + getter(r.metrics), 0) / n;
+
+  const byCategory = {} as AggregateMetrics['byCategory'];
+  const byDifficulty = {} as AggregateMetrics['byDifficulty'];
+  const byFamily: Record<string, { count: number; meanOverallScore: number; actionAccuracy: number }> = {};
+
+  for (const r of results) {
+    const cat = r.scenario.category as ScenarioCategory;
+    if (!byCategory[cat]) byCategory[cat] = { count: 0, meanOverallScore: 0, actionAccuracy: 0 };
+    byCategory[cat]!.count++;
+    byCategory[cat]!.meanOverallScore += r.metrics.overallScore;
+    byCategory[cat]!.actionAccuracy += r.metrics.actionCorrect ? 1 : 0;
+
+    // Phase 2 has no difficulty field — use 'medium' as default
+    if (!byDifficulty['medium']) byDifficulty['medium'] = { count: 0, meanOverallScore: 0 };
+    byDifficulty['medium']!.count++;
+    byDifficulty['medium']!.meanOverallScore += r.metrics.overallScore;
+
+    const fam = r.scenario.familyId;
+    if (!byFamily[fam]) byFamily[fam] = { count: 0, meanOverallScore: 0, actionAccuracy: 0 };
+    byFamily[fam]!.count++;
+    byFamily[fam]!.meanOverallScore += r.metrics.overallScore;
+    byFamily[fam]!.actionAccuracy += r.metrics.actionCorrect ? 1 : 0;
+  }
+
+  for (const cat of Object.keys(byCategory) as ScenarioCategory[]) {
+    const c = byCategory[cat]!;
+    c.meanOverallScore /= c.count;
+    c.actionAccuracy /= c.count;
+  }
+  for (const diff of Object.keys(byDifficulty)) {
+    const d = byDifficulty[diff]!;
+    d.meanOverallScore /= d.count;
+  }
+  for (const fam of Object.keys(byFamily)) {
+    const f = byFamily[fam]!;
+    f.meanOverallScore /= f.count;
+    f.actionAccuracy /= f.count;
+  }
+
+  return {
+    evaluatorId,
+    scenarioCount: n,
+    meanContradictionF1: sum(m => m.contradictionF1),
+    meanBranchF1: 0,
+    actionAccuracy: sum(m => m.actionCorrect ? 1 : 0),
+    actionWithinRiskRate: sum(m => m.actionWithinRisk ? 1 : 0),
+    meanInvalidationF1: 0,
+    meanReasoningCoverage: 0,
+    meanOverallScore: sum(m => m.overallScore),
+    byCategory,
+    byDifficulty,
+    byFamily,
+  };
+}
+
+// ── Phase 2: Confusion Matrix ─────────────────────────────────────────────────
+
+const ALL_CLASSES: ActionAdmissibility[] = ['VALID', 'RISKY', 'BLOCKED', 'BRANCH_DEPENDENT'];
+
+export function buildConfusionMatrix(
+  results: Array<{ scenario: ScenarioV2; result: EvaluationResult }>,
+): ConfusionEntry[] {
+  const counts = new Map<string, number>();
+
+  for (const { scenario, result } of results) {
+    const actual = scenario.expectedAction;
+    const predicted = result.actionAdmissibility ?? 'UNKNOWN';
+    const key = `${actual}|||${predicted}`;
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  const entries: ConfusionEntry[] = [];
+  for (const [key, count] of counts) {
+    const [actual, predicted] = key.split('|||') as [ActionAdmissibility, ActionAdmissibility | 'UNKNOWN'];
+    entries.push({ actual, predicted, count });
+  }
+
+  return entries.sort((a, b) =>
+    ALL_CLASSES.indexOf(a.actual) - ALL_CLASSES.indexOf(b.actual) ||
+    String(a.predicted).localeCompare(String(b.predicted))
+  );
+}
+
+export function computePerClassMetrics(
+  confusionMatrix: ConfusionEntry[],
+): PerClassMetrics[] {
+  return ALL_CLASSES.map(cls => {
+    const tp = confusionMatrix.filter(e => e.actual === cls && e.predicted === cls)
+      .reduce((s, e) => s + e.count, 0);
+    const fp = confusionMatrix.filter(e => e.actual !== cls && e.predicted === cls)
+      .reduce((s, e) => s + e.count, 0);
+    const fn = confusionMatrix.filter(e => e.actual === cls && e.predicted !== cls)
+      .reduce((s, e) => s + e.count, 0);
+    const support = confusionMatrix.filter(e => e.actual === cls)
+      .reduce((s, e) => s + e.count, 0);
+
+    const precision = tp + fp > 0 ? tp / (tp + fp) : 0;
+    const recall = tp + fn > 0 ? tp / (tp + fn) : 0;
+    const f1Score = precision + recall > 0 ? 2 * precision * recall / (precision + recall) : 0;
+
+    return { class: cls, precision, recall, f1: f1Score, support };
+  });
+}
+
+export function perFamilyBreakdown(
+  results: Array<{ scenario: ScenarioV2; result: EvaluationResult }>,
+): Record<string, { count: number; actionAccuracy: number; confusionMatrix: ConfusionEntry[] }> {
+  const byFamily: Record<string, Array<{ scenario: ScenarioV2; result: EvaluationResult }>> = {};
+
+  for (const r of results) {
+    const fam = r.scenario.familyId;
+    if (!byFamily[fam]) byFamily[fam] = [];
+    byFamily[fam]!.push(r);
+  }
+
+  const breakdown: Record<string, { count: number; actionAccuracy: number; confusionMatrix: ConfusionEntry[] }> = {};
+  for (const [fam, rs] of Object.entries(byFamily)) {
+    const correct = rs.filter(r => r.scenario.expectedAction === r.result.actionAdmissibility).length;
+    breakdown[fam] = {
+      count: rs.length,
+      actionAccuracy: correct / rs.length,
+      confusionMatrix: buildConfusionMatrix(rs),
+    };
+  }
+  return breakdown;
 }
 
 // ── Ablation Delta Computation ────────────────────────────────
