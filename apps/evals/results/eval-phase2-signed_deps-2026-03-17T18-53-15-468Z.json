@@ -1,0 +1,2742 @@
+{
+  "runId": "signed_deps",
+  "timestamp": "2026-03-17T18:53:15.468Z",
+  "phase": 2,
+  "summary": {
+    "evaluatorId": "engine-v2",
+    "scenarioCount": 20,
+    "meanContradictionF1": 0,
+    "meanBranchF1": 0,
+    "actionAccuracy": 0.65,
+    "actionWithinRiskRate": 0.95,
+    "meanInvalidationF1": 0,
+    "meanReasoningCoverage": 0,
+    "meanOverallScore": 0.8,
+    "byCategory": {
+      "dependency_break": {
+        "count": 14,
+        "meanOverallScore": 0.75,
+        "actionAccuracy": 0.5714285714285714
+      },
+      "nominal": {
+        "count": 6,
+        "meanOverallScore": 0.9166666666666666,
+        "actionAccuracy": 0.8333333333333334
+      }
+    },
+    "byDifficulty": {
+      "medium": {
+        "count": 20,
+        "meanOverallScore": 0.8
+      }
+    },
+    "byFamily": {
+      "signed_deps": {
+        "count": 20,
+        "meanOverallScore": 0.8,
+        "actionAccuracy": 0.65
+      }
+    }
+  },
+  "rawResults": [
+    {
+      "scenario": {
+        "id": "sdp-blk-001",
+        "name": "REQUIRES dep violated: upstream has no claims at all",
+        "description": "ServiceA REQUIRES DataStore.schema. DataStore has NO claims. DBR for ServiceA is high (REQUIRES violated). Action deploy_service → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_violated",
+          "missing_upstream"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "data-store",
+              "name": "DataStore",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-a",
+              "attribute": "version",
+              "value": "2.0",
+              "confidence": 0.95,
+              "source": "registry"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "data-store",
+              "type": "REQUIRES",
+              "attribute": "schema"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 159,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 85.21433628954885,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Decision: RISKY — Dependency breakage: cmmuz007y00019a2m08ifqqr6 requires cmmuz007d00009a2mt2mn0gtn but no claims found; Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.320, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178816613649323,
+          "deltaPhi": 0.3200127995904087,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000007628776483893051,
+          "provenanceFragility": 0.1192034469897316
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz009z000d9a2mqlhwbepe",
+            "actionProposalId": "cmmuz009s000b9a2m8zc87pvw",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.3200127995904087,
+            "psiScore": 0.2178816613649323,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000007628776483893051,
+            "provenanceFragility": 0.1192034469897316,
+            "impactedEntityIds": [
+              "cmmuz007y00019a2m08ifqqr6",
+              "cmmuz007d00009a2mt2mn0gtn"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz008200049a2mpf6o1m4k",
+                "entityId": "cmmuz007y00019a2m08ifqqr6",
+                "predicate": "version",
+                "confidence": 0.8807965530102684
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz007y00019a2m08ifqqr6 requires cmmuz007d00009a2mt2mn0gtn but no claims found",
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.320, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:13.703Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.8000024999937501
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-002",
+        "name": "Multiple REQUIRES deps violated: two upstream entities offline",
+        "description": "Orchestrator REQUIRES ConfigA.value AND ConfigB.value. Both have no claims. DBR contributions stack → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "multiple_requires_violated",
+          "offline_deps"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-a",
+              "name": "ConfigA",
+              "type": "system"
+            },
+            {
+              "id": "config-b",
+              "name": "ConfigB",
+              "type": "system"
+            },
+            {
+              "id": "orchestrator",
+              "name": "Orchestrator",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "orchestrator",
+              "attribute": "status",
+              "value": "pending",
+              "confidence": 0.9,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-a",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-b",
+              "type": "REQUIRES",
+              "attribute": "value"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "start_orchestrator",
+              "name": "start_orchestrator",
+              "impactedEntityNames": [
+                "Orchestrator"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 64,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 72.61487466147152,
+        "explanation": "Coherence: 72.6/100 (Phi=1.600) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.640 | Decision: RISKY — Dependency breakage: cmmuz00am000h9a2m0wn3gb6t requires cmmuz00ak000f9a2m80vmiuvm but no claims found; Dependency breakage: cmmuz00am000h9a2m0wn3gb6t requires cmmuz00al000g9a2mhf03nq9o but no claims found; Estimated DeltaPhi=0.640 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.640, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178811449858992,
+          "deltaPhi": 0.6400071998704016,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000004291243069031945,
+          "provenanceFragility": 0.1192033419962589
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz00bt000v9a2m9x64b4tz",
+            "actionProposalId": "cmmuz00bm000t9a2m0q8d1t43",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.6400071998704016,
+            "psiScore": 0.2178811449858992,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000004291243069031945,
+            "provenanceFragility": 0.1192033419962589,
+            "impactedEntityIds": [
+              "cmmuz00am000h9a2m0wn3gb6t",
+              "cmmuz00ak000f9a2m80vmiuvm",
+              "cmmuz00al000g9a2mhf03nq9o"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00an000k9a2mcfzhpb1a",
+                "entityId": "cmmuz00am000h9a2m0wn3gb6t",
+                "predicate": "status",
+                "confidence": 0.8807966580037411
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz00am000h9a2m0wn3gb6t requires cmmuz00ak000f9a2m80vmiuvm but no claims found",
+              "Dependency breakage: cmmuz00am000h9a2m0wn3gb6t requires cmmuz00al000g9a2mhf03nq9o but no claims found",
+              "Estimated DeltaPhi=0.640 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.640, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:13.769Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 1.600001999996
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-003",
+        "name": "REQUIRES violated + constraint violation: double BLOCKED signal",
+        "description": "ServiceB REQUIRES AuthService.token (no claims). ServiceB.error_rate = 0.12 violates <= 0.05 SLO. Both DBR and CVR contribute → strongly BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_violated",
+          "constraint_violation",
+          "stacked"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "auth-svc",
+              "name": "AuthService",
+              "type": "service"
+            },
+            {
+              "id": "service-b",
+              "name": "ServiceB",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-b",
+              "attribute": "error_rate",
+              "value": "0.12",
+              "confidence": 0.97,
+              "source": "metrics"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-b",
+              "toEntityId": "auth-svc",
+              "type": "REQUIRES",
+              "attribute": "token"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "service-b",
+              "attribute": "error_rate",
+              "operator": "<=",
+              "threshold": 0.05,
+              "description": "SLO"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceB"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 641,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "BLOCKED",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 69.76759772338274,
+        "explanation": "Coherence: 69.8/100 (Phi=1.800) | Psi=0.468 [CVR=1.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.220 | Decision: BLOCKED — Constraint violation risk: p2-sdp-blk-003-1773773593787:ServiceB.error_rate = 0.12 exceeds max 0.05; Operation 'deploy_service' targets entities with 1 active constraint violations; Dependency breakage: cmmuz00cc000y9a2m1xe2nkcq requires cmmuz00cb000x9a2m681c0jqd but no claims found; Estimated DeltaPhi=2.220 based on 1 existing violations on impacted entities; DeltaPhi=2.220 exceeds budget 2 or Psi=0.468 exceeds epsilon 0.2",
+        "rawScores": {
+          "psiScore": 0.4678914923161755,
+          "deltaPhi": 2.220122762308115,
+          "constraintViolationRisk": 1,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00007316845143842482,
+          "provenanceFragility": 0.1192034469897316
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz00tm006r9a2mg6x7flg7",
+            "actionProposalId": "cmmuz00tf006p9a2mnc2lp2xu",
+            "admissibility": "BLOCKED",
+            "deltaPhi": 2.220122762308115,
+            "psiScore": 0.4678914923161755,
+            "constraintViolationRisk": 1,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00007316845143842482,
+            "provenanceFragility": 0.1192034469897316,
+            "impactedEntityIds": [
+              "cmmuz00cc000y9a2m1xe2nkcq",
+              "cmmuz00cb000x9a2m681c0jqd"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00cf00119a2mo4vnn29y",
+                "entityId": "cmmuz00cc000y9a2m1xe2nkcq",
+                "predicate": "error_rate",
+                "confidence": 0.8807965530102684
+              }
+            ],
+            "reasons": [
+              "Constraint violation risk: p2-sdp-blk-003-1773773593787:ServiceB.error_rate = 0.12 exceeds max 0.05",
+              "Operation 'deploy_service' targets entities with 1 active constraint violations",
+              "Dependency breakage: cmmuz00cc000y9a2m1xe2nkcq requires cmmuz00cb000x9a2m681c0jqd but no claims found",
+              "Estimated DeltaPhi=2.220 based on 1 existing violations on impacted entities",
+              "DeltaPhi=2.220 exceeds budget 2 or Psi=0.468 exceeds epsilon 0.2"
+            ],
+            "createdAt": "2026-03-17T18:53:14.410Z"
+          },
+          "settlingRounds": 50,
+          "phiFinal": 1.80000249999375
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-004",
+        "name": "Critical REQUIRES: hardware component firmware missing",
+        "description": "MotorController REQUIRES FirmwareImage.version (no claims — firmware not loaded). Action activate_motor → BLOCKED due to critical missing dependency.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "critical_requires",
+          "firmware_missing"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "firmware-image",
+              "name": "FirmwareImage",
+              "type": "artifact"
+            },
+            {
+              "id": "motor-ctrl",
+              "name": "MotorController",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "motor-ctrl",
+              "attribute": "status",
+              "value": "uninitialized",
+              "confidence": 0.95,
+              "source": "diagnostics"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "motor-ctrl",
+              "toEntityId": "firmware-image",
+              "type": "REQUIRES",
+              "attribute": "version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "activate_motor",
+              "name": "activate_motor",
+              "impactedEntityNames": [
+                "MotorController"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 85.21435333234965,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Decision: RISKY — Dependency breakage: cmmuz00u6006u9a2meugney9i requires cmmuz00u5006t9a2my99jhdqu but no claims found; Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.320, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178810755967015,
+          "deltaPhi": 0.3200065998911012,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000003933641915637149,
+          "provenanceFragility": 0.1192032370027611
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz00va00769a2mmoadiyio",
+            "actionProposalId": "cmmuz00v400749a2m45u3f3ln",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.3200065998911012,
+            "psiScore": 0.2178810755967015,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000003933641915637149,
+            "provenanceFragility": 0.1192032370027611,
+            "impactedEntityIds": [
+              "cmmuz00u6006u9a2meugney9i",
+              "cmmuz00u5006t9a2my99jhdqu"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00u8006x9a2mbje8e0l9",
+                "entityId": "cmmuz00u6006u9a2meugney9i",
+                "predicate": "status",
+                "confidence": 0.8807967629972389
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz00u6006u9a2meugney9i requires cmmuz00u5006t9a2my99jhdqu but no claims found",
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.320, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:14.470Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.80000149999775
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-005",
+        "name": "REQUIRES chain broken at 2nd hop",
+        "description": "ServiceC REQUIRES ServiceB.api_version. ServiceB REQUIRES ServiceA.base_config. ServiceA has no claims. Chain broken → DBR propagates → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_chain",
+          "chain_break"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            },
+            {
+              "id": "service-b",
+              "name": "ServiceB",
+              "type": "service"
+            },
+            {
+              "id": "service-c",
+              "name": "ServiceC",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-b",
+              "attribute": "api_version",
+              "value": "3.0",
+              "confidence": 0.9,
+              "source": "registry"
+            },
+            {
+              "entityId": "service-c",
+              "attribute": "status",
+              "value": "running",
+              "confidence": 0.85,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-b",
+              "toEntityId": "service-a",
+              "type": "REQUIRES",
+              "attribute": "base_config"
+            },
+            {
+              "fromEntityId": "service-c",
+              "toEntityId": "service-b",
+              "type": "REQUIRES",
+              "attribute": "api_version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceC"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 69,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 85.21433628954885,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Decision: VALID — Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788121437502668,
+          "deltaPhi": 0.320007799847902,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000004648843779557725,
+          "provenanceFragility": 0.1192034469897316
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz00x2007r9a2mo2vbaidm",
+            "actionProposalId": "cmmuz00wu007p9a2mqk25uzo9",
+            "admissibility": "VALID",
+            "deltaPhi": 0.320007799847902,
+            "psiScore": 0.01788121437502668,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000004648843779557725,
+            "provenanceFragility": 0.1192034469897316,
+            "impactedEntityIds": [
+              "cmmuz00vp007a9a2mlm8lxqad",
+              "cmmuz00vo00799a2mw2hd33k3"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00vt007g9a2mc42vu7ar",
+                "entityId": "cmmuz00vp007a9a2mlm8lxqad",
+                "predicate": "status",
+                "confidence": 0.8807965530102684
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:14.535Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.8000024999937501
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-006",
+        "name": "Safety interlock REQUIRES violated",
+        "description": "LaunchSequencer REQUIRES SafetyInterlock.armed_state (no claims — interlock offline). Action proceed_to_launch → BLOCKED (missing required safety check).",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "safety_interlock",
+          "launch"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "safety-interlock",
+              "name": "SafetyInterlock",
+              "type": "system"
+            },
+            {
+              "id": "launch-sequencer",
+              "name": "LaunchSequencer",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "launch-sequencer",
+              "attribute": "countdown_s",
+              "value": "60",
+              "confidence": 0.97,
+              "source": "timer"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "launch-sequencer",
+              "toEntityId": "safety-interlock",
+              "type": "REQUIRES",
+              "attribute": "armed_state"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "proceed_to_launch",
+              "name": "proceed_to_launch",
+              "impactedEntityNames": [
+                "LaunchSequencer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 85.21435333234965,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Decision: RISKY — Dependency breakage: cmmuz00xl007u9a2mf83xz2n7 requires cmmuz00xk007t9a2mf6h0j15u but no claims found; Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.320, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178810398368748,
+          "deltaPhi": 0.320006199903901,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00000369524307051611,
+          "provenanceFragility": 0.1192032370027611
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz00yo00869a2m6hcdf4yn",
+            "actionProposalId": "cmmuz00yh00849a2msgsl6iwd",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.320006199903901,
+            "psiScore": 0.2178810398368748,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00000369524307051611,
+            "provenanceFragility": 0.1192032370027611,
+            "impactedEntityIds": [
+              "cmmuz00xl007u9a2mf83xz2n7",
+              "cmmuz00xk007t9a2mf6h0j15u"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00xn007x9a2mnkm6ddwr",
+                "entityId": "cmmuz00xl007u9a2mf83xz2n7",
+                "predicate": "countdown_s",
+                "confidence": 0.8807967629972389
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz00xl007u9a2mf83xz2n7 requires cmmuz00xk007t9a2mf6h0j15u but no claims found",
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.320, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:14.592Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.80000149999775
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-007",
+        "name": "Multiple INVALIDATES: downstream entities stale after upstream change",
+        "description": "ConfigRoot changed. It INVALIDATES CacheA.data and CacheB.data. Both caches have claims → DBR 0.6 each. Action on DownstreamService (depends on both caches). Combined DBR exceeds threshold → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "invalidates_multiple",
+          "cache_stale"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-root",
+              "name": "ConfigRoot",
+              "type": "system"
+            },
+            {
+              "id": "cache-a",
+              "name": "CacheA",
+              "type": "service"
+            },
+            {
+              "id": "cache-b",
+              "name": "CacheB",
+              "type": "service"
+            },
+            {
+              "id": "downstream-svc",
+              "name": "DownstreamService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-root",
+              "attribute": "version",
+              "value": "3.0",
+              "confidence": 0.97,
+              "source": "config-mgr"
+            },
+            {
+              "entityId": "cache-a",
+              "attribute": "data",
+              "value": "cached-v2",
+              "confidence": 0.85,
+              "source": "cache-node"
+            },
+            {
+              "entityId": "cache-b",
+              "attribute": "data",
+              "value": "cached-v2",
+              "confidence": 0.85,
+              "source": "cache-node"
+            },
+            {
+              "entityId": "downstream-svc",
+              "attribute": "response_time_ms",
+              "value": "45",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "config-root",
+              "toEntityId": "cache-a",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "config-root",
+              "toEntityId": "cache-b",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "downstream-svc",
+              "toEntityId": "cache-a",
+              "type": "REQUIRES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "downstream-svc",
+              "toEntityId": "cache-b",
+              "type": "REQUIRES",
+              "attribute": "data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "DownstreamService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 77,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "CacheA",
+          "CacheB"
+        ],
+        "coherenceScore": 72.61483109286476,
+        "explanation": "Coherence: 72.6/100 (Phi=1.600) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.640 | Invalidated: CacheA, CacheB | Decision: RISKY — Dependency breakage: cmmuz00z6008b9a2m2ow5xzzk requires cmmuz00z400899a2mnadrgmok but no claims found; Dependency breakage: cmmuz00z6008b9a2m2ow5xzzk requires cmmuz00z5008a9a2m712ss09e but no claims found; Estimated DeltaPhi=0.640 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.640, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.217881454041508,
+          "deltaPhi": 0.6400095997696037,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000005721653333143416,
+          "provenanceFragility": 0.1192039719567201
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz010s00959a2mzedndgao",
+            "actionProposalId": "cmmuz010m00939a2md056rg4v",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.6400095997696037,
+            "psiScore": 0.217881454041508,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000005721653333143416,
+            "provenanceFragility": 0.1192039719567201,
+            "impactedEntityIds": [
+              "cmmuz00z6008b9a2m2ow5xzzk",
+              "cmmuz00z400899a2mnadrgmok",
+              "cmmuz00z5008a9a2m712ss09e"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz00ze008m9a2mfp3apyuy",
+                "entityId": "cmmuz00z6008b9a2m2ow5xzzk",
+                "predicate": "response_time_ms",
+                "confidence": 0.8807960280432799
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz00z6008b9a2m2ow5xzzk requires cmmuz00z400899a2mnadrgmok but no claims found",
+              "Dependency breakage: cmmuz00z6008b9a2m2ow5xzzk requires cmmuz00z5008a9a2m712ss09e but no claims found",
+              "Estimated DeltaPhi=0.640 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.640, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:14.668Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 1.6000049999750001
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-001",
+        "name": "Single INVALIDATES dep with downstream claims",
+        "description": "UpstreamService INVALIDATES DownstreamCache.response_time_ms. DownstreamCache has claims. Action deploy_cache → DBR = 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates",
+          "cache"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "upstream-svc",
+              "name": "UpstreamService",
+              "type": "service"
+            },
+            {
+              "id": "downstream-cache",
+              "name": "DownstreamCache",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "upstream-svc",
+              "attribute": "api_version",
+              "value": "4.0",
+              "confidence": 0.96,
+              "source": "registry"
+            },
+            {
+              "entityId": "downstream-cache",
+              "attribute": "response_time_ms",
+              "value": "12",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "upstream-svc",
+              "toEntityId": "downstream-cache",
+              "type": "INVALIDATES",
+              "attribute": "response_time_ms"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_cache",
+              "name": "deploy_cache",
+              "impactedEntityNames": [
+                "DownstreamCache"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 61,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "DownstreamCache"
+        ],
+        "coherenceScore": 99.999960000088,
+        "explanation": "Coherence: 100.0/100 (Phi=0.000) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.000 | Invalidated: DownstreamCache | Decision: RISKY — Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.000, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.000006999877501434603,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz012f009p9a2msyr8s2mq",
+            "actionProposalId": "cmmuz012a009n9a2m49962490",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.000006999877501434603,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz011900989a2mf486jji6"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.000, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:14.728Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.0000019999959999794648
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-002",
+        "name": "INVALIDATES dep on MLModel after training data updated",
+        "description": "TrainingDataset INVALIDATES MLModel.accuracy_score. MLModel has accuracy claims. Deploying MLModel with stale metrics → DBR 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates",
+          "ml_model"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "training-dataset",
+              "name": "TrainingDataset",
+              "type": "artifact"
+            },
+            {
+              "id": "ml-model",
+              "name": "MLModel",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "training-dataset",
+              "attribute": "version",
+              "value": "5.0",
+              "confidence": 0.98,
+              "source": "data-registry"
+            },
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy_score",
+              "value": "0.96",
+              "confidence": 0.9,
+              "source": "eval-on-v4"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "training-dataset",
+              "toEntityId": "ml-model",
+              "type": "INVALIDATES",
+              "attribute": "accuracy_score"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_model",
+              "name": "deploy_model",
+              "impactedEntityNames": [
+                "MLModel"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 59,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "MLModel"
+        ],
+        "coherenceScore": 99.999960000088,
+        "explanation": "Coherence: 100.0/100 (Phi=0.000) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.000 | Invalidated: MLModel | Decision: RISKY — Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.000, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.000006999877501434603,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz014400a99a2miuv76i4b",
+            "actionProposalId": "cmmuz013z00a79a2mnuvzcd0f",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.000006999877501434603,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz012y009s9a2mkuf7qz76"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.000, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:14.789Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.0000019999959999794648
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-003",
+        "name": "REQUIRES satisfied + INVALIDATES present: net RISKY",
+        "description": "ServiceA REQUIRES ConfigDB.version (claims exist — REQUIRES satisfied). ConfigDB also INVALIDATES ServiceA.throughput (claims exist). DBR 0.6 from INVALIDATES → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "requires_satisfied",
+          "invalidates_active"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-db",
+              "name": "ConfigDB",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-db",
+              "attribute": "version",
+              "value": "2.1",
+              "confidence": 0.97,
+              "source": "config-svc"
+            },
+            {
+              "entityId": "service-a",
+              "attribute": "throughput",
+              "value": "1200",
+              "confidence": 0.88,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "config-db",
+              "type": "REQUIRES",
+              "attribute": "version"
+            },
+            {
+              "fromEntityId": "config-db",
+              "toEntityId": "service-a",
+              "type": "INVALIDATES",
+              "attribute": "throughput"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 63,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "ServiceA"
+        ],
+        "coherenceScore": 99.99995000013749,
+        "explanation": "Coherence: 100.0/100 (Phi=0.000) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.000 | Invalidated: ServiceA | Decision: RISKY — Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.000, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.000007599855601836403,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz015v00av9a2mhztg5qkh",
+            "actionProposalId": "cmmuz015o00at9a2mg9r8nk15",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.000007599855601836403,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz014l00ac9a2m97tj9gds"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.000, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:14.851Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.000002499993750015861
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-004",
+        "name": "Firmware INVALIDATES device calibration: claims present",
+        "description": "NewFirmware INVALIDATES SensorDevice.calibration_factor. SensorDevice has calibration claims. Action activate_device → DBR 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "firmware_invalidates",
+          "device"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "new-firmware",
+              "name": "NewFirmware",
+              "type": "artifact"
+            },
+            {
+              "id": "sensor-device",
+              "name": "SensorDevice",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "new-firmware",
+              "attribute": "version",
+              "value": "2.5.0",
+              "confidence": 0.98,
+              "source": "vendor-registry"
+            },
+            {
+              "entityId": "sensor-device",
+              "attribute": "calibration_factor",
+              "value": "1.0082",
+              "confidence": 0.9,
+              "source": "factory-cal"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "new-firmware",
+              "toEntityId": "sensor-device",
+              "type": "INVALIDATES",
+              "attribute": "calibration_factor"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "activate_device",
+              "name": "activate_device",
+              "impactedEntityNames": [
+                "SensorDevice"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 63,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "SensorDevice"
+        ],
+        "coherenceScore": 99.999960000088,
+        "explanation": "Coherence: 100.0/100 (Phi=0.000) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.000 | Invalidated: SensorDevice | Decision: RISKY — Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.000, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.00000799984000212639,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz017n00bf9a2mth99kq78",
+            "actionProposalId": "cmmuz017i00bd9a2mtoz8oja2",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.00000799984000212639,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz016d00ay9a2mc8afs93w"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.000, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:14.916Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.0000019999959999794648
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-005",
+        "name": "INVALIDATES propagation: two hops, downstream claims present",
+        "description": "Source INVALIDATES Middle.processed_data (Middle has claims). Middle REQUIRES Source.raw_data (Source has claims — REQUIRES ok). Action on OutputService depends on Middle → DBR from INVALIDATES.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates_chain",
+          "2hop"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "source",
+              "name": "Source",
+              "type": "system"
+            },
+            {
+              "id": "middle",
+              "name": "Middle",
+              "type": "service"
+            },
+            {
+              "id": "output-svc",
+              "name": "OutputService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "source",
+              "attribute": "raw_data",
+              "value": "v3-dataset",
+              "confidence": 0.97,
+              "source": "db"
+            },
+            {
+              "entityId": "middle",
+              "attribute": "processed_data",
+              "value": "v2-result",
+              "confidence": 0.88,
+              "source": "processor"
+            },
+            {
+              "entityId": "output-svc",
+              "attribute": "report_score",
+              "value": "0.85",
+              "confidence": 0.82,
+              "source": "output-gen"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "middle",
+              "toEntityId": "source",
+              "type": "REQUIRES",
+              "attribute": "raw_data"
+            },
+            {
+              "fromEntityId": "source",
+              "toEntityId": "middle",
+              "type": "INVALIDATES",
+              "attribute": "processed_data"
+            },
+            {
+              "fromEntityId": "output-svc",
+              "toEntityId": "middle",
+              "type": "REQUIRES",
+              "attribute": "processed_data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "publish_report",
+              "name": "publish_report",
+              "impactedEntityNames": [
+                "OutputService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 64,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "Middle"
+        ],
+        "coherenceScore": 85.21431924678555,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Invalidated: Middle | Decision: RISKY — Dependency breakage: cmmuz018400bj9a2matkjfj86 requires cmmuz018400bi9a2mjzsntkux but no claims found; Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.320, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178812816339523,
+          "deltaPhi": 0.3200081998319023,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000004887249746737977,
+          "provenanceFragility": 0.1192036569766022
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz019h00c79a2mvtjbllj1",
+            "actionProposalId": "cmmuz019b00c59a2mteaocxzp",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.3200081998319023,
+            "psiScore": 0.2178812816339523,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000004887249746737977,
+            "provenanceFragility": 0.1192036569766022,
+            "impactedEntityIds": [
+              "cmmuz018400bj9a2matkjfj86",
+              "cmmuz018400bi9a2mjzsntkux"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz018a00bs9a2m7u8nwx17",
+                "entityId": "cmmuz018400bj9a2matkjfj86",
+                "predicate": "report_score",
+                "confidence": 0.8807963430233978
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz018400bj9a2matkjfj86 requires cmmuz018400bi9a2mjzsntkux but no claims found",
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.320, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:14.981Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.8000034999877501
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-006",
+        "name": "Schema migration INVALIDATES API contract",
+        "description": "DatabaseSchema INVALIDATES APIContract.response_format. APIContract has response_format claims. Action release_api impacts APIContract → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "schema_migration",
+          "api_contract"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "db-schema",
+              "name": "DatabaseSchema",
+              "type": "artifact"
+            },
+            {
+              "id": "api-contract",
+              "name": "APIContract",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "db-schema",
+              "attribute": "version",
+              "value": "4.0",
+              "confidence": 0.98,
+              "source": "schema-registry"
+            },
+            {
+              "entityId": "api-contract",
+              "attribute": "response_format",
+              "value": "v3-format",
+              "confidence": 0.9,
+              "source": "contract-registry"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "db-schema",
+              "toEntityId": "api-contract",
+              "type": "INVALIDATES",
+              "attribute": "response_format"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_api",
+              "name": "release_api",
+              "impactedEntityNames": [
+                "APIContract"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 56,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [
+          "APIContract"
+        ],
+        "coherenceScore": 99.9999700000495,
+        "explanation": "Coherence: 100.0/100 (Phi=0.000) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.000 | Invalidated: APIContract | Decision: RISKY — Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.000, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.00000679988440130952,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01b000cr9a2ma87kkqwk",
+            "actionProposalId": "cmmuz01au00cp9a2mnxr8aceo",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.00000679988440130952,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz019v00ca9a2m7oq2uaam"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.000 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.000, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:15.036Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.0000014999977500096406
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-007",
+        "name": "Partial REQUIRES: one satisfied, one violated",
+        "description": "CompositeService REQUIRES DatabaseA.health (claims: healthy) and DatabaseB.health (no claims). DBR partial: one REQUIRES violated, one satisfied. Net RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "partial_requires",
+          "partial_violation"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "db-a",
+              "name": "DatabaseA",
+              "type": "system"
+            },
+            {
+              "id": "db-b",
+              "name": "DatabaseB",
+              "type": "system"
+            },
+            {
+              "id": "composite-svc",
+              "name": "CompositeService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "db-a",
+              "attribute": "health",
+              "value": "ok",
+              "confidence": 0.97,
+              "source": "health-check"
+            },
+            {
+              "entityId": "composite-svc",
+              "attribute": "status",
+              "value": "partial",
+              "confidence": 0.8,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "composite-svc",
+              "toEntityId": "db-a",
+              "type": "REQUIRES",
+              "attribute": "health"
+            },
+            {
+              "fromEntityId": "composite-svc",
+              "toEntityId": "db-b",
+              "type": "REQUIRES",
+              "attribute": "health"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "CompositeService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 60,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 85.21434481094457,
+        "explanation": "Coherence: 85.2/100 (Phi=0.800) | Psi=0.218 [CVR=0.000 DBR=0.800 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=0.320 | Decision: RISKY — Dependency breakage: cmmuz01bg00cv9a2myaw3fy2n requires cmmuz01bf00cu9a2mhyjzvmh4 but no claims found; Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.320, Psi=0.218",
+        "rawScores": {
+          "psiScore": 0.2178811449858992,
+          "deltaPhi": 0.3200071998704016,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0.8,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.000004291243069031945,
+          "provenanceFragility": 0.1192033419962589
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01cn00db9a2mvlwwy214",
+            "actionProposalId": "cmmuz01ch00d99a2mlq0hpchk",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.3200071998704016,
+            "psiScore": 0.2178811449858992,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0.8,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.000004291243069031945,
+            "provenanceFragility": 0.1192033419962589,
+            "impactedEntityIds": [
+              "cmmuz01bg00cv9a2myaw3fy2n",
+              "cmmuz01be00ct9a2mgbi8kdjz",
+              "cmmuz01bf00cu9a2mhyjzvmh4"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01bj00d09a2mzy2pywdk",
+                "entityId": "cmmuz01bg00cv9a2myaw3fy2n",
+                "predicate": "status",
+                "confidence": 0.8807966580037411
+              }
+            ],
+            "reasons": [
+              "Dependency breakage: cmmuz01bg00cv9a2myaw3fy2n requires cmmuz01bf00cu9a2mhyjzvmh4 but no claims found",
+              "Estimated DeltaPhi=0.320 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.320, Psi=0.218"
+            ],
+            "createdAt": "2026-03-17T18:53:15.095Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.800001999996
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-001",
+        "name": "REQUIRES dep satisfied: upstream has fresh claims",
+        "description": "ServiceA REQUIRES ConfigDB.version. ConfigDB has fresh claims. No violations. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "requires_satisfied",
+          "clean"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-db",
+              "name": "ConfigDB",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-db",
+              "attribute": "version",
+              "value": "3.0",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "service-a",
+              "attribute": "cpu_load_pct",
+              "value": "40",
+              "confidence": 0.96,
+              "source": "monitor",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "config-db",
+              "type": "REQUIRES",
+              "attribute": "version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 99.56197423504503,
+        "explanation": "Coherence: 99.6/100 (Phi=0.022) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.004 PF=0.122] DeltaPhi=0.009 | Decision: VALID — Estimated DeltaPhi=0.009 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01889416670316579,
+          "deltaPhi": 0.008785303475827167,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.003619654370198359,
+          "provenanceFragility": 0.1223414569842403
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01e700dt9a2mikss0gmi",
+            "actionProposalId": "cmmuz01e200dr9a2mub4jz0vx",
+            "admissibility": "VALID",
+            "deltaPhi": 0.008785303475827167,
+            "psiScore": 0.01889416670316579,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.003619654370198359,
+            "provenanceFragility": 0.1223414569842403,
+            "impactedEntityIds": [
+              "cmmuz01d300de9a2mjj709val",
+              "cmmuz01d200dd9a2m63cb73b0"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01d700dk9a2m9l878y2u",
+                "entityId": "cmmuz01d300de9a2mjj709val",
+                "predicate": "cpu_load_pct",
+                "confidence": 0.8776585430157597
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.009 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:15.152Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.02194939542305349
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-002",
+        "name": "INVALIDATES dep present but downstream has no claims: DBR = 0",
+        "description": "UpstreamService INVALIDATES FreshCache.data. FreshCache has NO claims. Per service logic: INVALIDATES dep → DBR 0.6 only when downstream HAS claims. No claims on FreshCache → DBR = 0 → VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "invalidates_no_claims",
+          "zero_dbr"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "upstream-svc",
+              "name": "UpstreamService",
+              "type": "service"
+            },
+            {
+              "id": "fresh-cache",
+              "name": "FreshCache",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "upstream-svc",
+              "attribute": "api_version",
+              "value": "4.0",
+              "confidence": 0.97,
+              "source": "registry",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "upstream-svc",
+              "toEntityId": "fresh-cache",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "FreshCache"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 53,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "RISKY",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 99.70487228718702,
+        "explanation": "Coherence: 99.7/100 (Phi=0.015) | Psi=0.225 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.500 PF=1.000] DeltaPhi=0.006 | Decision: RISKY — Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities; Action is risky: DeltaPhi=0.006, Psi=0.225",
+        "rawScores": {
+          "psiScore": 0.225,
+          "deltaPhi": 0.005916909959347505,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.5,
+          "provenanceFragility": 1
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01fn00e89a2ma8ce4to8",
+            "actionProposalId": "cmmuz01fh00e69a2mi7w4vwyd",
+            "admissibility": "RISKY",
+            "deltaPhi": 0.005916909959347505,
+            "psiScore": 0.225,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.5,
+            "provenanceFragility": 1,
+            "impactedEntityIds": [
+              "cmmuz01em00dw9a2mihvykbt8"
+            ],
+            "provenanceChain": [],
+            "reasons": [
+              "Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities",
+              "Action is risky: DeltaPhi=0.006, Psi=0.225"
+            ],
+            "createdAt": "2026-03-17T18:53:15.204Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.01477820367030902
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-003",
+        "name": "Full dependency chain satisfied: 3-hop REQUIRES chain",
+        "description": "N3 REQUIRES N2.value. N2 REQUIRES N1.value. N1 has claims. All satisfied. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "requires_chain",
+          "all_satisfied"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "n1",
+              "name": "N1",
+              "type": "component"
+            },
+            {
+              "id": "n2",
+              "name": "N2",
+              "type": "component"
+            },
+            {
+              "id": "n3",
+              "name": "N3",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "n1",
+              "attribute": "value",
+              "value": "42",
+              "confidence": 0.97,
+              "source": "sensor",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "n2",
+              "attribute": "value",
+              "value": "21",
+              "confidence": 0.95,
+              "source": "derived",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "n3",
+              "attribute": "output",
+              "value": "10.5",
+              "confidence": 0.93,
+              "source": "derived",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "n2",
+              "toEntityId": "n1",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "n3",
+              "toEntityId": "n2",
+              "type": "REQUIRES",
+              "attribute": "value"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "approve_output",
+              "name": "approve_output",
+              "impactedEntityNames": [
+                "N3"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 62,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 99.70482390834246,
+        "explanation": "Coherence: 99.7/100 (Phi=0.015) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.004 PF=0.122] DeltaPhi=0.006 | Decision: VALID — Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01889430402191861,
+          "deltaPhi": 0.00591826853622277,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.003620257227997489,
+          "provenanceFragility": 0.1223417695847933
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01he00ev9a2m5krfbsa9",
+            "actionProposalId": "cmmuz01h900et9a2mcn9xk32c",
+            "admissibility": "VALID",
+            "deltaPhi": 0.00591826853622277,
+            "psiScore": 0.01889430402191861,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.003620257227997489,
+            "provenanceFragility": 0.1223417695847933,
+            "impactedEntityIds": [
+              "cmmuz01g500ec9a2miuo851fs",
+              "cmmuz01g400eb9a2mi3clxgyn"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01ga00ek9a2m3ius2bsf",
+                "entityId": "cmmuz01g500ec9a2miuo851fs",
+                "predicate": "output",
+                "confidence": 0.8776582304152067
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:15.267Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.014780629773225418
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-004",
+        "name": "Multiple REQUIRES all satisfied: 3 upstream entities with claims",
+        "description": "Orchestrator REQUIRES ConfigA.value, ConfigB.value, DatabaseC.health. All three have fresh claims. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "multiple_requires",
+          "all_satisfied"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-a",
+              "name": "ConfigA",
+              "type": "system"
+            },
+            {
+              "id": "config-b",
+              "name": "ConfigB",
+              "type": "system"
+            },
+            {
+              "id": "db-c",
+              "name": "DatabaseC",
+              "type": "system"
+            },
+            {
+              "id": "orchestrator",
+              "name": "Orchestrator",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-a",
+              "attribute": "value",
+              "value": "enabled",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "config-b",
+              "attribute": "value",
+              "value": "production",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "db-c",
+              "attribute": "health",
+              "value": "ok",
+              "confidence": 0.97,
+              "source": "health-check",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "orchestrator",
+              "attribute": "status",
+              "value": "ready",
+              "confidence": 0.95,
+              "source": "health-check",
+              "staleness_s": 20
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-a",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-b",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "db-c",
+              "type": "REQUIRES",
+              "attribute": "health"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "start_orchestrator",
+              "name": "start_orchestrator",
+              "impactedEntityNames": [
+                "Orchestrator"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 66,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 99.58622450682721,
+        "explanation": "Coherence: 99.6/100 (Phi=0.021) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.002 PF=0.121] DeltaPhi=0.008 | Decision: VALID — Estimated DeltaPhi=0.008 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01855577037906444,
+          "deltaPhi": 0.008299196192894775,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.002406743747113872,
+          "provenanceFragility": 0.1212983921133157
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01j800fn9a2mfd9tevbp",
+            "actionProposalId": "cmmuz01j200fl9a2mh6iux0gq",
+            "admissibility": "VALID",
+            "deltaPhi": 0.008299196192894775,
+            "psiScore": 0.01855577037906444,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.002406743747113872,
+            "provenanceFragility": 0.1212983921133157,
+            "impactedEntityIds": [
+              "cmmuz01hw00f09a2mio7j9yo2",
+              "cmmuz01ht00ex9a2mze6db3fk",
+              "cmmuz01hu00ey9a2mm8pguw0h",
+              "cmmuz01hv00ez9a2mewsxbnvi"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01i100fa9a2mvrt8kico",
+                "entityId": "cmmuz01hw00f09a2mio7j9yo2",
+                "predicate": "status",
+                "confidence": 0.8787016078866843
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.008 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:15.332Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.02073169563690254
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-005",
+        "name": "INVALIDATES exists but action targets upstream entity: no DBR",
+        "description": "Config INVALIDATES Service.response_time. Service has claims. But action targets Config (not Service). Config has no constraint violations → VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "invalidates_upstream_action",
+          "scoped"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config",
+              "name": "Config",
+              "type": "system"
+            },
+            {
+              "id": "service",
+              "name": "Service",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config",
+              "attribute": "version",
+              "value": "2.0",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "service",
+              "attribute": "response_time",
+              "value": "50ms",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "config",
+              "toEntityId": "service",
+              "type": "INVALIDATES",
+              "attribute": "response_time"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "update_config",
+              "name": "update_config",
+              "impactedEntityNames": [
+                "Config"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [
+          "Service"
+        ],
+        "coherenceScore": 99.70486261139688,
+        "explanation": "Coherence: 99.7/100 (Phi=0.015) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.004 PF=0.122] DeltaPhi=0.006 | Invalidated: Service | Decision: VALID — Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01889416841893819,
+          "deltaPhi": 0.005917492207744268,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.003619770008921067,
+          "provenanceFragility": 0.1223413527840002
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01kt00g79a2mji9v8pwk",
+            "actionProposalId": "cmmuz01ko00g59a2mfehp0jtb",
+            "admissibility": "VALID",
+            "deltaPhi": 0.005917492207744268,
+            "psiScore": 0.01889416841893819,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.003619770008921067,
+            "provenanceFragility": 0.1223413527840002,
+            "impactedEntityIds": [
+              "cmmuz01jo00fp9a2ms1w8aizk",
+              "cmmuz01jp00fq9a2m77mvz1fg"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01jr00fu9a2muuu0oph1",
+                "entityId": "cmmuz01jo00fp9a2ms1w8aizk",
+                "predicate": "version",
+                "confidence": 0.8776586472159998
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.006 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:15.389Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.014778688891862735
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-006",
+        "name": "Safety interlock REQUIRES satisfied: system armed and ready",
+        "description": "LaunchSequencer REQUIRES SafetyInterlock.armed_state. SafetyInterlock has armed_state = armed (fresh). VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "safety_requires_satisfied",
+          "launch"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "safety-interlock",
+              "name": "SafetyInterlock",
+              "type": "system"
+            },
+            {
+              "id": "launch-sequencer",
+              "name": "LaunchSequencer",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "safety-interlock",
+              "attribute": "armed_state",
+              "value": "armed",
+              "confidence": 0.99,
+              "source": "safety-controller",
+              "staleness_s": 5
+            },
+            {
+              "entityId": "launch-sequencer",
+              "attribute": "countdown_s",
+              "value": "60",
+              "confidence": 0.97,
+              "source": "timer",
+              "staleness_s": 5
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "launch-sequencer",
+              "toEntityId": "safety-interlock",
+              "type": "REQUIRES",
+              "attribute": "armed_state"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "proceed_to_launch",
+              "name": "proceed_to_launch",
+              "impactedEntityNames": [
+                "LaunchSequencer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 56,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 99.95010739210026,
+        "explanation": "Coherence: 100.0/100 (Phi=0.002) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.001 PF=0.120] DeltaPhi=0.001 | Decision: VALID — Estimated DeltaPhi=0.001 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.0180493628075843,
+          "deltaPhi": 0.001004270131299911,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0006011957173782718,
+          "provenanceFragility": 0.119727889666517
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmuz01mb00gp9a2m5tmmsilb",
+            "actionProposalId": "cmmuz01m600gn9a2m9caw2gr8",
+            "admissibility": "VALID",
+            "deltaPhi": 0.001004270131299911,
+            "psiScore": 0.0180493628075843,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0006011957173782718,
+            "provenanceFragility": 0.119727889666517,
+            "impactedEntityIds": [
+              "cmmuz01l700ga9a2muiysidrm",
+              "cmmuz01l600g99a2mp07i4ee5"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmuz01lb00gg9a2mc6x353yh",
+                "entityId": "cmmuz01l700ga9a2muiysidrm",
+                "predicate": "countdown_s",
+                "confidence": 0.880272110333483
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=0.001 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T18:53:15.444Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 0.0024952529201388574
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    }
+  ]
+}

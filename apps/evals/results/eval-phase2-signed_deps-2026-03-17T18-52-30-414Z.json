@@ -1,0 +1,1922 @@
+{
+  "runId": "signed_deps",
+  "timestamp": "2026-03-17T18:52:30.414Z",
+  "phase": 2,
+  "summary": {
+    "evaluatorId": "engine-v2",
+    "scenarioCount": 20,
+    "meanContradictionF1": 0,
+    "meanBranchF1": 0,
+    "actionAccuracy": 0,
+    "actionWithinRiskRate": 0,
+    "meanInvalidationF1": 0,
+    "meanReasoningCoverage": 0,
+    "meanOverallScore": 0,
+    "byCategory": {
+      "dependency_break": {
+        "count": 14,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      },
+      "nominal": {
+        "count": 6,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      }
+    },
+    "byDifficulty": {
+      "medium": {
+        "count": 20,
+        "meanOverallScore": 0
+      }
+    },
+    "byFamily": {
+      "signed_deps": {
+        "count": 20,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      }
+    }
+  },
+  "rawResults": [
+    {
+      "scenario": {
+        "id": "sdp-blk-001",
+        "name": "REQUIRES dep violated: upstream has no claims at all",
+        "description": "ServiceA REQUIRES DataStore.schema. DataStore has NO claims. DBR for ServiceA is high (REQUIRES violated). Action deploy_service → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_violated",
+          "missing_upstream"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "data-store",
+              "name": "DataStore",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-a",
+              "attribute": "version",
+              "value": "2.0",
+              "confidence": 0.95,
+              "source": "registry"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "data-store",
+              "type": "REQUIRES",
+              "attribute": "schema"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 196,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-002",
+        "name": "Multiple REQUIRES deps violated: two upstream entities offline",
+        "description": "Orchestrator REQUIRES ConfigA.value AND ConfigB.value. Both have no claims. DBR contributions stack → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "multiple_requires_violated",
+          "offline_deps"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-a",
+              "name": "ConfigA",
+              "type": "system"
+            },
+            {
+              "id": "config-b",
+              "name": "ConfigB",
+              "type": "system"
+            },
+            {
+              "id": "orchestrator",
+              "name": "Orchestrator",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "orchestrator",
+              "attribute": "status",
+              "value": "pending",
+              "confidence": 0.9,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-a",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-b",
+              "type": "REQUIRES",
+              "attribute": "value"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "start_orchestrator",
+              "name": "start_orchestrator",
+              "impactedEntityNames": [
+                "Orchestrator"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 57,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-003",
+        "name": "REQUIRES violated + constraint violation: double BLOCKED signal",
+        "description": "ServiceB REQUIRES AuthService.token (no claims). ServiceB.error_rate = 0.12 violates <= 0.05 SLO. Both DBR and CVR contribute → strongly BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_violated",
+          "constraint_violation",
+          "stacked"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "auth-svc",
+              "name": "AuthService",
+              "type": "service"
+            },
+            {
+              "id": "service-b",
+              "name": "ServiceB",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-b",
+              "attribute": "error_rate",
+              "value": "0.12",
+              "confidence": 0.97,
+              "source": "metrics"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-b",
+              "toEntityId": "auth-svc",
+              "type": "REQUIRES",
+              "attribute": "token"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "service-b",
+              "attribute": "error_rate",
+              "operator": "<=",
+              "threshold": 0.05,
+              "description": "SLO"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceB"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 53,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-004",
+        "name": "Critical REQUIRES: hardware component firmware missing",
+        "description": "MotorController REQUIRES FirmwareImage.version (no claims — firmware not loaded). Action activate_motor → BLOCKED due to critical missing dependency.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "critical_requires",
+          "firmware_missing"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "firmware-image",
+              "name": "FirmwareImage",
+              "type": "artifact"
+            },
+            {
+              "id": "motor-ctrl",
+              "name": "MotorController",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "motor-ctrl",
+              "attribute": "status",
+              "value": "uninitialized",
+              "confidence": 0.95,
+              "source": "diagnostics"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "motor-ctrl",
+              "toEntityId": "firmware-image",
+              "type": "REQUIRES",
+              "attribute": "version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "activate_motor",
+              "name": "activate_motor",
+              "impactedEntityNames": [
+                "MotorController"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 54,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-005",
+        "name": "REQUIRES chain broken at 2nd hop",
+        "description": "ServiceC REQUIRES ServiceB.api_version. ServiceB REQUIRES ServiceA.base_config. ServiceA has no claims. Chain broken → DBR propagates → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "requires_chain",
+          "chain_break"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            },
+            {
+              "id": "service-b",
+              "name": "ServiceB",
+              "type": "service"
+            },
+            {
+              "id": "service-c",
+              "name": "ServiceC",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "service-b",
+              "attribute": "api_version",
+              "value": "3.0",
+              "confidence": 0.9,
+              "source": "registry"
+            },
+            {
+              "entityId": "service-c",
+              "attribute": "status",
+              "value": "running",
+              "confidence": 0.85,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-b",
+              "toEntityId": "service-a",
+              "type": "REQUIRES",
+              "attribute": "base_config"
+            },
+            {
+              "fromEntityId": "service-c",
+              "toEntityId": "service-b",
+              "type": "REQUIRES",
+              "attribute": "api_version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceC"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 54,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-006",
+        "name": "Safety interlock REQUIRES violated",
+        "description": "LaunchSequencer REQUIRES SafetyInterlock.armed_state (no claims — interlock offline). Action proceed_to_launch → BLOCKED (missing required safety check).",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "safety_interlock",
+          "launch"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "safety-interlock",
+              "name": "SafetyInterlock",
+              "type": "system"
+            },
+            {
+              "id": "launch-sequencer",
+              "name": "LaunchSequencer",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "launch-sequencer",
+              "attribute": "countdown_s",
+              "value": "60",
+              "confidence": 0.97,
+              "source": "timer"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "launch-sequencer",
+              "toEntityId": "safety-interlock",
+              "type": "REQUIRES",
+              "attribute": "armed_state"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "proceed_to_launch",
+              "name": "proceed_to_launch",
+              "impactedEntityNames": [
+                "LaunchSequencer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-blk-007",
+        "name": "Multiple INVALIDATES: downstream entities stale after upstream change",
+        "description": "ConfigRoot changed. It INVALIDATES CacheA.data and CacheB.data. Both caches have claims → DBR 0.6 each. Action on DownstreamService (depends on both caches). Combined DBR exceeds threshold → BLOCKED.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "blocked",
+          "invalidates_multiple",
+          "cache_stale"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-root",
+              "name": "ConfigRoot",
+              "type": "system"
+            },
+            {
+              "id": "cache-a",
+              "name": "CacheA",
+              "type": "service"
+            },
+            {
+              "id": "cache-b",
+              "name": "CacheB",
+              "type": "service"
+            },
+            {
+              "id": "downstream-svc",
+              "name": "DownstreamService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-root",
+              "attribute": "version",
+              "value": "3.0",
+              "confidence": 0.97,
+              "source": "config-mgr"
+            },
+            {
+              "entityId": "cache-a",
+              "attribute": "data",
+              "value": "cached-v2",
+              "confidence": 0.85,
+              "source": "cache-node"
+            },
+            {
+              "entityId": "cache-b",
+              "attribute": "data",
+              "value": "cached-v2",
+              "confidence": 0.85,
+              "source": "cache-node"
+            },
+            {
+              "entityId": "downstream-svc",
+              "attribute": "response_time_ms",
+              "value": "45",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "config-root",
+              "toEntityId": "cache-a",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "config-root",
+              "toEntityId": "cache-b",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "downstream-svc",
+              "toEntityId": "cache-a",
+              "type": "REQUIRES",
+              "attribute": "data"
+            },
+            {
+              "fromEntityId": "downstream-svc",
+              "toEntityId": "cache-b",
+              "type": "REQUIRES",
+              "attribute": "data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "DownstreamService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-blk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 50,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-001",
+        "name": "Single INVALIDATES dep with downstream claims",
+        "description": "UpstreamService INVALIDATES DownstreamCache.response_time_ms. DownstreamCache has claims. Action deploy_cache → DBR = 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates",
+          "cache"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "upstream-svc",
+              "name": "UpstreamService",
+              "type": "service"
+            },
+            {
+              "id": "downstream-cache",
+              "name": "DownstreamCache",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "upstream-svc",
+              "attribute": "api_version",
+              "value": "4.0",
+              "confidence": 0.96,
+              "source": "registry"
+            },
+            {
+              "entityId": "downstream-cache",
+              "attribute": "response_time_ms",
+              "value": "12",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "upstream-svc",
+              "toEntityId": "downstream-cache",
+              "type": "INVALIDATES",
+              "attribute": "response_time_ms"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_cache",
+              "name": "deploy_cache",
+              "impactedEntityNames": [
+                "DownstreamCache"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 53,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-002",
+        "name": "INVALIDATES dep on MLModel after training data updated",
+        "description": "TrainingDataset INVALIDATES MLModel.accuracy_score. MLModel has accuracy claims. Deploying MLModel with stale metrics → DBR 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates",
+          "ml_model"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "training-dataset",
+              "name": "TrainingDataset",
+              "type": "artifact"
+            },
+            {
+              "id": "ml-model",
+              "name": "MLModel",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "training-dataset",
+              "attribute": "version",
+              "value": "5.0",
+              "confidence": 0.98,
+              "source": "data-registry"
+            },
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy_score",
+              "value": "0.96",
+              "confidence": 0.9,
+              "source": "eval-on-v4"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "training-dataset",
+              "toEntityId": "ml-model",
+              "type": "INVALIDATES",
+              "attribute": "accuracy_score"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_model",
+              "name": "deploy_model",
+              "impactedEntityNames": [
+                "MLModel"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 54,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-003",
+        "name": "REQUIRES satisfied + INVALIDATES present: net RISKY",
+        "description": "ServiceA REQUIRES ConfigDB.version (claims exist — REQUIRES satisfied). ConfigDB also INVALIDATES ServiceA.throughput (claims exist). DBR 0.6 from INVALIDATES → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "requires_satisfied",
+          "invalidates_active"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-db",
+              "name": "ConfigDB",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-db",
+              "attribute": "version",
+              "value": "2.1",
+              "confidence": 0.97,
+              "source": "config-svc"
+            },
+            {
+              "entityId": "service-a",
+              "attribute": "throughput",
+              "value": "1200",
+              "confidence": 0.88,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "config-db",
+              "type": "REQUIRES",
+              "attribute": "version"
+            },
+            {
+              "fromEntityId": "config-db",
+              "toEntityId": "service-a",
+              "type": "INVALIDATES",
+              "attribute": "throughput"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 55,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-004",
+        "name": "Firmware INVALIDATES device calibration: claims present",
+        "description": "NewFirmware INVALIDATES SensorDevice.calibration_factor. SensorDevice has calibration claims. Action activate_device → DBR 0.6 → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "firmware_invalidates",
+          "device"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "new-firmware",
+              "name": "NewFirmware",
+              "type": "artifact"
+            },
+            {
+              "id": "sensor-device",
+              "name": "SensorDevice",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "new-firmware",
+              "attribute": "version",
+              "value": "2.5.0",
+              "confidence": 0.98,
+              "source": "vendor-registry"
+            },
+            {
+              "entityId": "sensor-device",
+              "attribute": "calibration_factor",
+              "value": "1.0082",
+              "confidence": 0.9,
+              "source": "factory-cal"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "new-firmware",
+              "toEntityId": "sensor-device",
+              "type": "INVALIDATES",
+              "attribute": "calibration_factor"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "activate_device",
+              "name": "activate_device",
+              "impactedEntityNames": [
+                "SensorDevice"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 52,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-005",
+        "name": "INVALIDATES propagation: two hops, downstream claims present",
+        "description": "Source INVALIDATES Middle.processed_data (Middle has claims). Middle REQUIRES Source.raw_data (Source has claims — REQUIRES ok). Action on OutputService depends on Middle → DBR from INVALIDATES.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "invalidates_chain",
+          "2hop"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "source",
+              "name": "Source",
+              "type": "system"
+            },
+            {
+              "id": "middle",
+              "name": "Middle",
+              "type": "service"
+            },
+            {
+              "id": "output-svc",
+              "name": "OutputService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "source",
+              "attribute": "raw_data",
+              "value": "v3-dataset",
+              "confidence": 0.97,
+              "source": "db"
+            },
+            {
+              "entityId": "middle",
+              "attribute": "processed_data",
+              "value": "v2-result",
+              "confidence": 0.88,
+              "source": "processor"
+            },
+            {
+              "entityId": "output-svc",
+              "attribute": "report_score",
+              "value": "0.85",
+              "confidence": 0.82,
+              "source": "output-gen"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "middle",
+              "toEntityId": "source",
+              "type": "REQUIRES",
+              "attribute": "raw_data"
+            },
+            {
+              "fromEntityId": "source",
+              "toEntityId": "middle",
+              "type": "INVALIDATES",
+              "attribute": "processed_data"
+            },
+            {
+              "fromEntityId": "output-svc",
+              "toEntityId": "middle",
+              "type": "REQUIRES",
+              "attribute": "processed_data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "publish_report",
+              "name": "publish_report",
+              "impactedEntityNames": [
+                "OutputService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 52,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-006",
+        "name": "Schema migration INVALIDATES API contract",
+        "description": "DatabaseSchema INVALIDATES APIContract.response_format. APIContract has response_format claims. Action release_api impacts APIContract → RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "schema_migration",
+          "api_contract"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "db-schema",
+              "name": "DatabaseSchema",
+              "type": "artifact"
+            },
+            {
+              "id": "api-contract",
+              "name": "APIContract",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "db-schema",
+              "attribute": "version",
+              "value": "4.0",
+              "confidence": 0.98,
+              "source": "schema-registry"
+            },
+            {
+              "entityId": "api-contract",
+              "attribute": "response_format",
+              "value": "v3-format",
+              "confidence": 0.9,
+              "source": "contract-registry"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "db-schema",
+              "toEntityId": "api-contract",
+              "type": "INVALIDATES",
+              "attribute": "response_format"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_api",
+              "name": "release_api",
+              "impactedEntityNames": [
+                "APIContract"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 53,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-rsk-007",
+        "name": "Partial REQUIRES: one satisfied, one violated",
+        "description": "CompositeService REQUIRES DatabaseA.health (claims: healthy) and DatabaseB.health (no claims). DBR partial: one REQUIRES violated, one satisfied. Net RISKY.",
+        "familyId": "signed_deps",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "partial_requires",
+          "partial_violation"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "db-a",
+              "name": "DatabaseA",
+              "type": "system"
+            },
+            {
+              "id": "db-b",
+              "name": "DatabaseB",
+              "type": "system"
+            },
+            {
+              "id": "composite-svc",
+              "name": "CompositeService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "db-a",
+              "attribute": "health",
+              "value": "ok",
+              "confidence": 0.97,
+              "source": "health-check"
+            },
+            {
+              "entityId": "composite-svc",
+              "attribute": "status",
+              "value": "partial",
+              "confidence": 0.8,
+              "source": "health-check"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "composite-svc",
+              "toEntityId": "db-a",
+              "type": "REQUIRES",
+              "attribute": "health"
+            },
+            {
+              "fromEntityId": "composite-svc",
+              "toEntityId": "db-b",
+              "type": "REQUIRES",
+              "attribute": "health"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "CompositeService"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-rsk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 52,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-001",
+        "name": "REQUIRES dep satisfied: upstream has fresh claims",
+        "description": "ServiceA REQUIRES ConfigDB.version. ConfigDB has fresh claims. No violations. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "requires_satisfied",
+          "clean"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-db",
+              "name": "ConfigDB",
+              "type": "system"
+            },
+            {
+              "id": "service-a",
+              "name": "ServiceA",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-db",
+              "attribute": "version",
+              "value": "3.0",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "service-a",
+              "attribute": "cpu_load_pct",
+              "value": "40",
+              "confidence": 0.96,
+              "source": "monitor",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "service-a",
+              "toEntityId": "config-db",
+              "type": "REQUIRES",
+              "attribute": "version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceA"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 54,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-002",
+        "name": "INVALIDATES dep present but downstream has no claims: DBR = 0",
+        "description": "UpstreamService INVALIDATES FreshCache.data. FreshCache has NO claims. Per service logic: INVALIDATES dep → DBR 0.6 only when downstream HAS claims. No claims on FreshCache → DBR = 0 → VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "invalidates_no_claims",
+          "zero_dbr"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "upstream-svc",
+              "name": "UpstreamService",
+              "type": "service"
+            },
+            {
+              "id": "fresh-cache",
+              "name": "FreshCache",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "upstream-svc",
+              "attribute": "api_version",
+              "value": "4.0",
+              "confidence": 0.97,
+              "source": "registry",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "upstream-svc",
+              "toEntityId": "fresh-cache",
+              "type": "INVALIDATES",
+              "attribute": "data"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "FreshCache"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 51,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-003",
+        "name": "Full dependency chain satisfied: 3-hop REQUIRES chain",
+        "description": "N3 REQUIRES N2.value. N2 REQUIRES N1.value. N1 has claims. All satisfied. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "requires_chain",
+          "all_satisfied"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "n1",
+              "name": "N1",
+              "type": "component"
+            },
+            {
+              "id": "n2",
+              "name": "N2",
+              "type": "component"
+            },
+            {
+              "id": "n3",
+              "name": "N3",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "n1",
+              "attribute": "value",
+              "value": "42",
+              "confidence": 0.97,
+              "source": "sensor",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "n2",
+              "attribute": "value",
+              "value": "21",
+              "confidence": 0.95,
+              "source": "derived",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "n3",
+              "attribute": "output",
+              "value": "10.5",
+              "confidence": 0.93,
+              "source": "derived",
+              "staleness_s": 30
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "n2",
+              "toEntityId": "n1",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "n3",
+              "toEntityId": "n2",
+              "type": "REQUIRES",
+              "attribute": "value"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "approve_output",
+              "name": "approve_output",
+              "impactedEntityNames": [
+                "N3"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 54,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-004",
+        "name": "Multiple REQUIRES all satisfied: 3 upstream entities with claims",
+        "description": "Orchestrator REQUIRES ConfigA.value, ConfigB.value, DatabaseC.health. All three have fresh claims. VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "multiple_requires",
+          "all_satisfied"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config-a",
+              "name": "ConfigA",
+              "type": "system"
+            },
+            {
+              "id": "config-b",
+              "name": "ConfigB",
+              "type": "system"
+            },
+            {
+              "id": "db-c",
+              "name": "DatabaseC",
+              "type": "system"
+            },
+            {
+              "id": "orchestrator",
+              "name": "Orchestrator",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config-a",
+              "attribute": "value",
+              "value": "enabled",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "config-b",
+              "attribute": "value",
+              "value": "production",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "db-c",
+              "attribute": "health",
+              "value": "ok",
+              "confidence": 0.97,
+              "source": "health-check",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "orchestrator",
+              "attribute": "status",
+              "value": "ready",
+              "confidence": 0.95,
+              "source": "health-check",
+              "staleness_s": 20
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-a",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "config-b",
+              "type": "REQUIRES",
+              "attribute": "value"
+            },
+            {
+              "fromEntityId": "orchestrator",
+              "toEntityId": "db-c",
+              "type": "REQUIRES",
+              "attribute": "health"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "start_orchestrator",
+              "name": "start_orchestrator",
+              "impactedEntityNames": [
+                "Orchestrator"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 52,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-005",
+        "name": "INVALIDATES exists but action targets upstream entity: no DBR",
+        "description": "Config INVALIDATES Service.response_time. Service has claims. But action targets Config (not Service). Config has no constraint violations → VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "invalidates_upstream_action",
+          "scoped"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "config",
+              "name": "Config",
+              "type": "system"
+            },
+            {
+              "id": "service",
+              "name": "Service",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "config",
+              "attribute": "version",
+              "value": "2.0",
+              "confidence": 0.98,
+              "source": "config-svc",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "service",
+              "attribute": "response_time",
+              "value": "50ms",
+              "confidence": 0.9,
+              "source": "bench"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "config",
+              "toEntityId": "service",
+              "type": "INVALIDATES",
+              "attribute": "response_time"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "update_config",
+              "name": "update_config",
+              "impactedEntityNames": [
+                "Config"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 51,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "sdp-vld-006",
+        "name": "Safety interlock REQUIRES satisfied: system armed and ready",
+        "description": "LaunchSequencer REQUIRES SafetyInterlock.armed_state. SafetyInterlock has armed_state = armed (fresh). VALID.",
+        "familyId": "signed_deps",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "safety_requires_satisfied",
+          "launch"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "safety-interlock",
+              "name": "SafetyInterlock",
+              "type": "system"
+            },
+            {
+              "id": "launch-sequencer",
+              "name": "LaunchSequencer",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "safety-interlock",
+              "attribute": "armed_state",
+              "value": "armed",
+              "confidence": 0.99,
+              "source": "safety-controller",
+              "staleness_s": 5
+            },
+            {
+              "entityId": "launch-sequencer",
+              "attribute": "countdown_s",
+              "value": "60",
+              "confidence": 0.97,
+              "source": "timer",
+              "staleness_s": 5
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "launch-sequencer",
+              "toEntityId": "safety-interlock",
+              "type": "REQUIRES",
+              "attribute": "armed_state"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "proceed_to_launch",
+              "name": "proceed_to_launch",
+              "impactedEntityNames": [
+                "LaunchSequencer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "sdp-vld-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 58,
+        "error": "PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientInitializationError: \nInvalid `prisma.entity.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/EntityRepository.ts:21:26\n\n  18 }\n  19 \n  20 async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {\n→ 21   return prisma.entity.create(\nAuthentication failed against database server at `localhost`, the provided database credentials for `coherence` are not valid.\n\nPlease make sure to provide valid database credentials for the database server at `localhost`."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    }
+  ]
+}
