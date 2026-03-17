@@ -20,6 +20,9 @@ import { constraintRoutes } from './interfaces/http/routes/constraints.js';
 import { dependencyRoutes } from './interfaces/http/routes/dependencies.js';
 import { actionRoutes } from './interfaces/http/routes/actions.js';
 import { worldRoutes } from './interfaces/http/routes/world.js';
+import { policyRoutes } from './interfaces/http/routes/policy.js';
+import { traceRoutes } from './interfaces/http/routes/trace.js';
+import { planRoutes } from './interfaces/http/routes/plans.js';
 
 const app = Fastify({
   logger: {
@@ -62,6 +65,9 @@ await app.register(swagger, {
       { name: 'Dependencies', description: 'Signed typed relations between entities' },
       { name: 'Actions', description: 'Proposed actions validated against world state' },
       { name: 'World', description: 'World state, coherence score, and audit trail' },
+      { name: 'Policy', description: 'Governance rules, approvals, and escalation' },
+      { name: 'Trace', description: 'Timeline recording, replay, and session debugging' },
+      { name: 'Plans', description: 'Task decomposition and coherence-aware orchestration' },
     ],
   },
 });
@@ -97,6 +103,12 @@ await app.register(constraintRoutes);
 await app.register(dependencyRoutes);
 await app.register(actionRoutes);
 await app.register(worldRoutes);
+// Layer 2: Policy
+await app.register(policyRoutes);
+// Layer 3: Trace
+await app.register(traceRoutes);
+// Layer 4: Plans
+await app.register(planRoutes);
 
 // Global error handler
 app.setErrorHandler((err, req, reply) => {

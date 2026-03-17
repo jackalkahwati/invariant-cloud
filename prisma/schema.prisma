@@ -418,3 +418,229 @@ model AuditEvent {
 
   @@map("audit_events")
 }
+
+// ============================================================
+// INVARIANT POLICY — governance, approvals, escalation
+// ============================================================
+
+model PolicyRule {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  layer       PolicyLayer    @default(POLICY)
+  condition   Json           // structured condition expression
+  effect      PolicyEffect
+  severity    PolicySeverity @default(MEDIUM)
+  entityTypes String[]       // empty = applies to all entity types
+  operations  String[]       // empty = applies to all operations
+  priority    Int            @default(0)
+  isActive    Boolean        @default(true)
+  metadata    Json?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  approvalRequests ApprovalRequest[]
+  evaluations      PolicyEvaluation[]
+
+  @@map("policy_rules")
+}
+
+enum PolicyLayer {
+  INGESTION
+  STATE
+  POLICY
+  PLAN
+  EXECUTION
+  TRACE
+}
+
+enum PolicyEffect {
+  ALLOW
+  DENY
+  REQUIRE_APPROVAL
+  ESCALATE
+  WARN
+}
+
+enum PolicySeverity {
+  INFO
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model ApprovalRequest {
+  id               String         @id @default(cuid())
+  policyRuleId     String
+  policyRule       PolicyRule     @relation(fields: [policyRuleId], references: [id])
+  actionProposalId String?
+  requestedBy      String
+  reason           String
+  status           ApprovalStatus @default(PENDING)
+  reviewedBy       String?
+  reviewedAt       DateTime?
+  decision         String?
+  expiresAt        DateTime?
+  metadata         Json?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@map("approval_requests")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  DENIED
+  EXPIRED
+  ESCALATED
+}
+
+model PolicyEvaluation {
+  id               String        @id @default(cuid())
+  policyRuleId     String
+  policyRule       PolicyRule    @relation(fields: [policyRuleId], references: [id])
+  actionProposalId String?
+  entityIds        String[]
+  triggered        Boolean
+  effect           PolicyEffect?
+  reason           String?
+  metadata         Json?
+  createdAt        DateTime      @default(now())
+
+  @@map("policy_evaluations")
+}
+
+// ============================================================
+// INVARIANT TRACE — timeline, replay, audit sessions
+// ============================================================
+
+model TraceSession {
+  id          String      @id @default(cuid())
+  name        String
+  description String?
+  agentId     String?
+  status      TraceStatus @default(ACTIVE)
+  startedAt   DateTime    @default(now())
+  endedAt     DateTime?
+  metadata    Json?
+  createdAt   DateTime    @default(now())
+
+  events TraceEvent[]
+
+  @@map("trace_sessions")
+}
+
+enum TraceStatus {
+  ACTIVE
+  COMPLETED
+  FAILED
+  REPLAYING
+}
+
+model TraceEvent {
+  id              String         @id @default(cuid())
+  sessionId       String
+  session         TraceSession   @relation(fields: [sessionId], references: [id])
+  type            TraceEventType
+  sequenceNumber  Int
+  entityIds       String[]
+  data            Json
+  worldStateHash  String?
+  deltaPhiAfter   Float?
+  coherenceAfter  Float?
+  actorId         String?
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+
+  @@unique([sessionId, sequenceNumber])
+  @@map("trace_events")
+}
+
+enum TraceEventType {
+  CLAIM_ADDED
+  CLAIM_INVALIDATED
+  CLAIM_SUPERSEDED
+  CONTRADICTION_DETECTED
+  BRANCH_OPENED
+  BRANCH_RESOLVED
+  CONSTRAINT_VIOLATED
+  DEPENDENCY_ADDED
+  ACTION_PROPOSED
+  ACTION_VALIDATED
+  POLICY_TRIGGERED
+  APPROVAL_REQUESTED
+  APPROVAL_DECIDED
+  SETTLING_ROUND
+  WORLD_SNAPSHOT
+  PLAN_CREATED
+  PLAN_STEP_STARTED
+  PLAN_STEP_COMPLETED
+  PLAN_STEP_FAILED
+  AGENT_MESSAGE
+}
+
+// ============================================================
+// INVARIANT PLAN — task decomposition, orchestration
+// ============================================================
+
+model Plan {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  goal        String
+  agentId     String?
+  status      PlanStatus @default(DRAFT)
+  entityIds   String[]
+  metadata    Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  steps PlanStep[]
+
+  @@map("plans")
+}
+
+enum PlanStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  FAILED
+  REPLANNING
+}
+
+model PlanStep {
+  id               String         @id @default(cuid())
+  planId           String
+  plan             Plan           @relation(fields: [planId], references: [id])
+  name             String
+  description      String?
+  operation        String
+  parameters       Json           @default("{}")
+  entityIds        String[]
+  status           PlanStepStatus @default(PENDING)
+  assignedTo       String?
+  order            Int
+  requires         String[]
+  startedAt        DateTime?
+  completedAt      DateTime?
+  failureReason    String?
+  actionProposalId String?
+  metadata         Json?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@map("plan_steps")
+}
+
+enum PlanStepStatus {
+  PENDING
+  READY
+  RUNNING
+  COMPLETED
+  FAILED
+  BLOCKED
+  SKIPPED
+}

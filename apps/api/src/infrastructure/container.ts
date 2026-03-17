@@ -1,5 +1,11 @@
 /**
  * Dependency injection container — assembles all services and repositories.
+ *
+ * Layers:
+ *   Layer 1: State (existing) — Entity, Claim, Constraint, Dependency, Contradiction, Branch
+ *   Layer 2: Policy — PolicyRule, ApprovalRequest, PolicyEvaluation
+ *   Layer 3: Trace  — TraceSession, TraceEvent
+ *   Layer 4: Plan   — Plan, PlanStep
  */
 
 import { PrismaEntityRepository } from './database/repositories/EntityRepository.js';
@@ -13,11 +19,17 @@ import { PrismaActionRepository } from './database/repositories/ActionRepository
 import { PrismaObservationRepository } from './database/repositories/ObservationRepository.js';
 import { PrismaSnapshotRepository } from './database/repositories/SnapshotRepository.js';
 import { PrismaAuditRepository } from './database/repositories/AuditRepository.js';
+import { PrismaPolicyRepository } from './database/repositories/PolicyRepository.js';
+import { PrismaTraceRepository } from './database/repositories/TraceRepository.js';
+import { PrismaPlanRepository } from './database/repositories/PlanRepository.js';
 import { SettlingService } from '../application/services/SettlingService.js';
 import { ActionValidationService } from '../application/services/ActionValidationService.js';
+import { PolicyService } from '../application/services/PolicyService.js';
+import { TraceService } from '../application/services/TraceService.js';
+import { PlanService } from '../application/services/PlanService.js';
 import { engineConfig } from './config.js';
 
-// Repositories
+// ── Layer 1: State repositories ────────────────────────────────────────────────
 export const entityRepo = new PrismaEntityRepository();
 export const sourceRepo = new PrismaSourceRepository();
 export const claimRepo = new PrismaClaimRepository();
@@ -30,7 +42,16 @@ export const observationRepo = new PrismaObservationRepository();
 export const snapshotRepo = new PrismaSnapshotRepository();
 export const auditRepo = new PrismaAuditRepository();
 
-// Services
+// ── Layer 2: Policy repositories ──────────────────────────────────────────────
+export const policyRepo = new PrismaPolicyRepository();
+
+// ── Layer 3: Trace repositories ───────────────────────────────────────────────
+export const traceRepo = new PrismaTraceRepository();
+
+// ── Layer 4: Plan repositories ────────────────────────────────────────────────
+export const planRepo = new PrismaPlanRepository();
+
+// ── Layer 1: State services ────────────────────────────────────────────────────
 export const settlingService = new SettlingService(
   claimRepo,
   constraintRepo,
@@ -53,5 +74,14 @@ export const actionValidationService = new ActionValidationService(
   settlingService,
   engineConfig,
 );
+
+// ── Layer 2: Policy services ──────────────────────────────────────────────────
+export const policyService = new PolicyService(policyRepo);
+
+// ── Layer 3: Trace services ───────────────────────────────────────────────────
+export const traceService = new TraceService(traceRepo);
+
+// ── Layer 4: Plan services ────────────────────────────────────────────────────
+export const planService = new PlanService(planRepo, actionValidationService, traceService);
 
 export { engineConfig };
