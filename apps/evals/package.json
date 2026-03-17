@@ -1,0 +1,27 @@
+{
+  "name": "@coherence-engine/evals",
+  "version": "1.0.0",
+  "description": "Benchmark suite and ablation tests for the Coherence Engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "eval": "tsx src/main.ts",
+    "eval:fast": "tsx src/main.ts --skip-llm",
+    "eval:atlas": "tsx src/main.ts --suite atlas",
+    "eval:branch": "tsx src/main.ts --suite branch",
+    "eval:drift": "tsx src/main.ts --suite drift",
+    "eval:ablations": "tsx src/main.ts --ablations-only",
+    "report": "tsx src/main.ts --report-only"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@prisma/client": "^5.10.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2"
+  }
+}
