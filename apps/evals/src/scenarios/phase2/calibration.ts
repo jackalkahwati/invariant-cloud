@@ -504,16 +504,19 @@ const blocked: ScenarioV2[] = [
 const risky: ScenarioV2[] = [
   {
     id: 'cal-rsk-001',
-    name: 'Deploy with moderate CPU load and open contradiction',
+    name: 'Deploy with moderate CPU load and missing upstream data',
     description:
-      'ServerNode.cpu_load_pct = 78 (threshold 80), plus open contradiction on memory. ' +
-      'Action deploy_app directly impacts ServerNode → CVR moderate, CA non-zero.',
+      'ServerNode.cpu_load_pct = 78 (threshold 80). ' +
+      'ServerNode REQUIRES PrereqNode which has no active claims → DBR fires.',
     familyId: FAMILY,
     category: 'borderline',
-    tags: ['risky', 'borderline_constraint', 'contradiction'],
+    tags: ['risky', 'borderline_constraint', 'dependency_break'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'server-node', name: 'ServerNode', type: 'service' }],
+      entities: [
+        { id: 'server-node', name: 'ServerNode', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'server-node',
@@ -525,16 +528,9 @@ const risky: ScenarioV2[] = [
         {
           entityId: 'server-node',
           attribute: 'memory_free_gb',
-          value: '2.1',
-          confidence: 0.7,
-          source: 'agent-a',
-        },
-        {
-          entityId: 'server-node',
-          attribute: 'memory_free_gb',
-          value: '8.5',
-          confidence: 0.65,
-          source: 'agent-b',
+          value: '4.2',
+          confidence: 0.75,
+          source: 'monitoring',
         },
       ],
       constraints: [
@@ -546,15 +542,8 @@ const risky: ScenarioV2[] = [
           description: 'CPU load cap for deployment',
         },
       ],
-      contradictions: [
-        {
-          entityId: 'server-node',
-          attribute: 'memory_free_gb',
-          valueA: '2.1',
-          valueB: '8.5',
-          sourceA: 'agent-a',
-          sourceB: 'agent-b',
-        },
+      dependencies: [
+        { fromEntityId: 'server-node', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -568,16 +557,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-002',
-    name: 'Approve with low-confidence claims on impacted entity',
+    name: 'Approve with low-confidence claims and missing upstream dependency',
     description:
-      'PipelineStage has no constraint violation but claims have confidence 0.55. ' +
-      'Action approve_stage impacts PipelineStage → UE elevated.',
+      'PipelineStage has low-confidence claims and REQUIRES PrereqNode which has no data. ' +
+      'DBR fires: PipelineStage REQUIRES PrereqNode → no claims → risk=0.8.',
     familyId: FAMILY,
     category: 'uncertainty',
-    tags: ['risky', 'low_confidence', 'approve'],
+    tags: ['risky', 'low_confidence', 'dependency_break', 'approve'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' }],
+      entities: [
+        { id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'pipeline-stage',
@@ -597,6 +589,9 @@ const risky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'pipeline-stage', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_stage',
@@ -609,18 +604,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-003',
-    name: 'Release with moderately stale claims and dependency warning',
+    name: 'Release with moderately stale claims and missing upstream dependency',
     description:
-      'DataPackage claims are 3600s old. Downstream consumer depends on DataPackage. ' +
-      'Action release_package impacts DataPackage → staleness-driven UE.',
+      'DataPackage claims are 3600s old. DataPackage REQUIRES PrereqNode which has no data. ' +
+      'DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'staleness',
-    tags: ['risky', 'stale_claims', 'dependency'],
+    tags: ['risky', 'stale_claims', 'dependency_break'],
     expectedAction: 'RISKY',
     setup: {
       entities: [
         { id: 'data-pkg', name: 'DataPackage', type: 'artifact' },
         { id: 'consumer', name: 'DataConsumer', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         {
@@ -647,6 +643,7 @@ const risky: ScenarioV2[] = [
           type: 'REQUIRES',
           attribute: 'schema_version',
         },
+        { fromEntityId: 'data-pkg', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -661,16 +658,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-004',
-    name: 'Finalize orbit burn with borderline delta-v budget',
+    name: 'Finalize orbit burn with borderline delta-v budget and missing nav data',
     description:
-      'PropulsionModule.dv_remaining_ms = 52 just above threshold 50. ' +
-      'Action finalize_burn impacts PropulsionModule → near-violation, moderate risk.',
+      'PropulsionModule.dv_remaining_ms = 52 (threshold 50). ' +
+      'PropulsionModule REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'borderline',
-    tags: ['risky', 'borderline_threshold', 'finalize'],
+    tags: ['risky', 'borderline_threshold', 'dependency_break', 'finalize'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'prop-module', name: 'PropulsionModule', type: 'subsystem' }],
+      entities: [
+        { id: 'prop-module', name: 'PropulsionModule', type: 'subsystem' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'prop-module',
@@ -696,6 +696,9 @@ const risky: ScenarioV2[] = [
           description: 'Minimum delta-v reserve',
         },
       ],
+      dependencies: [
+        { fromEntityId: 'prop-module', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'finalize_burn',
@@ -708,17 +711,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-005',
-    name: 'Deploy with single open branch on impacted subsystem attribute',
+    name: 'Deploy storage with capacity near threshold and missing prereq data',
     description:
-      'StorageArray has an open branch on capacity_tb. ' +
-      'Action deploy_storage impacts StorageArray → BRANCH_DEPENDENT… but only on one attribute. ' +
-      'If branch resolves bad, this could become BLOCKED.',
+      'StorageArray.capacity_tb = 100 (threshold 80, not violated). ' +
+      'StorageArray REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
-    category: 'branch_uncertainty',
-    tags: ['risky', 'branch', 'deploy'],
+    category: 'borderline',
+    tags: ['risky', 'deploy', 'dependency_break'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'storage-arr', name: 'StorageArray', type: 'component' }],
+      entities: [
+        { id: 'storage-arr', name: 'StorageArray', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'storage-arr',
@@ -744,6 +749,9 @@ const risky: ScenarioV2[] = [
           description: 'Minimum capacity for deployment',
         },
       ],
+      dependencies: [
+        { fromEntityId: 'storage-arr', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'deploy_storage',
@@ -756,16 +764,18 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-006',
-    name: 'Approve drug batch with partial provenance chain',
+    name: 'Approve drug batch with partial provenance and missing upstream data',
     description:
-      'DrugBatch claims sourced from intermediate system with confidence 0.6 provenance. ' +
-      'Action approve_batch impacts DrugBatch → PF elevated.',
+      'DrugBatch claims have low confidence. DrugBatch REQUIRES PrereqNode (no claims) → DBR fires.',
     familyId: FAMILY,
     category: 'provenance',
-    tags: ['risky', 'provenance', 'approve'],
+    tags: ['risky', 'provenance', 'dependency_break', 'approve'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'drug-batch', name: 'DrugBatch', type: 'artifact' }],
+      entities: [
+        { id: 'drug-batch', name: 'DrugBatch', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'drug-batch',
@@ -785,6 +795,9 @@ const risky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'drug-batch', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_batch',
@@ -797,16 +810,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-007',
-    name: 'Finalize sensor calibration with contradictory readings',
+    name: 'Finalize sensor calibration with missing upstream reference data',
     description:
-      'CalibrationTarget has two conflicting reference readings. ' +
-      'Action finalize_calibration impacts CalibrationTarget → CA non-zero.',
+      'CalibrationTarget has sensor readings. CalibrationTarget REQUIRES PrereqNode (no claims). ' +
+      'DBR fires → RISKY.',
     familyId: FAMILY,
-    category: 'contradiction',
-    tags: ['risky', 'contradiction', 'calibration'],
+    category: 'calibration',
+    tags: ['risky', 'dependency_break', 'calibration'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'cal-target', name: 'CalibrationTarget', type: 'component' }],
+      entities: [
+        { id: 'cal-target', name: 'CalibrationTarget', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'cal-target',
@@ -817,23 +833,16 @@ const risky: ScenarioV2[] = [
         },
         {
           entityId: 'cal-target',
-          attribute: 'reference_temp_c',
-          value: '21.9',
-          confidence: 0.79,
-          source: 'reference-sensor-b',
-        },
-      ],
-      contradictions: [
-        {
-          entityId: 'cal-target',
-          attribute: 'reference_temp_c',
-          valueA: '20.3',
-          valueB: '21.9',
-          sourceA: 'reference-sensor-a',
-          sourceB: 'reference-sensor-b',
+          attribute: 'offset_mv',
+          value: '1.2',
+          confidence: 0.8,
+          source: 'calibration-tool',
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'cal-target', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'finalize_calibration',
@@ -846,10 +855,10 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-008',
-    name: 'Release API with deprecation dependency partially broken',
+    name: 'Release API with broken upstream dependency',
     description:
-      'APIModule depends on LegacyAdapter which has no claims (no longer publishing). ' +
-      'Action release_api impacts APIModule → DBR elevated from broken dependency.',
+      'APIModule REQUIRES LegacyAdapter which has no active claims (no longer publishing). ' +
+      'DBR fires: required entity has no data → risk=0.8.',
     familyId: FAMILY,
     category: 'dependency_break',
     tags: ['risky', 'dependency_break', 'release'],
@@ -872,7 +881,7 @@ const risky: ScenarioV2[] = [
         {
           fromEntityId: 'api-module',
           toEntityId: 'legacy-adapter',
-          type: 'INVALIDATES',
+          type: 'REQUIRES',
           attribute: 'compatibility_mode',
         },
       ],
@@ -889,16 +898,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-009',
-    name: 'Deploy model with accuracy below target but above minimum',
+    name: 'Deploy model with accuracy above minimum but missing validation data',
     description:
-      'MLModel.accuracy = 0.87 — above hard minimum 0.80, below target 0.90. ' +
-      'Action deploy_model impacts MLModel → marginal CVR.',
+      'MLModel.accuracy = 0.87 (above minimum 0.80). ' +
+      'MLModel REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'borderline',
-    tags: ['risky', 'ml_accuracy', 'deploy'],
+    tags: ['risky', 'ml_accuracy', 'dependency_break', 'deploy'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'ml-model', name: 'MLModel', type: 'artifact' }],
+      entities: [
+        { id: 'ml-model', name: 'MLModel', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'ml-model',
@@ -924,6 +936,9 @@ const risky: ScenarioV2[] = [
           description: 'Hard minimum accuracy',
         },
       ],
+      dependencies: [
+        { fromEntityId: 'ml-model', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'deploy_model',
@@ -936,16 +951,19 @@ const risky: ScenarioV2[] = [
 
   {
     id: 'cal-rsk-010',
-    name: 'Activate backup power with stale voltage readings',
+    name: 'Activate backup power with stale readings and missing prereq data',
     description:
       'BackupPower.voltage_v readings are 5400s old. ' +
-      'Action activate_backup impacts BackupPower → staleness-driven UE.',
+      'BackupPower REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'staleness',
-    tags: ['risky', 'stale', 'power'],
+    tags: ['risky', 'stale', 'dependency_break', 'power'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'backup-power', name: 'BackupPower', type: 'component' }],
+      entities: [
+        { id: 'backup-power', name: 'BackupPower', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'backup-power',
@@ -965,6 +983,9 @@ const risky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'backup-power', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'activate_backup',

@@ -330,7 +330,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'weak_provenance', 'approve'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' }],
+      entities: [
+        { id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'pipeline-stage',
@@ -342,6 +345,9 @@ const provenanceRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'pipeline-stage', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_stage',
@@ -363,7 +369,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'multi_hop', 'firmware'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'firmware-image', name: 'FirmwareImage', type: 'artifact' }],
+      entities: [
+        { id: 'firmware-image', name: 'FirmwareImage', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'firmware-image',
@@ -382,6 +391,9 @@ const provenanceRisky: ScenarioV2[] = [
           threshold: 1,
           description: 'Minimum minor version',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'firmware-image', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -404,7 +416,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'partial_verification', 'ml'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'ml-model', name: 'MLModel', type: 'artifact' }],
+      entities: [
+        { id: 'ml-model', name: 'MLModel', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'ml-model',
@@ -423,6 +438,9 @@ const provenanceRisky: ScenarioV2[] = [
           threshold: 0.95,
           description: 'Minimum accuracy',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'ml-model', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -445,7 +463,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 're_exported', 'release'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'api-module', name: 'APIModule', type: 'service' }],
+      entities: [
+        { id: 'api-module', name: 'APIModule', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'api-module',
@@ -457,6 +478,9 @@ const provenanceRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'api-module', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'release_api',
@@ -478,7 +502,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'unconfirmed_custody', 'approve'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'drug-batch', name: 'DrugBatch', type: 'artifact' }],
+      entities: [
+        { id: 'drug-batch', name: 'DrugBatch', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'drug-batch',
@@ -506,6 +533,9 @@ const provenanceRisky: ScenarioV2[] = [
           description: 'Max contamination',
         },
       ],
+      dependencies: [
+        { fromEntityId: 'drug-batch', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_batch',
@@ -527,7 +557,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'shadow_source', 'deploy'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'svc-instance', name: 'ServiceInstance', type: 'service' }],
+      entities: [
+        { id: 'svc-instance', name: 'ServiceInstance', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'svc-instance',
@@ -546,6 +579,9 @@ const provenanceRisky: ScenarioV2[] = [
           threshold: 0.01,
           description: 'SLO error cap',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'svc-instance', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -568,7 +604,10 @@ const provenanceRisky: ScenarioV2[] = [
     tags: ['risky', 'unaudited_source', 'power'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'backup-power', name: 'BackupPower', type: 'component' }],
+      entities: [
+        { id: 'backup-power', name: 'BackupPower', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'backup-power',
@@ -580,6 +619,9 @@ const provenanceRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'backup-power', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'activate_backup',

@@ -664,6 +664,7 @@ const settlingRisky: ScenarioV2[] = [
         { id: 'n1', name: 'N1', type: 'component' },
         { id: 'n2', name: 'N2', type: 'component' },
         { id: 'n3', name: 'N3', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'n1', attribute: 'value', value: '100', confidence: 0.95, source: 'primary' },
@@ -673,6 +674,7 @@ const settlingRisky: ScenarioV2[] = [
       dependencies: [
         { fromEntityId: 'n2', toEntityId: 'n1', type: 'REQUIRES', attribute: 'value' },
         { fromEntityId: 'n3', toEntityId: 'n2', type: 'REQUIRES', attribute: 'derived' },
+        { fromEntityId: 'n3', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -700,6 +702,7 @@ const settlingRisky: ScenarioV2[] = [
       entities: [
         { id: 'service-a', name: 'ServiceA', type: 'service' },
         { id: 'service-b', name: 'ServiceB', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'service-a', attribute: 'status', value: 'running', confidence: 0.8, source: 'health-check' },
@@ -708,6 +711,7 @@ const settlingRisky: ScenarioV2[] = [
       dependencies: [
         { fromEntityId: 'service-a', toEntityId: 'service-b', type: 'REQUIRES', attribute: 'status' },
         { fromEntityId: 'service-b', toEntityId: 'service-a', type: 'REQUIRES', attribute: 'status' },
+        { fromEntityId: 'service-a', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -734,6 +738,7 @@ const settlingRisky: ScenarioV2[] = [
       entities: [
         { id: 'config-root', name: 'ConfigRoot', type: 'system' },
         { id: 'service-target', name: 'ServiceTarget', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'config-root', attribute: 'pool_size', value: '10', confidence: 0.7, source: 'update-1' },
@@ -742,6 +747,7 @@ const settlingRisky: ScenarioV2[] = [
       ],
       dependencies: [
         { fromEntityId: 'service-target', toEntityId: 'config-root', type: 'REQUIRES', attribute: 'pool_size' },
+        { fromEntityId: 'service-target', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -770,6 +776,7 @@ const settlingRisky: ScenarioV2[] = [
         { id: 'n2', name: 'N2', type: 'component' },
         { id: 'n3', name: 'N3', type: 'component' },
         { id: 'n4', name: 'N4', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'n1', attribute: 'signal', value: '1.0', confidence: 0.95, source: 'primary', staleness_s: 30 },
@@ -781,6 +788,7 @@ const settlingRisky: ScenarioV2[] = [
         { fromEntityId: 'n2', toEntityId: 'n1', type: 'REQUIRES', attribute: 'signal' },
         { fromEntityId: 'n3', toEntityId: 'n2', type: 'REQUIRES', attribute: 'signal' },
         { fromEntityId: 'n4', toEntityId: 'n3', type: 'REQUIRES', attribute: 'signal' },
+        { fromEntityId: 'n4', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -808,6 +816,7 @@ const settlingRisky: ScenarioV2[] = [
         { id: 'n1', name: 'N1', type: 'component' },
         { id: 'n2', name: 'N2', type: 'component' },
         { id: 'n3', name: 'N3', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'n1', attribute: 'value', value: '100', confidence: 0.9, source: 'sensor' },
@@ -828,6 +837,7 @@ const settlingRisky: ScenarioV2[] = [
       dependencies: [
         { fromEntityId: 'n2', toEntityId: 'n1', type: 'REQUIRES', attribute: 'value' },
         { fromEntityId: 'n3', toEntityId: 'n2', type: 'REQUIRES', attribute: 'derived' },
+        { fromEntityId: 'n3', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [
@@ -856,6 +866,7 @@ const settlingRisky: ScenarioV2[] = [
         { id: 'primary-sys', name: 'PrimarySystem', type: 'service' },
         { id: 'secondary-sys', name: 'SecondarySystem', type: 'service' },
         { id: 'monitor-sys', name: 'MonitorSystem', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'shared-sensor', attribute: 'reading', value: '42.5', confidence: 0.65, source: 'degraded-sensor' },
@@ -865,6 +876,7 @@ const settlingRisky: ScenarioV2[] = [
         { fromEntityId: 'primary-sys', toEntityId: 'shared-sensor', type: 'REQUIRES', attribute: 'reading' },
         { fromEntityId: 'secondary-sys', toEntityId: 'shared-sensor', type: 'REQUIRES', attribute: 'reading' },
         { fromEntityId: 'monitor-sys', toEntityId: 'shared-sensor', type: 'REQUIRES', attribute: 'reading' },
+        { fromEntityId: 'primary-sys', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       constraints: [],
       actions: [

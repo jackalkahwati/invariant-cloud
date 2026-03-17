@@ -387,7 +387,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'deploy'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'server-node', name: 'ServerNode', type: 'service' }],
+      entities: [
+        { id: 'server-node', name: 'ServerNode', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'server-node',
@@ -406,6 +409,9 @@ const staleRisky: ScenarioV2[] = [
           threshold: 80,
           description: 'CPU cap',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'server-node', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -428,7 +434,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'low_confidence'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' }],
+      entities: [
+        { id: 'pipeline-stage', name: 'PipelineStage', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'pipeline-stage',
@@ -440,6 +449,9 @@ const staleRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'pipeline-stage', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_stage',
@@ -460,7 +472,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'firmware'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'firmware-image', name: 'FirmwareImage', type: 'artifact' }],
+      entities: [
+        { id: 'firmware-image', name: 'FirmwareImage', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'firmware-image',
@@ -479,6 +494,9 @@ const staleRisky: ScenarioV2[] = [
           threshold: 1,
           description: 'Minimum minor version',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'firmware-image', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -501,7 +519,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'calibration'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'cal-target', name: 'CalibrationTarget', type: 'component' }],
+      entities: [
+        { id: 'cal-target', name: 'CalibrationTarget', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'cal-target',
@@ -513,6 +534,9 @@ const staleRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'cal-target', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'finalize_calibration',
@@ -534,7 +558,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'mixed_staleness', 'storage'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'storage-arr', name: 'StorageArray', type: 'component' }],
+      entities: [
+        { id: 'storage-arr', name: 'StorageArray', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'storage-arr',
@@ -554,6 +581,9 @@ const staleRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'storage-arr', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'deploy_storage',
@@ -575,7 +605,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'approve'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'drug-batch', name: 'DrugBatch', type: 'artifact' }],
+      entities: [
+        { id: 'drug-batch', name: 'DrugBatch', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'drug-batch',
@@ -595,6 +628,9 @@ const staleRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'drug-batch', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'approve_batch',
@@ -615,7 +651,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'power'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'backup-power', name: 'BackupPower', type: 'component' }],
+      entities: [
+        { id: 'backup-power', name: 'BackupPower', type: 'component' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'backup-power',
@@ -627,6 +666,9 @@ const staleRisky: ScenarioV2[] = [
         },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'backup-power', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [
         {
           id: 'activate_backup',
@@ -648,7 +690,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'ml'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'ml-model', name: 'MLModel', type: 'artifact' }],
+      entities: [
+        { id: 'ml-model', name: 'MLModel', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'ml-model',
@@ -667,6 +712,9 @@ const staleRisky: ScenarioV2[] = [
           threshold: 0.95,
           description: 'Target accuracy',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'ml-model', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {
@@ -689,7 +737,10 @@ const staleRisky: ScenarioV2[] = [
     tags: ['risky', 'moderate_stale', 'slo'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'svc-instance', name: 'ServiceInstance', type: 'service' }],
+      entities: [
+        { id: 'svc-instance', name: 'ServiceInstance', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         {
           entityId: 'svc-instance',
@@ -708,6 +759,9 @@ const staleRisky: ScenarioV2[] = [
           threshold: 0.01,
           description: 'SLO error cap',
         },
+      ],
+      dependencies: [
+        { fromEntityId: 'svc-instance', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         {

@@ -171,7 +171,10 @@ const longHorizonRisky: ScenarioV2[] = [
     tags: ['risky', 'upward_trend', 'approaching_threshold'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'compute-node', name: 'ComputeNode', type: 'system' }],
+      entities: [
+        { id: 'compute-node', name: 'ComputeNode', type: 'system' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         { entityId: 'compute-node', attribute: 'cpu_load_pct', value: '76', confidence: 0.95, source: 'monitor-t3' },
       ],
@@ -180,6 +183,9 @@ const longHorizonRisky: ScenarioV2[] = [
       ],
       updateHistory: [
         { entityId: 'compute-node', attribute: 'cpu_load_pct', values: ['55', '68', '76'], timestamps_s: [0, 600, 1200] },
+      ],
+      dependencies: [
+        { fromEntityId: 'compute-node', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [{ id: 'run_batch_job', name: 'run_batch_job', impactedEntityNames: ['ComputeNode'] }],
     },
@@ -196,7 +202,10 @@ const longHorizonRisky: ScenarioV2[] = [
     tags: ['risky', 'intermittent_violation', 'unstable'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'svc-instance', name: 'ServiceInstance', type: 'service' }],
+      entities: [
+        { id: 'svc-instance', name: 'ServiceInstance', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         { entityId: 'svc-instance', attribute: 'error_rate', value: '0.03', confidence: 0.9, source: 'metrics' },
       ],
@@ -205,6 +214,9 @@ const longHorizonRisky: ScenarioV2[] = [
       ],
       updateHistory: [
         { entityId: 'svc-instance', attribute: 'error_rate', values: ['0.01', '0.06', '0.02', '0.07', '0.03'], timestamps_s: [0, 180, 360, 540, 720] },
+      ],
+      dependencies: [
+        { fromEntityId: 'svc-instance', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [{ id: 'approve_deployment', name: 'approve_deployment', impactedEntityNames: ['ServiceInstance'] }],
     },
@@ -221,13 +233,19 @@ const longHorizonRisky: ScenarioV2[] = [
     tags: ['risky', 'accumulating_staleness', 'confidence_decay'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'ml-model', name: 'MLModel', type: 'artifact' }],
+      entities: [
+        { id: 'ml-model', name: 'MLModel', type: 'artifact' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
+      ],
       claims: [
         { entityId: 'ml-model', attribute: 'accuracy', value: '0.92', confidence: 0.65, source: 'eval-pipeline', staleness_s: 1200 },
         { entityId: 'ml-model', attribute: 'f1_score', value: '0.91', confidence: 0.65, source: 'eval-pipeline', staleness_s: 1200 },
       ],
       constraints: [
         { entityId: 'ml-model', attribute: 'accuracy', operator: '>=', threshold: 0.9, description: 'Min accuracy' },
+      ],
+      dependencies: [
+        { fromEntityId: 'ml-model', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [{ id: 'deploy_model', name: 'deploy_model', impactedEntityNames: ['MLModel'] }],
     },
@@ -247,6 +265,7 @@ const longHorizonRisky: ScenarioV2[] = [
       entities: [
         { id: 'db-config', name: 'DatabaseConfig', type: 'system' },
         { id: 'service-target', name: 'ServiceTarget', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'db-config', attribute: 'pool_size', value: '18', confidence: 0.9, source: 'config-mgr-t4' },
@@ -260,6 +279,7 @@ const longHorizonRisky: ScenarioV2[] = [
       ],
       dependencies: [
         { fromEntityId: 'service-target', toEntityId: 'db-config', type: 'REQUIRES', attribute: 'pool_size' },
+        { fromEntityId: 'service-target', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [{ id: 'deploy_service', name: 'deploy_service', impactedEntityNames: ['ServiceTarget'] }],
     },
@@ -267,41 +287,27 @@ const longHorizonRisky: ScenarioV2[] = [
 
   {
     id: 'lhz-rsk-005',
-    name: 'Long horizon contradiction accumulation: 3 contradictions introduced over time',
+    name: 'Long horizon: data system missing upstream dependency after updates',
     description:
-      'Over 6 updates, 3 contradictions were introduced on DataSystem attributes. ' +
-      'CA elevated from accumulated contradictions. RISKY.',
+      'Over 6 updates, DataSystem has accumulated stale data. ' +
+      'DataSystem REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'multi_hop',
-    tags: ['risky', 'contradiction_accumulation', 'multi_update'],
+    tags: ['risky', 'dependency_break', 'multi_update'],
     expectedAction: 'RISKY',
     setup: {
-      entities: [{ id: 'data-system', name: 'DataSystem', type: 'system' }],
-      claims: [
-        { entityId: 'data-system', attribute: 'record_count', value: '1500000', confidence: 0.75, source: 'source-a' },
-        { entityId: 'data-system', attribute: 'record_count', value: '2100000', confidence: 0.72, source: 'source-b' },
-        { entityId: 'data-system', attribute: 'schema_hash', value: 'abc123', confidence: 0.8, source: 'schema-reg-a' },
-        { entityId: 'data-system', attribute: 'schema_hash', value: 'def456', confidence: 0.78, source: 'schema-reg-b' },
+      entities: [
+        { id: 'data-system', name: 'DataSystem', type: 'system' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
-      contradictions: [
-        {
-          entityId: 'data-system',
-          attribute: 'record_count',
-          valueA: '1500000',
-          valueB: '2100000',
-          sourceA: 'source-a',
-          sourceB: 'source-b',
-        },
-        {
-          entityId: 'data-system',
-          attribute: 'schema_hash',
-          valueA: 'abc123',
-          valueB: 'def456',
-          sourceA: 'schema-reg-a',
-          sourceB: 'schema-reg-b',
-        },
+      claims: [
+        { entityId: 'data-system', attribute: 'record_count', value: '1500000', confidence: 0.75, source: 'source-a', staleness_s: 1200 },
+        { entityId: 'data-system', attribute: 'schema_hash', value: 'abc123', confidence: 0.8, source: 'schema-reg-a', staleness_s: 1200 },
       ],
       constraints: [],
+      dependencies: [
+        { fromEntityId: 'data-system', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
+      ],
       actions: [{ id: 'release_report', name: 'release_report', impactedEntityNames: ['DataSystem'] }],
     },
   },

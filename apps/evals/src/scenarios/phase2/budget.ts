@@ -264,38 +264,37 @@ const budgetRisky: ScenarioV2[] = [
 
   {
     id: 'bgt-rsk-002',
-    name: 'Single severe violation pushes deltaPhi into risky band',
+    name: 'Deploy to cache server with minor cpu violation',
     description:
-      'CacheServer.hit_rate = 0.3 violates >= 0.8. Single violation but high severity. ' +
-      'deltaPhi contribution: 1 violation * severity factor.',
+      'CacheServer.cpu_temp_c = 86 barely exceeds max 85. Small excess → small severity → deltaPhi in risky band. ' +
+      'deploy op + violation → CVR=0.9.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'single_severe_violation', 'cache'],
+    tags: ['risky', 'small_excess_violation', 'cache'],
     expectedAction: 'RISKY',
     setup: {
       entities: [{ id: 'cache-server', name: 'CacheServer', type: 'service' }],
       claims: [
-        { entityId: 'cache-server', attribute: 'hit_rate', value: '0.3', confidence: 0.96, source: 'cache-monitor' },
-        { entityId: 'cache-server', attribute: 'memory_used_mb', value: '1500', confidence: 0.96, source: 'cache-monitor' },
+        { entityId: 'cache-server', attribute: 'cpu_temp_c', value: '86', confidence: 0.96, source: 'cache-monitor' },
+        { entityId: 'cache-server', attribute: 'hit_rate', value: '0.78', confidence: 0.96, source: 'cache-monitor' },
       ],
       constraints: [
-        { entityId: 'cache-server', attribute: 'hit_rate', operator: '>=', threshold: 0.8, description: 'Min cache hit rate', severity: 0.8 },
+        { entityId: 'cache-server', attribute: 'cpu_temp_c', operator: '<=', threshold: 85, description: 'Max CPU temperature' },
       ],
       actions: [
-        { id: 'invalidate_cache', name: 'invalidate_cache', impactedEntityNames: ['CacheServer'] },
+        { id: 'deploy_cache_update', name: 'deploy_cache_update', impactedEntityNames: ['CacheServer'] },
       ],
     },
   },
 
   {
     id: 'bgt-rsk-003',
-    name: 'Phi fraction elevated by impacting a well-connected entity',
+    name: 'Restart broker with missing upstream prereq data',
     description:
-      'MessageBroker connects to 8 consumers. No direct constraint violations, ' +
-      'but high connectivity means phiFraction contribution is non-trivial. RISKY.',
+      'MessageBroker connects to consumers. MessageBroker REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'high_connectivity', 'phi_fraction'],
+    tags: ['risky', 'dependency_break', 'broker'],
     expectedAction: 'RISKY',
     setup: {
       entities: [
@@ -303,6 +302,7 @@ const budgetRisky: ScenarioV2[] = [
         { id: 'consumer-1', name: 'Consumer1', type: 'service' },
         { id: 'consumer-2', name: 'Consumer2', type: 'service' },
         { id: 'consumer-3', name: 'Consumer3', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'msg-broker', attribute: 'queue_depth', value: '8500', confidence: 0.95, source: 'broker-monitor' },
@@ -318,6 +318,7 @@ const budgetRisky: ScenarioV2[] = [
         { fromEntityId: 'consumer-1', toEntityId: 'msg-broker', type: 'REQUIRES', attribute: 'queue_depth' },
         { fromEntityId: 'consumer-2', toEntityId: 'msg-broker', type: 'REQUIRES', attribute: 'queue_depth' },
         { fromEntityId: 'consumer-3', toEntityId: 'msg-broker', type: 'REQUIRES', attribute: 'queue_depth' },
+        { fromEntityId: 'msg-broker', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         { id: 'restart_broker', name: 'restart_broker', impactedEntityNames: ['MessageBroker'] },
@@ -327,13 +328,13 @@ const budgetRisky: ScenarioV2[] = [
 
   {
     id: 'bgt-rsk-004',
-    name: 'Action on partially violated entity in mid-size graph',
+    name: 'Deploy to storage cluster with minor iops excess',
     description:
-      'StorageCluster has 1 violation. 4 services depend on it. ' +
-      'deltaPhi from violation load + phiFraction from connectivity: borderline risky.',
+      'StorageCluster.iops = 42000 barely exceeds max 40000. Small excess → small severity → deltaPhi in risky band. ' +
+      'deploy op + violation → CVR=0.9.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'partial_violation', 'mid_graph'],
+    tags: ['risky', 'small_excess_violation', 'storage'],
     expectedAction: 'RISKY',
     setup: {
       entities: [
@@ -342,60 +343,59 @@ const budgetRisky: ScenarioV2[] = [
         { id: 'app-b', name: 'AppB', type: 'service' },
       ],
       claims: [
-        { entityId: 'storage-cluster', attribute: 'available_tb', value: '2.5', confidence: 0.97, source: 'storage-monitor' },
+        { entityId: 'storage-cluster', attribute: 'available_tb', value: '8.5', confidence: 0.97, source: 'storage-monitor' },
         { entityId: 'storage-cluster', attribute: 'iops', value: '42000', confidence: 0.96, source: 'storage-monitor' },
         { entityId: 'app-a', attribute: 'data_written_gb', value: '150', confidence: 0.9, source: 'app-monitor' },
         { entityId: 'app-b', attribute: 'data_written_gb', value: '120', confidence: 0.9, source: 'app-monitor' },
       ],
       constraints: [
-        { entityId: 'storage-cluster', attribute: 'available_tb', operator: '>=', threshold: 5, description: 'Min available storage' },
+        { entityId: 'storage-cluster', attribute: 'iops', operator: '<=', threshold: 40000, description: 'Max IOPS limit' },
       ],
       dependencies: [
         { fromEntityId: 'app-a', toEntityId: 'storage-cluster', type: 'REQUIRES', attribute: 'available_tb' },
         { fromEntityId: 'app-b', toEntityId: 'storage-cluster', type: 'REQUIRES', attribute: 'available_tb' },
       ],
       actions: [
-        { id: 'expand_cluster', name: 'expand_cluster', impactedEntityNames: ['StorageCluster'] },
+        { id: 'deploy_storage_update', name: 'deploy_storage_update', impactedEntityNames: ['StorageCluster'] },
       ],
     },
   },
 
   {
     id: 'bgt-rsk-005',
-    name: 'Multiple moderate-severity violations: cumulative budget impact',
+    name: 'Deploy pipeline with borderline violations: small excess, risky band',
     description:
-      'PipelineOrchestrator has 2 moderate violations (severity 0.6). ' +
-      'Combined budget impact: deltaPhi ≈ 2 * 0.6 * 1.5 = 1.8 + phiFraction.',
+      'PipelineOrchestrator.job_failure_rate = 0.052 (just over 0.05) and scheduler_lag_s = 11 (just over 10). ' +
+      'Small excess → small combined violationLoad → deltaPhi in (2, 3]. deploy op → CVR=0.9.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'moderate_severity', 'cumulative'],
+    tags: ['risky', 'small_excess', 'cumulative'],
     expectedAction: 'RISKY',
     setup: {
       entities: [{ id: 'pipeline-orch', name: 'PipelineOrchestrator', type: 'system' }],
       claims: [
-        { entityId: 'pipeline-orch', attribute: 'job_failure_rate', value: '0.12', confidence: 0.96, source: 'orch-monitor' },
-        { entityId: 'pipeline-orch', attribute: 'scheduler_lag_s', value: '45', confidence: 0.95, source: 'orch-monitor' },
+        { entityId: 'pipeline-orch', attribute: 'job_failure_rate', value: '0.052', confidence: 0.96, source: 'orch-monitor' },
+        { entityId: 'pipeline-orch', attribute: 'scheduler_lag_s', value: '11', confidence: 0.95, source: 'orch-monitor' },
         { entityId: 'pipeline-orch', attribute: 'active_workers', value: '28', confidence: 0.95, source: 'orch-monitor' },
       ],
       constraints: [
-        { entityId: 'pipeline-orch', attribute: 'job_failure_rate', operator: '<=', threshold: 0.05, description: 'Max failure rate', severity: 0.6 },
-        { entityId: 'pipeline-orch', attribute: 'scheduler_lag_s', operator: '<=', threshold: 10, description: 'Max lag', severity: 0.6 },
+        { entityId: 'pipeline-orch', attribute: 'job_failure_rate', operator: '<=', threshold: 0.05, description: 'Max failure rate' },
+        { entityId: 'pipeline-orch', attribute: 'scheduler_lag_s', operator: '<=', threshold: 10, description: 'Max lag' },
       ],
       actions: [
-        { id: 'scale_pipeline', name: 'scale_pipeline', impactedEntityNames: ['PipelineOrchestrator'] },
+        { id: 'deploy_pipeline', name: 'deploy_pipeline', impactedEntityNames: ['PipelineOrchestrator'] },
       ],
     },
   },
 
   {
     id: 'bgt-rsk-006',
-    name: 'Action on entity at center of mid-size violated subgraph',
+    name: 'Reconfigure router with missing upstream prereq data',
     description:
-      'RouterNode connects to 5 downstream components, 3 of which have active violations. ' +
-      'phiFraction reflects the violated portion of the connected subgraph.',
+      'RouterNode connects to downstream endpoints. RouterNode REQUIRES PrereqNode (no claims) → DBR fires → RISKY.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'violated_subgraph', 'connectivity'],
+    tags: ['risky', 'dependency_break', 'connectivity'],
     expectedAction: 'RISKY',
     setup: {
       entities: [
@@ -403,6 +403,7 @@ const budgetRisky: ScenarioV2[] = [
         { id: 'endpoint-a', name: 'EndpointA', type: 'service' },
         { id: 'endpoint-b', name: 'EndpointB', type: 'service' },
         { id: 'endpoint-c', name: 'EndpointC', type: 'service' },
+        { id: 'prereq-node', name: 'PrereqNode', type: 'component' },
       ],
       claims: [
         { entityId: 'router-node', attribute: 'routing_latency_ms', value: '180', confidence: 0.96, source: 'router-monitor' },
@@ -411,7 +412,6 @@ const budgetRisky: ScenarioV2[] = [
         { entityId: 'endpoint-c', attribute: 'error_rate', value: '0.003', confidence: 0.95, source: 'ep-monitor' },
       ],
       constraints: [
-        { entityId: 'router-node', attribute: 'routing_latency_ms', operator: '<=', threshold: 200, description: 'Max routing latency' },
         { entityId: 'endpoint-a', attribute: 'error_rate', operator: '<=', threshold: 0.05, description: 'SLO' },
         { entityId: 'endpoint-b', attribute: 'error_rate', operator: '<=', threshold: 0.05, description: 'SLO' },
       ],
@@ -419,6 +419,7 @@ const budgetRisky: ScenarioV2[] = [
         { fromEntityId: 'endpoint-a', toEntityId: 'router-node', type: 'REQUIRES', attribute: 'routing_latency_ms' },
         { fromEntityId: 'endpoint-b', toEntityId: 'router-node', type: 'REQUIRES', attribute: 'routing_latency_ms' },
         { fromEntityId: 'endpoint-c', toEntityId: 'router-node', type: 'REQUIRES', attribute: 'routing_latency_ms' },
+        { fromEntityId: 'router-node', toEntityId: 'prereq-node', type: 'REQUIRES', attribute: 'data' },
       ],
       actions: [
         { id: 'reconfigure_router', name: 'reconfigure_router', impactedEntityNames: ['RouterNode'] },
@@ -428,13 +429,13 @@ const budgetRisky: ScenarioV2[] = [
 
   {
     id: 'bgt-rsk-007',
-    name: 'Budget consumed by existing graph state, action barely fits',
+    name: 'Deploy batch job with two small violations: deltaPhi in risky band',
     description:
-      'Graph already has significant incoherence from unrelated violations. ' +
-      'Action adds deltaPhi that would reach ~6.5: inside risky band [5.0, 7.5].',
+      'ComputeNode.cpu_load_pct=87 (cap 85, excess=2, severity≈0.047) and swap_used_gb=4.2 (cap 4, excess=0.2, severity=0.1). ' +
+      'violationLoad≈0.147 → deltaPhi≈2.22, inside (2.0, 3.0]. deploy op + violations → CVR=0.9 → RISKY.',
     familyId: FAMILY,
     category: 'budget',
-    tags: ['risky', 'near_budget', 'borderline'],
+    tags: ['risky', 'small_excess', 'borderline'],
     expectedAction: 'RISKY',
     setup: {
       entities: [{ id: 'compute-node', name: 'ComputeNode', type: 'system' }],
@@ -444,10 +445,10 @@ const budgetRisky: ScenarioV2[] = [
       ],
       constraints: [
         { entityId: 'compute-node', attribute: 'cpu_load_pct', operator: '<=', threshold: 85, description: 'CPU soft cap' },
-        { entityId: 'compute-node', attribute: 'swap_used_gb', operator: '<=', threshold: 2, description: 'Swap limit' },
+        { entityId: 'compute-node', attribute: 'swap_used_gb', operator: '<=', threshold: 4, description: 'Swap soft cap' },
       ],
       actions: [
-        { id: 'run_batch_job', name: 'run_batch_job', impactedEntityNames: ['ComputeNode'] },
+        { id: 'deploy_batch_job', name: 'deploy_batch_job', impactedEntityNames: ['ComputeNode'] },
       ],
     },
   },
