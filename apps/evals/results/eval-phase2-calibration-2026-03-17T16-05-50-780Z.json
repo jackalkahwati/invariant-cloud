@@ -1,0 +1,5372 @@
+{
+  "runId": "calibration",
+  "timestamp": "2026-03-17T16:05:50.780Z",
+  "phase": 2,
+  "summary": {
+    "evaluatorId": "engine-v2",
+    "scenarioCount": 40,
+    "meanContradictionF1": 0,
+    "meanBranchF1": 0,
+    "actionAccuracy": 0.25,
+    "actionWithinRiskRate": 0.45,
+    "meanInvalidationF1": 0,
+    "meanReasoningCoverage": 0,
+    "meanOverallScore": 0.35,
+    "byCategory": {
+      "contradiction": {
+        "count": 2,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      },
+      "constraint": {
+        "count": 8,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      },
+      "multi_constraint": {
+        "count": 1,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      },
+      "borderline": {
+        "count": 3,
+        "meanOverallScore": 0.3333333333333333,
+        "actionAccuracy": 0
+      },
+      "uncertainty": {
+        "count": 1,
+        "meanOverallScore": 0.5,
+        "actionAccuracy": 0
+      },
+      "staleness": {
+        "count": 2,
+        "meanOverallScore": 0.5,
+        "actionAccuracy": 0
+      },
+      "branch_uncertainty": {
+        "count": 1,
+        "meanOverallScore": 0.5,
+        "actionAccuracy": 0
+      },
+      "provenance": {
+        "count": 1,
+        "meanOverallScore": 0.5,
+        "actionAccuracy": 0
+      },
+      "dependency_break": {
+        "count": 1,
+        "meanOverallScore": 0.5,
+        "actionAccuracy": 0
+      },
+      "nominal": {
+        "count": 10,
+        "meanOverallScore": 1,
+        "actionAccuracy": 1
+      },
+      "branch": {
+        "count": 10,
+        "meanOverallScore": 0,
+        "actionAccuracy": 0
+      }
+    },
+    "byDifficulty": {
+      "medium": {
+        "count": 40,
+        "meanOverallScore": 0.35
+      }
+    },
+    "byFamily": {
+      "calibration": {
+        "count": 40,
+        "meanOverallScore": 0.35,
+        "actionAccuracy": 0.25
+      }
+    }
+  },
+  "rawResults": [
+    {
+      "scenario": {
+        "id": "cal-blk-001",
+        "name": "Thruster ignition with pressure below threshold",
+        "description": "ThrusterSystem.pressure_bar = 45 violates pressure_bar >= 100. Action ignite_thrusters directly impacts ThrusterSystem → CVR high.",
+        "familyId": "calibration",
+        "category": "contradiction",
+        "tags": [
+          "blocked",
+          "constraint_violation",
+          "direct_impact"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "thruster-sys",
+              "name": "ThrusterSystem",
+              "type": "subsystem"
+            },
+            {
+              "id": "mission-ctrl",
+              "name": "MissionControl",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "value": "45",
+              "confidence": 0.95,
+              "source": "sensor-feed"
+            },
+            {
+              "entityId": "thruster-sys",
+              "attribute": "status",
+              "value": "standby",
+              "confidence": 0.95,
+              "source": "sensor-feed"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "operator": ">=",
+              "threshold": 100,
+              "description": "Minimum ignition pressure"
+            }
+          ],
+          "actions": [
+            {
+              "id": "ignite_thrusters",
+              "name": "ignite_thrusters",
+              "impactedEntityNames": [
+                "ThrusterSystem"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 518,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.023199866338312995,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788792571341464,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0000444564347167086,
+          "provenanceFragility": 0.1192083816547143
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0mut0015pzfanlkev5jp",
+            "actionProposalId": "cmmut0mtq000zpzfa8jo83f6x",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788792571341464,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0000444564347167086,
+            "provenanceFragility": 0.1192083816547143,
+            "impactedEntityIds": [
+              "cmmut0mj60000pzfa4x8s7lrr"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mjl000apzfagrmv6zpb",
+                "entityId": "cmmut0mj60000pzfa4x8s7lrr",
+                "predicate": "status",
+                "confidence": 0.8807916183452857
+              },
+              {
+                "claimId": "cmmut0mji0005pzfat998ky3e",
+                "entityId": "cmmut0mj60000pzfa4x8s7lrr",
+                "predicate": "pressure_bar",
+                "confidence": 0.8807916183452857
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.270Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.843894737970864
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-002",
+        "name": "Fuel release valve open with tank pressure critical",
+        "description": "FuelTank.pressure_psi = 3200 exceeds max 3000. Action open_release_valve impacts FuelTank directly.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "constraint_violation",
+          "safety_critical"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "fuel-tank",
+              "name": "FuelTank",
+              "type": "component"
+            },
+            {
+              "id": "valve-ctrl",
+              "name": "ValveController",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "value": "3200",
+              "confidence": 0.98,
+              "source": "pressure-sensor"
+            },
+            {
+              "entityId": "fuel-tank",
+              "attribute": "fill_level_pct",
+              "value": "87",
+              "confidence": 0.97,
+              "source": "level-sensor"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "operator": "<=",
+              "threshold": 3000,
+              "description": "Maximum safe tank pressure"
+            }
+          ],
+          "actions": [
+            {
+              "id": "open_release_valve",
+              "name": "open_release_valve",
+              "impactedEntityNames": [
+                "FuelTank"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 518,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.02319980010213962,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788779543602801,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00004421787295829228,
+          "provenanceFragility": 0.1192077517005617
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0mut0017pzfajeevkowx",
+            "actionProposalId": "cmmut0mts0010pzfa5zmf1c5r",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788779543602801,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00004421787295829228,
+            "provenanceFragility": 0.1192077517005617,
+            "impactedEntityIds": [
+              "cmmut0mjg0003pzfayalxegvz"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mjo000gpzfafizdsz4j",
+                "entityId": "cmmut0mjg0003pzfayalxegvz",
+                "predicate": "pressure_psi",
+                "confidence": 0.8807922482994383
+              },
+              {
+                "claimId": "cmmut0mk9000ipzfar7vpbnnd",
+                "entityId": "cmmut0mjg0003pzfayalxegvz",
+                "predicate": "fill_level_pct",
+                "confidence": 0.8807922482994383
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.269Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.843909013110846
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-003",
+        "name": "Deploy with battery charge critically low",
+        "description": "BatteryPack.charge_pct = 8 violates charge_pct >= 20. Action deploy_payload impacts BatteryPack.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "battery",
+          "deploy"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "battery-pack",
+              "name": "BatteryPack",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "battery-pack",
+              "attribute": "charge_pct",
+              "value": "8",
+              "confidence": 0.99,
+              "source": "battery-monitor"
+            },
+            {
+              "entityId": "battery-pack",
+              "attribute": "temperature_c",
+              "value": "38",
+              "confidence": 0.97,
+              "source": "thermal-sensor"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "battery-pack",
+              "attribute": "charge_pct",
+              "operator": ">=",
+              "threshold": 20,
+              "description": "Minimum charge for deployment"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_payload",
+              "name": "deploy_payload",
+              "impactedEntityNames": [
+                "BatteryPack"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 521,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.02319977526416983,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788821290240305,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0000473159595396636,
+          "provenanceFragility": 0.1192074367231474
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0mvg001bpzfaazckhrbe",
+            "actionProposalId": "cmmut0mup0013pzfarsc5bio5",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788821290240305,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0000473159595396636,
+            "provenanceFragility": 0.1192074367231474,
+            "impactedEntityIds": [
+              "cmmut0mjj0007pzfaa1uvr463"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mkj000mpzfaf0ew3k5h",
+                "entityId": "cmmut0mjj0007pzfaa1uvr463",
+                "predicate": "temperature_c",
+                "confidence": 0.8807925632768526
+              },
+              {
+                "claimId": "cmmut0mkb000kpzfaly1mifvx",
+                "entityId": "cmmut0mjj0007pzfaa1uvr463",
+                "predicate": "charge_pct",
+                "confidence": 0.8807925632768526
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.293Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.843914366170566
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-004",
+        "name": "Antenna slew with controller temperature overheating",
+        "description": "AntennaController.temp_c = 95 exceeds max 85. Action slew_antenna directly impacts AntennaController.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "thermal",
+          "antenna"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "ant-ctrl",
+              "name": "AntennaController",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "ant-ctrl",
+              "attribute": "temp_c",
+              "value": "95",
+              "confidence": 0.96,
+              "source": "thermal-monitor"
+            },
+            {
+              "entityId": "ant-ctrl",
+              "attribute": "pointing_az",
+              "value": "180",
+              "confidence": 0.9,
+              "source": "encoder"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "ant-ctrl",
+              "attribute": "temp_c",
+              "operator": "<=",
+              "threshold": 85,
+              "description": "Maximum safe controller temperature"
+            }
+          ],
+          "actions": [
+            {
+              "id": "slew_antenna",
+              "name": "slew_antenna",
+              "impactedEntityNames": [
+                "AntennaController"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 381,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.02319898762143174,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788595402075289,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003635147542705138,
+          "provenanceFragility": 0.1192033419962589
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0n5x002ipzfazr4bh3ts",
+            "actionProposalId": "cmmut0n4s002dpzfala4t5c5r",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788595402075289,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003635147542705138,
+            "provenanceFragility": 0.1192033419962589,
+            "impactedEntityIds": [
+              "cmmut0mw9001dpzfauray4ofs"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mwd001opzfazhh5w7hu",
+                "entityId": "cmmut0mw9001dpzfauray4ofs",
+                "predicate": "temp_c",
+                "confidence": 0.8807966580037411
+              },
+              {
+                "claimId": "cmmut0mwe001wpzfaj58mixtn",
+                "entityId": "cmmut0mw9001dpzfauray4ofs",
+                "predicate": "pointing_az",
+                "confidence": 0.8807966580037411
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.670Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.84408412128669
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-005",
+        "name": "Mission finalize with multiple violated constraints",
+        "description": "MissionComputer has both cpu_load_pct = 98 (> 90) and memory_free_mb = 12 (< 50). Action finalize_mission directly impacts MissionComputer → stacked violations.",
+        "familyId": "calibration",
+        "category": "multi_constraint",
+        "tags": [
+          "blocked",
+          "stacked_violations",
+          "finalize"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "mission-comp",
+              "name": "MissionComputer",
+              "type": "system"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "mission-comp",
+              "attribute": "cpu_load_pct",
+              "value": "98",
+              "confidence": 0.99,
+              "source": "os-monitor"
+            },
+            {
+              "entityId": "mission-comp",
+              "attribute": "memory_free_mb",
+              "value": "12",
+              "confidence": 0.99,
+              "source": "os-monitor"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "mission-comp",
+              "attribute": "cpu_load_pct",
+              "operator": "<=",
+              "threshold": 90,
+              "description": "Max CPU load during finalization"
+            },
+            {
+              "entityId": "mission-comp",
+              "attribute": "memory_free_mb",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum free memory during finalization"
+            }
+          ],
+          "actions": [
+            {
+              "id": "finalize_mission",
+              "name": "finalize_mission",
+              "impactedEntityNames": [
+                "MissionComputer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 381,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.02319898348351746,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788581101979227,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003539813568953394,
+          "provenanceFragility": 0.1192033419962589
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0n5u002gpzfa8t2cm6x4",
+            "actionProposalId": "cmmut0n4k002bpzfadwrijen8",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788581101979227,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003539813568953394,
+            "provenanceFragility": 0.1192033419962589,
+            "impactedEntityIds": [
+              "cmmut0mw9001epzfax4oh5gq0"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mwe001tpzfawxb3ft2i",
+                "entityId": "cmmut0mw9001epzfax4oh5gq0",
+                "predicate": "memory_free_mb",
+                "confidence": 0.8807966580037411
+              },
+              {
+                "claimId": "cmmut0mwd001ppzfa6p97fb7q",
+                "entityId": "cmmut0mw9001epzfax4oh5gq0",
+                "predicate": "cpu_load_pct",
+                "confidence": 0.8807966580037411
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.667Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.844085013117564
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-006",
+        "name": "Release software build with test pass rate below threshold",
+        "description": "BuildArtifact.test_pass_rate = 0.72 violates test_pass_rate >= 0.95. Action release_build directly impacts BuildArtifact.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "software",
+          "release"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "build-artifact",
+              "name": "BuildArtifact",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "value": "0.72",
+              "confidence": 0.99,
+              "source": "ci-pipeline"
+            },
+            {
+              "entityId": "build-artifact",
+              "attribute": "coverage_pct",
+              "value": "61",
+              "confidence": 0.99,
+              "source": "ci-pipeline"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "operator": ">=",
+              "threshold": 0.95,
+              "description": "Minimum test pass rate for release"
+            }
+          ],
+          "actions": [
+            {
+              "id": "release_build",
+              "name": "release_build",
+              "impactedEntityNames": [
+                "BuildArtifact"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 383,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.023198989690392267,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788614852432599,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003754317244167069,
+          "provenanceFragility": 0.1192034469897316
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0n66002mpzfabylwqcn1",
+            "actionProposalId": "cmmut0n50002epzfa7662fzmx",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788614852432599,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003754317244167069,
+            "provenanceFragility": 0.1192034469897316,
+            "impactedEntityIds": [
+              "cmmut0mw9001fpzfavx61c51s"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0mwd001rpzfa5knosjnn",
+                "entityId": "cmmut0mw9001fpzfavx61c51s",
+                "predicate": "coverage_pct",
+                "confidence": 0.8807965530102684
+              },
+              {
+                "claimId": "cmmut0mwb001kpzfazrbibmhc",
+                "entityId": "cmmut0mw9001fpzfavx61c51s",
+                "predicate": "test_pass_rate",
+                "confidence": 0.8807965530102684
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:45.679Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.84408367537059
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-007",
+        "name": "Approve structural inspection with crack severity exceeding limit",
+        "description": "StructuralComponent.crack_index = 0.82 exceeds 0.50. Action approve_inspection directly impacts StructuralComponent.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "structural",
+          "approve"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "struct-comp",
+              "name": "StructuralComponent",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "value": "0.82",
+              "confidence": 0.93,
+              "source": "ndt-inspection"
+            },
+            {
+              "entityId": "struct-comp",
+              "attribute": "age_years",
+              "value": "12",
+              "confidence": 0.99,
+              "source": "asset-registry"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "operator": "<=",
+              "threshold": 0.5,
+              "description": "Maximum allowable crack index"
+            }
+          ],
+          "actions": [
+            {
+              "id": "approve_inspection",
+              "name": "approve_inspection",
+              "impactedEntityNames": [
+                "StructuralComponent"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 392,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.023198250753989385,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788622941515236,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003766247097661437,
+          "provenanceFragility": 0.1192038669633725
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0ngv003rpzfadyo8ugyk",
+            "actionProposalId": "cmmut0nfs003npzfaxa6leon7",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788622941515236,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003766247097661437,
+            "provenanceFragility": 0.1192038669633725,
+            "impactedEntityIds": [
+              "cmmut0n6x002opzfavvpgu5t9"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0n710030pzfai3fuv7pd",
+                "entityId": "cmmut0n6x002opzfavvpgu5t9",
+                "predicate": "crack_index",
+                "confidence": 0.8807961330366275
+              },
+              {
+                "claimId": "cmmut0n730035pzfa82rnjm4t",
+                "entityId": "cmmut0n6x002opzfavvpgu5t9",
+                "predicate": "age_years",
+                "confidence": 0.8807961330366275
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.064Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.84424293837758
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-008",
+        "name": "Deploy microservice with error rate exceeding SLO",
+        "description": "ServiceInstance.error_rate = 0.08 exceeds 0.01 SLO. Action deploy_service directly impacts ServiceInstance.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "slo_breach",
+          "deploy"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "svc-instance",
+              "name": "ServiceInstance",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "svc-instance",
+              "attribute": "error_rate",
+              "value": "0.08",
+              "confidence": 0.98,
+              "source": "metrics-collector"
+            },
+            {
+              "entityId": "svc-instance",
+              "attribute": "p99_latency_ms",
+              "value": "1200",
+              "confidence": 0.98,
+              "source": "metrics-collector"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "svc-instance",
+              "attribute": "error_rate",
+              "operator": "<=",
+              "threshold": 0.01,
+              "description": "Maximum error rate SLO"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_service",
+              "name": "deploy_service",
+              "impactedEntityNames": [
+                "ServiceInstance"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-008",
+        "evaluatorId": "engine-v2",
+        "durationMs": 398,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.023198254890307517,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788640604292422,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003873499610811287,
+          "provenanceFragility": 0.1192039719567201
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0nh0003wpzfaryn24ue6",
+            "actionProposalId": "cmmut0nfy003ppzfahjjufxee",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788640604292422,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003873499610811287,
+            "provenanceFragility": 0.1192039719567201,
+            "impactedEntityIds": [
+              "cmmut0n6x002ppzfavrzwwaup"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0n720033pzfa9rcgv62b",
+                "entityId": "cmmut0n6x002ppzfavrzwwaup",
+                "predicate": "p99_latency_ms",
+                "confidence": 0.8807960280432799
+              },
+              {
+                "claimId": "cmmut0n70002xpzfai0n00i3s",
+                "entityId": "cmmut0n6x002ppzfavrzwwaup",
+                "predicate": "error_rate",
+                "confidence": 0.8807960280432799
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.069Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.84424204686257
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-009",
+        "name": "Activate reactor with coolant flow insufficient",
+        "description": "ReactorCoolant.flow_lpm = 15 violates flow_lpm >= 50. Action activate_reactor directly impacts ReactorCoolant.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "coolant",
+          "safety_critical"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "reactor-coolant",
+              "name": "ReactorCoolant",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "value": "15",
+              "confidence": 0.97,
+              "source": "flow-sensor"
+            },
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "temp_inlet_c",
+              "value": "22",
+              "confidence": 0.97,
+              "source": "temp-sensor"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum coolant flow for reactor activation"
+            }
+          ],
+          "actions": [
+            {
+              "id": "activate_reactor",
+              "name": "activate_reactor",
+              "impactedEntityNames": [
+                "ReactorCoolant"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-009",
+        "evaluatorId": "engine-v2",
+        "durationMs": 394,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.023198244549529082,
+        "explanation": "Coherence: 0.0/100 (Phi=41.844) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788633666441466,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003837746605857334,
+          "provenanceFragility": 0.1192038669633725
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0ngw003tpzfap5y2u8fv",
+            "actionProposalId": "cmmut0nfx003opzfarjf5r5ma",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788633666441466,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003837746605857334,
+            "provenanceFragility": 0.1192038669633725,
+            "impactedEntityIds": [
+              "cmmut0n6x002qpzfaz9gbgxfz"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0n710031pzfal818xenf",
+                "entityId": "cmmut0n6x002qpzfaz9gbgxfz",
+                "predicate": "flow_lpm",
+                "confidence": 0.8807961330366275
+              },
+              {
+                "claimId": "cmmut0n740038pzfa35euvvgi",
+                "entityId": "cmmut0n6x002qpzfaz9gbgxfz",
+                "predicate": "temp_inlet_c",
+                "confidence": 0.8807961330366275
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.065Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 41.84424427564676
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-blk-010",
+        "name": "Proceed to launch with guidance accuracy out of spec",
+        "description": "GuidanceSystem.accuracy_m = 450 exceeds max 100. Action proceed_to_launch directly impacts GuidanceSystem.",
+        "familyId": "calibration",
+        "category": "constraint",
+        "tags": [
+          "blocked",
+          "guidance",
+          "launch"
+        ],
+        "expectedAction": "BLOCKED",
+        "setup": {
+          "entities": [
+            {
+              "id": "guidance-sys",
+              "name": "GuidanceSystem",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "guidance-sys",
+              "attribute": "accuracy_m",
+              "value": "450",
+              "confidence": 0.94,
+              "source": "gps-check"
+            },
+            {
+              "entityId": "guidance-sys",
+              "attribute": "lock_status",
+              "value": "partial",
+              "confidence": 0.9,
+              "source": "gps-check"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "guidance-sys",
+              "attribute": "accuracy_m",
+              "operator": "<=",
+              "threshold": 100,
+              "description": "Maximum allowed guidance error for launch"
+            }
+          ],
+          "actions": [
+            {
+              "id": "proceed_to_launch",
+              "name": "proceed_to_launch",
+              "impactedEntityNames": [
+                "GuidanceSystem"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-blk-010",
+        "evaluatorId": "engine-v2",
+        "durationMs": 454,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.004133749963705987,
+        "explanation": "Coherence: 0.0/100 (Phi=50.469) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788747121691813,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00004636112305595528,
+          "provenanceFragility": 0.1192034469897316
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0ntr005wpzfa9djpjp1x",
+            "actionProposalId": "cmmut0nss005rpzfaohe877ko",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788747121691813,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00004636112305595528,
+            "provenanceFragility": 0.1192034469897316,
+            "impactedEntityIds": [
+              "cmmut0nhy003zpzfaru2ndmqt"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0ni10048pzfa7mr21vae",
+                "entityId": "cmmut0nhy003zpzfaru2ndmqt",
+                "predicate": "accuracy_m",
+                "confidence": 0.8807965530102684
+              },
+              {
+                "claimId": "cmmut0ni3004epzfam7o6iqe6",
+                "entityId": "cmmut0nhy003zpzfaru2ndmqt",
+                "predicate": "lock_status",
+                "confidence": 0.8807965530102684
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.527Z"
+          },
+          "settlingRounds": 3,
+          "phiFinal": 50.46870244218144
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-001",
+        "name": "Deploy with moderate CPU load and open contradiction",
+        "description": "ServerNode.cpu_load_pct = 78 (threshold 80), plus open contradiction on memory. Action deploy_app directly impacts ServerNode → CVR moderate, CA non-zero.",
+        "familyId": "calibration",
+        "category": "borderline",
+        "tags": [
+          "risky",
+          "borderline_constraint",
+          "contradiction"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "server-node",
+              "name": "ServerNode",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "value": "78",
+              "confidence": 0.85,
+              "source": "monitoring"
+            },
+            {
+              "entityId": "server-node",
+              "attribute": "memory_free_gb",
+              "value": "2.1",
+              "confidence": 0.7,
+              "source": "agent-a"
+            },
+            {
+              "entityId": "server-node",
+              "attribute": "memory_free_gb",
+              "value": "8.5",
+              "confidence": 0.65,
+              "source": "agent-b"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "operator": "<=",
+              "threshold": 80,
+              "description": "CPU load cap for deployment"
+            }
+          ],
+          "contradictions": [
+            {
+              "entityId": "server-node",
+              "attribute": "memory_free_gb",
+              "valueA": "2.1",
+              "valueB": "8.5",
+              "sourceA": "agent-a",
+              "sourceB": "agent-b"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_app",
+              "name": "deploy_app",
+              "impactedEntityNames": [
+                "ServerNode"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 32,
+        "error": "PrismaClientValidationError: \nInvalid `prisma.contradiction.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/ContradictionRepository.ts:40:33\n\n  37 }\n  38 \n  39 async create(data: Omit<Contradiction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Contradiction> {\n→ 40   return prisma.contradiction.create({\n         data: {\n           claimAId: \"cmmut0nid004opzfao4gxo00q\",\n           claimBId: \"cmmut0nij004qpzfahpj2hr3g\",\n           type: \"VALUE_CONFLICT\",\n                 ~~~~~~~~~~~~~~~~\n           description: \"Contradictory values for memory_free_gb: 2.1 vs 8.5\",\n           score: 0.8,\n           severity: 0.8,\n           status: \"OPEN\",\n           branchId: null\n         }\n       })\n\nInvalid value for argument `type`. Expected ContradictionType.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientValidationError: \nInvalid `prisma.contradiction.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/ContradictionRepository.ts:40:33\n\n  37 }\n  38 \n  39 async create(data: Omit<Contradiction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Contradiction> {\n→ 40   return prisma.contradiction.create({\n         data: {\n           claimAId: \"cmmut0nid004opzfao4gxo00q\",\n           claimBId: \"cmmut0nij004qpzfahpj2hr3g\",\n           type: \"VALUE_CONFLICT\",\n                 ~~~~~~~~~~~~~~~~\n           description: \"Contradictory values for memory_free_gb: 2.1 vs 8.5\",\n           score: 0.8,\n           severity: 0.8,\n           status: \"OPEN\",\n           branchId: null\n         }\n       })\n\nInvalid value for argument `type`. Expected ContradictionType."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-002",
+        "name": "Approve with low-confidence claims on impacted entity",
+        "description": "PipelineStage has no constraint violation but claims have confidence 0.55. Action approve_stage impacts PipelineStage → UE elevated.",
+        "familyId": "calibration",
+        "category": "uncertainty",
+        "tags": [
+          "risky",
+          "low_confidence",
+          "approve"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "pipeline-stage",
+              "name": "PipelineStage",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "pipeline-stage",
+              "attribute": "test_pass_rate",
+              "value": "0.88",
+              "confidence": 0.55,
+              "source": "legacy-ci",
+              "staleness_s": 7200
+            },
+            {
+              "entityId": "pipeline-stage",
+              "attribute": "coverage_pct",
+              "value": "74",
+              "confidence": 0.52,
+              "source": "legacy-ci",
+              "staleness_s": 7200
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "approve_stage",
+              "name": "approve_stage",
+              "impactedEntityNames": [
+                "PipelineStage"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 452,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.004133750685137803,
+        "explanation": "Coherence: 0.0/100 (Phi=50.469) | Psi=0.081 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.269 PF=0.269] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.0806083080545027,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.2685940604679871,
+          "provenanceFragility": 0.2687946598953642
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0ntp005upzfadir9qff8",
+            "actionProposalId": "cmmut0nsv005spzfat824no0u",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.0806083080545027,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.2685940604679871,
+            "provenanceFragility": 0.2687946598953642,
+            "impactedEntityIds": [
+              "cmmut0nhy0041pzfa819r40kt"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0ni10046pzfap3n20zae",
+                "entityId": "cmmut0nhy0041pzfa819r40kt",
+                "predicate": "test_pass_rate",
+                "confidence": 0.7312053401046358
+              },
+              {
+                "claimId": "cmmut0ni3004bpzfatt574g6x",
+                "entityId": "cmmut0nhy0041pzfa819r40kt",
+                "predicate": "coverage_pct",
+                "confidence": 0.7312053401046358
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.525Z"
+          },
+          "settlingRounds": 3,
+          "phiFinal": 50.468701569569696
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-003",
+        "name": "Release with moderately stale claims and dependency warning",
+        "description": "DataPackage claims are 3600s old. Downstream consumer depends on DataPackage. Action release_package impacts DataPackage → staleness-driven UE.",
+        "familyId": "calibration",
+        "category": "staleness",
+        "tags": [
+          "risky",
+          "stale_claims",
+          "dependency"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "data-pkg",
+              "name": "DataPackage",
+              "type": "artifact"
+            },
+            {
+              "id": "consumer",
+              "name": "DataConsumer",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "data-pkg",
+              "attribute": "schema_version",
+              "value": "3.1",
+              "confidence": 0.88,
+              "source": "schema-registry",
+              "staleness_s": 3600
+            },
+            {
+              "entityId": "data-pkg",
+              "attribute": "row_count",
+              "value": "1500000",
+              "confidence": 0.88,
+              "source": "etl-job",
+              "staleness_s": 3600
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "consumer",
+              "toEntityId": "data-pkg",
+              "type": "REQUIRES",
+              "attribute": "schema_version"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_package",
+              "name": "release_package",
+              "impactedEntityNames": [
+                "DataPackage"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 421,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.004134975473234737,
+        "explanation": "Coherence: 0.0/100 (Phi=50.467) | Psi=0.078 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.256 PF=0.264] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.07800096940956948,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.2564031509395197,
+          "provenanceFragility": 0.2636033117909435
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0o5f007bpzfa1c645mlt",
+            "actionProposalId": "cmmut0o470073pzfaf7u22tpy",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.07800096940956948,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.2564031509395197,
+            "provenanceFragility": 0.2636033117909435,
+            "impactedEntityIds": [
+              "cmmut0nul005zpzfas1jgfu30",
+              "cmmut0nun0064pzfa2j50c70c"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0nur006gpzfaxvkim89b",
+                "entityId": "cmmut0nul005zpzfas1jgfu30",
+                "predicate": "schema_version",
+                "confidence": 0.7363966882090565
+              },
+              {
+                "claimId": "cmmut0nut006lpzfagkdmj28z",
+                "entityId": "cmmut0nul005zpzfas1jgfu30",
+                "predicate": "row_count",
+                "confidence": 0.7363966882090565
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.947Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 50.46722034007626
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-004",
+        "name": "Finalize orbit burn with borderline delta-v budget",
+        "description": "PropulsionModule.dv_remaining_ms = 52 just above threshold 50. Action finalize_burn impacts PropulsionModule → near-violation, moderate risk.",
+        "familyId": "calibration",
+        "category": "borderline",
+        "tags": [
+          "risky",
+          "borderline_threshold",
+          "finalize"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "prop-module",
+              "name": "PropulsionModule",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "value": "52",
+              "confidence": 0.78,
+              "source": "nav-computer"
+            },
+            {
+              "entityId": "prop-module",
+              "attribute": "fuel_kg",
+              "value": "6.2",
+              "confidence": 0.78,
+              "source": "flow-meter"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum delta-v reserve"
+            }
+          ],
+          "actions": [
+            {
+              "id": "finalize_burn",
+              "name": "finalize_burn",
+              "impactedEntityNames": [
+                "PropulsionModule"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 405,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.004134977283480388,
+        "explanation": "Coherence: 0.0/100 (Phi=50.467) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788644815402188,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00003933071687706409,
+          "provenanceFragility": 0.1192036569766022
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0o4r0075pzfaodnccrmd",
+            "actionProposalId": "cmmut0o3t0071pzfakq3782rq",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788644815402188,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00003933071687706409,
+            "provenanceFragility": 0.1192036569766022,
+            "impactedEntityIds": [
+              "cmmut0nul0060pzfa1vvtp4av"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0nuo0068pzfab2onoe5k",
+                "entityId": "cmmut0nul0060pzfa1vvtp4av",
+                "predicate": "dv_remaining_ms",
+                "confidence": 0.8807963430233978
+              },
+              {
+                "claimId": "cmmut0nuq006epzfa8x3vmuht",
+                "entityId": "cmmut0nul0060pzfa1vvtp4av",
+                "predicate": "fuel_kg",
+                "confidence": 0.8807963430233978
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.923Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 50.467218151133096
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-005",
+        "name": "Deploy with single open branch on impacted subsystem attribute",
+        "description": "StorageArray has an open branch on capacity_tb. Action deploy_storage impacts StorageArray → BRANCH_DEPENDENT… but only on one attribute. If branch resolves bad, this could become BLOCKED.",
+        "familyId": "calibration",
+        "category": "branch_uncertainty",
+        "tags": [
+          "risky",
+          "branch",
+          "deploy"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "storage-arr",
+              "name": "StorageArray",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "storage-arr",
+              "attribute": "capacity_tb",
+              "value": "100",
+              "confidence": 0.72,
+              "source": "provisioner-a"
+            },
+            {
+              "entityId": "storage-arr",
+              "attribute": "iops",
+              "value": "45000",
+              "confidence": 0.85,
+              "source": "benchmark"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "storage-arr",
+              "attribute": "capacity_tb",
+              "operator": ">=",
+              "threshold": 80,
+              "description": "Minimum capacity for deployment"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_storage",
+              "name": "deploy_storage",
+              "impactedEntityNames": [
+                "StorageArray"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 414,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0041349765593809455,
+        "explanation": "Coherence: 0.0/100 (Phi=50.467) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788659327078698,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00004040315540053262,
+          "provenanceFragility": 0.1192035519831793
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0o540078pzfatvcsguyp",
+            "actionProposalId": "cmmut0o430072pzfaid892jzz",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788659327078698,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00004040315540053262,
+            "provenanceFragility": 0.1192035519831793,
+            "impactedEntityIds": [
+              "cmmut0nul0061pzfaae71dmkc"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0nup006bpzfaludr6ujr",
+                "entityId": "cmmut0nul0061pzfaae71dmkc",
+                "predicate": "capacity_tb",
+                "confidence": 0.8807964480168207
+              },
+              {
+                "claimId": "cmmut0nus006ipzfa9ofqpe9e",
+                "entityId": "cmmut0nul0061pzfaae71dmkc",
+                "predicate": "iops",
+                "confidence": 0.8807964480168207
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:46.937Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 50.467219026711675
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-006",
+        "name": "Approve drug batch with partial provenance chain",
+        "description": "DrugBatch claims sourced from intermediate system with confidence 0.6 provenance. Action approve_batch impacts DrugBatch → PF elevated.",
+        "familyId": "calibration",
+        "category": "provenance",
+        "tags": [
+          "risky",
+          "provenance",
+          "approve"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "drug-batch",
+              "name": "DrugBatch",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "drug-batch",
+              "attribute": "purity_pct",
+              "value": "98.5",
+              "confidence": 0.62,
+              "source": "lab-system-v1",
+              "provenanceConfidence": 0.6
+            },
+            {
+              "entityId": "drug-batch",
+              "attribute": "contaminant_ppm",
+              "value": "2.1",
+              "confidence": 0.58,
+              "source": "lab-system-v1",
+              "provenanceConfidence": 0.6
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "approve_batch",
+              "name": "approve_batch",
+              "impactedEntityNames": [
+                "DrugBatch"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 379,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006148805100577132,
+        "explanation": "Coherence: 0.0/100 (Phi=59.996) | Psi=0.035 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.231] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.03473255166399888,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00007406056051550888,
+          "provenanceFragility": 0.2314762838661437
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0og00092pzfag1g7yeby",
+            "actionProposalId": "cmmut0of8008xpzfa0ktn3c4c",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.03473255166399888,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00007406056051550888,
+            "provenanceFragility": 0.2314762838661437,
+            "impactedEntityIds": [
+              "cmmut0o6a007dpzfa4zy64z0e"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0o6d007kpzfan05rpjp5",
+                "entityId": "cmmut0o6a007dpzfa4zy64z0e",
+                "predicate": "purity_pct",
+                "confidence": 0.7685237161338563
+              },
+              {
+                "claimId": "cmmut0o6g007upzfaizvxlrje",
+                "entityId": "cmmut0o6a007dpzfa4zy64z0e",
+                "predicate": "contaminant_ppm",
+                "confidence": 0.7685237161338563
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:47.329Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.996263938060906
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-007",
+        "name": "Finalize sensor calibration with contradictory readings",
+        "description": "CalibrationTarget has two conflicting reference readings. Action finalize_calibration impacts CalibrationTarget → CA non-zero.",
+        "familyId": "calibration",
+        "category": "contradiction",
+        "tags": [
+          "risky",
+          "contradiction",
+          "calibration"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "cal-target",
+              "name": "CalibrationTarget",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "value": "20.3",
+              "confidence": 0.82,
+              "source": "reference-sensor-a"
+            },
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "value": "21.9",
+              "confidence": 0.79,
+              "source": "reference-sensor-b"
+            }
+          ],
+          "contradictions": [
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "valueA": "20.3",
+              "valueB": "21.9",
+              "sourceA": "reference-sensor-a",
+              "sourceB": "reference-sensor-b"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "finalize_calibration",
+              "name": "finalize_calibration",
+              "impactedEntityNames": [
+                "CalibrationTarget"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 16,
+        "error": "PrismaClientValidationError: \nInvalid `prisma.contradiction.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/ContradictionRepository.ts:40:33\n\n  37 }\n  38 \n  39 async create(data: Omit<Contradiction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Contradiction> {\n→ 40   return prisma.contradiction.create({\n         data: {\n           claimAId: \"cmmut0o6i007ypzfa43g9ewz3\",\n           claimBId: \"cmmut0o6l0080pzfa71dk6v39\",\n           type: \"VALUE_CONFLICT\",\n                 ~~~~~~~~~~~~~~~~\n           description: \"Contradictory values for reference_temp_c: 20.3 vs 21.9\",\n           score: 0.8,\n           severity: 0.8,\n           status: \"OPEN\",\n           branchId: null\n         }\n       })\n\nInvalid value for argument `type`. Expected ContradictionType.",
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "UNKNOWN",
+        "invalidatedEntityNames": [],
+        "explanation": "Error: PrismaClientValidationError: \nInvalid `prisma.contradiction.create()` invocation in\n/home/user/Coherence-engine-/apps/api/src/infrastructure/database/repositories/ContradictionRepository.ts:40:33\n\n  37 }\n  38 \n  39 async create(data: Omit<Contradiction, 'id' | 'createdAt' | 'updatedAt'>): Promise<Contradiction> {\n→ 40   return prisma.contradiction.create({\n         data: {\n           claimAId: \"cmmut0o6i007ypzfa43g9ewz3\",\n           claimBId: \"cmmut0o6l0080pzfa71dk6v39\",\n           type: \"VALUE_CONFLICT\",\n                 ~~~~~~~~~~~~~~~~\n           description: \"Contradictory values for reference_temp_c: 20.3 vs 21.9\",\n           score: 0.8,\n           severity: 0.8,\n           status: \"OPEN\",\n           branchId: null\n         }\n       })\n\nInvalid value for argument `type`. Expected ContradictionType."
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-008",
+        "name": "Release API with deprecation dependency partially broken",
+        "description": "APIModule depends on LegacyAdapter which has no claims (no longer publishing). Action release_api impacts APIModule → DBR elevated from broken dependency.",
+        "familyId": "calibration",
+        "category": "dependency_break",
+        "tags": [
+          "risky",
+          "dependency_break",
+          "release"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "api-module",
+              "name": "APIModule",
+              "type": "service"
+            },
+            {
+              "id": "legacy-adapter",
+              "name": "LegacyAdapter",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "api-module",
+              "attribute": "version",
+              "value": "4.2.0",
+              "confidence": 0.95,
+              "source": "registry"
+            }
+          ],
+          "dependencies": [
+            {
+              "fromEntityId": "api-module",
+              "toEntityId": "legacy-adapter",
+              "type": "INVALIDATES",
+              "attribute": "compatibility_mode"
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_api",
+              "name": "release_api",
+              "impactedEntityNames": [
+                "APIModule"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-008",
+        "evaluatorId": "engine-v2",
+        "durationMs": 391,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006148805100577132,
+        "explanation": "Coherence: 0.0/100 (Phi=59.996) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788650813866995,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00004004559487405841,
+          "provenanceFragility": 0.1192033419962589
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0ogi0095pzfao5eod11a",
+            "actionProposalId": "cmmut0ofq0090pzfadthaionw",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788650813866995,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00004004559487405841,
+            "provenanceFragility": 0.1192033419962589,
+            "impactedEntityIds": [
+              "cmmut0o6a007fpzfayzaglvxy",
+              "cmmut0o6c007ipzfaa581virs"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0o6g007qpzfa0wag06jo",
+                "entityId": "cmmut0o6a007fpzfayzaglvxy",
+                "predicate": "version",
+                "confidence": 0.8807966580037411
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:47.347Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.996263938060906
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-009",
+        "name": "Deploy model with accuracy below target but above minimum",
+        "description": "MLModel.accuracy = 0.87 — above hard minimum 0.80, below target 0.90. Action deploy_model impacts MLModel → marginal CVR.",
+        "familyId": "calibration",
+        "category": "borderline",
+        "tags": [
+          "risky",
+          "ml_accuracy",
+          "deploy"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "ml-model",
+              "name": "MLModel",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "value": "0.87",
+              "confidence": 0.91,
+              "source": "eval-pipeline"
+            },
+            {
+              "entityId": "ml-model",
+              "attribute": "f1_score",
+              "value": "0.85",
+              "confidence": 0.91,
+              "source": "eval-pipeline"
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "operator": ">=",
+              "threshold": 0.8,
+              "description": "Hard minimum accuracy"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_model",
+              "name": "deploy_model",
+              "impactedEntityNames": [
+                "MLModel"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-009",
+        "evaluatorId": "engine-v2",
+        "durationMs": 416,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006137453606141248,
+        "explanation": "Coherence: 0.0/100 (Phi=60.006) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.000 PF=0.119] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01788664689412351,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00004076064431077621,
+          "provenanceFragility": 0.1192035519831793
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0orr00a7pzfap2t0w9sc",
+            "actionProposalId": "cmmut0oqo00a4pzfamyzt4oe6",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01788664689412351,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00004076064431077621,
+            "provenanceFragility": 0.1192035519831793,
+            "impactedEntityIds": [
+              "cmmut0oh50097pzfanbfdx7tq"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0oh8009gpzfatzili0r7",
+                "entityId": "cmmut0oh50097pzfanbfdx7tq",
+                "predicate": "accuracy",
+                "confidence": 0.8807964480168207
+              },
+              {
+                "claimId": "cmmut0oha009mpzfaq7v5036m",
+                "entityId": "cmmut0oh50097pzfanbfdx7tq",
+                "predicate": "f1_score",
+                "confidence": 0.8807964480168207
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:47.751Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 60.00550311976531
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-rsk-010",
+        "name": "Activate backup power with stale voltage readings",
+        "description": "BackupPower.voltage_v readings are 5400s old. Action activate_backup impacts BackupPower → staleness-driven UE.",
+        "familyId": "calibration",
+        "category": "staleness",
+        "tags": [
+          "risky",
+          "stale",
+          "power"
+        ],
+        "expectedAction": "RISKY",
+        "setup": {
+          "entities": [
+            {
+              "id": "backup-power",
+              "name": "BackupPower",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "backup-power",
+              "attribute": "voltage_v",
+              "value": "48.2",
+              "confidence": 0.9,
+              "source": "power-monitor",
+              "staleness_s": 5400
+            },
+            {
+              "entityId": "backup-power",
+              "attribute": "capacity_ah",
+              "value": "200",
+              "confidence": 0.88,
+              "source": "power-monitor",
+              "staleness_s": 5400
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "activate_backup",
+              "name": "activate_backup",
+              "impactedEntityNames": [
+                "BackupPower"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-rsk-010",
+        "evaluatorId": "engine-v2",
+        "durationMs": 415,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006137454685118445,
+        "explanation": "Coherence: 0.0/100 (Phi=60.006) | Psi=0.080 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.267 PF=0.268] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.08023476062036694,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.2668440638928316,
+          "provenanceFragility": 0.2680543402429481
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0oru00a9pzfagmdyujvy",
+            "actionProposalId": "cmmut0oqn00a3pzfa7zqgvkqn",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.08023476062036694,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.2668440638928316,
+            "provenanceFragility": 0.2680543402429481,
+            "impactedEntityIds": [
+              "cmmut0oh50098pzfaycjhzs01"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0oh8009ipzfak9w4jxw2",
+                "entityId": "cmmut0oh50098pzfaycjhzs01",
+                "predicate": "voltage_v",
+                "confidence": 0.731945659757052
+              },
+              {
+                "claimId": "cmmut0oha009kpzfa69if6s40",
+                "entityId": "cmmut0oh50098pzfaycjhzs01",
+                "predicate": "capacity_ah",
+                "confidence": 0.731945659757052
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:47.755Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 60.00550224075491
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.5
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-001",
+        "name": "Deploy with all constraints satisfied and fresh claims",
+        "description": "WebServer.cpu_load_pct = 35 (< 80), fresh high-confidence claims. Action deploy_app impacts WebServer → VALID.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "nominal",
+          "deploy"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "web-server",
+              "name": "WebServer",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "web-server",
+              "attribute": "cpu_load_pct",
+              "value": "35",
+              "confidence": 0.95,
+              "source": "monitoring",
+              "staleness_s": 30
+            },
+            {
+              "entityId": "web-server",
+              "attribute": "memory_free_gb",
+              "value": "12",
+              "confidence": 0.95,
+              "source": "monitoring",
+              "staleness_s": 30
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "web-server",
+              "attribute": "cpu_load_pct",
+              "operator": "<=",
+              "threshold": 80,
+              "description": "CPU cap for deployment"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_app",
+              "name": "deploy_app",
+              "impactedEntityNames": [
+                "WebServer"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 427,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006137451987679842,
+        "explanation": "Coherence: 0.0/100 (Phi=60.006) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.004 PF=0.122] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01890002125043041,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.003658476284899399,
+          "provenanceFragility": 0.1223416653846366
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0osc00adpzfakv24p9og",
+            "actionProposalId": "cmmut0or300a5pzfaue6z6ma1",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01890002125043041,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.003658476284899399,
+            "provenanceFragility": 0.1223416653846366,
+            "impactedEntityIds": [
+              "cmmut0oh50099pzfaoc615w7z"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0oha009opzfa1brzaokk",
+                "entityId": "cmmut0oh50099pzfaoc615w7z",
+                "predicate": "memory_free_gb",
+                "confidence": 0.8776583346153634
+              },
+              {
+                "claimId": "cmmut0oh8009fpzfata2e2say",
+                "entityId": "cmmut0oh50099pzfaoc615w7z",
+                "predicate": "cpu_load_pct",
+                "confidence": 0.8776583346153634
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:47.772Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 60.005504438277605
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-002",
+        "name": "Release with 100% test pass rate",
+        "description": "BuildArtifact.test_pass_rate = 1.0, coverage_pct = 92. All constraints satisfied.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "software",
+          "release"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "build-artifact",
+              "name": "BuildArtifact",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "value": "1.0",
+              "confidence": 0.99,
+              "source": "ci-pipeline",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "build-artifact",
+              "attribute": "coverage_pct",
+              "value": "92",
+              "confidence": 0.99,
+              "source": "ci-pipeline",
+              "staleness_s": 60
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "operator": ">=",
+              "threshold": 0.95,
+              "description": "Minimum test pass rate"
+            }
+          ],
+          "actions": [
+            {
+              "id": "release_build",
+              "name": "release_build",
+              "impactedEntityNames": [
+                "BuildArtifact"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 423,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006148092790313764,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.020 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.007 PF=0.125] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01992021203645969,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.007346558256875629,
+          "provenanceFragility": 0.1254548553195223
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0p3u00bgpzfa9qn078uy",
+            "actionProposalId": "cmmut0p2m00bcpzfacfjw8lxp",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01992021203645969,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.007346558256875629,
+            "provenanceFragility": 0.1254548553195223,
+            "impactedEntityIds": [
+              "cmmut0ot100afpzfa9536e2bk"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0ot300ampzfarelds03d",
+                "entityId": "cmmut0ot100afpzfa9536e2bk",
+                "predicate": "test_pass_rate",
+                "confidence": 0.874544731377067
+              },
+              {
+                "claimId": "cmmut0ot500arpzfae3t7r4x1",
+                "entityId": "cmmut0ot100afpzfa9536e2bk",
+                "predicate": "coverage_pct",
+                "confidence": 0.8745455579838886
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.186Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.996843198188536
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-003",
+        "name": "Approve inspection with nominal structural health",
+        "description": "StructuralComponent.crack_index = 0.12 well below 0.50 limit. High-confidence scan.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "structural",
+          "approve"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "struct-comp",
+              "name": "StructuralComponent",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "value": "0.12",
+              "confidence": 0.97,
+              "source": "ultrasound-scan",
+              "staleness_s": 120
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "operator": "<=",
+              "threshold": 0.5,
+              "description": "Maximum allowable crack index"
+            }
+          ],
+          "actions": [
+            {
+              "id": "approve_inspection",
+              "name": "approve_inspection",
+              "impactedEntityNames": [
+                "StructuralComponent"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 424,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006148093341385668,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.022 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.015 PF=0.132] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.02197771718698411,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0149218123228754,
+          "provenanceFragility": 0.1315963022570187
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0p3v00bipzfaj5095gri",
+            "actionProposalId": "cmmut0p2t00bdpzfapiuxpq4f",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.02197771718698411,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0149218123228754,
+            "provenanceFragility": 0.1315963022570187,
+            "impactedEntityIds": [
+              "cmmut0ot100agpzfaemxrldvy"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0ot400aopzfaxp5qsg80",
+                "entityId": "cmmut0ot100agpzfaemxrldvy",
+                "predicate": "crack_index",
+                "confidence": 0.8684036977429813
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.187Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.99684275002363
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-004",
+        "name": "Ignite thrusters with nominal pressure and temperature",
+        "description": "ThrusterSystem.pressure_bar = 150 (>= 100), temp_c = 22 (<= 80). All nominal.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "thruster",
+          "launch"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "thruster-sys",
+              "name": "ThrusterSystem",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "value": "150",
+              "confidence": 0.97,
+              "source": "sensor-feed",
+              "staleness_s": 10
+            },
+            {
+              "entityId": "thruster-sys",
+              "attribute": "temp_c",
+              "value": "22",
+              "confidence": 0.97,
+              "source": "thermal-sensor",
+              "staleness_s": 10
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "operator": ">=",
+              "threshold": 100,
+              "description": "Minimum ignition pressure"
+            },
+            {
+              "entityId": "thruster-sys",
+              "attribute": "temp_c",
+              "operator": "<=",
+              "threshold": 80,
+              "description": "Maximum operating temperature"
+            }
+          ],
+          "actions": [
+            {
+              "id": "ignite_thrusters",
+              "name": "ignite_thrusters",
+              "impactedEntityNames": [
+                "ThrusterSystem"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 431,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006148088932827219,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.001 PF=0.120] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01822358933895491,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.001238900455962476,
+          "provenanceFragility": 0.1202516951370702
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0p4c00bmpzfa9msf6vhe",
+            "actionProposalId": "cmmut0p3000bepzfa9emvldg7",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01822358933895491,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.001238900455962476,
+            "provenanceFragility": 0.1202516951370702,
+            "impactedEntityIds": [
+              "cmmut0ot100ahpzfa3c6jsa65"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0ot600aupzfaxhlspmlt",
+                "entityId": "cmmut0ot100ahpzfa3c6jsa65",
+                "predicate": "pressure_bar",
+                "confidence": 0.8797483048629298
+              },
+              {
+                "claimId": "cmmut0ot800axpzfas1mlf85d",
+                "entityId": "cmmut0ot100ahpzfa3c6jsa65",
+                "predicate": "temp_c",
+                "confidence": 0.8797483048629298
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.204Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.99684633533032
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-005",
+        "name": "Finalize data package with fresh high-confidence schema",
+        "description": "DataPackage claims fresh (60s), confidence 0.98, no constraints violated.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "data",
+          "finalize"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "data-pkg",
+              "name": "DataPackage",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "data-pkg",
+              "attribute": "schema_version",
+              "value": "4.0",
+              "confidence": 0.98,
+              "source": "schema-registry",
+              "staleness_s": 60
+            },
+            {
+              "entityId": "data-pkg",
+              "attribute": "row_count",
+              "value": "2000000",
+              "confidence": 0.98,
+              "source": "etl-job",
+              "staleness_s": 60
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_package",
+              "name": "release_package",
+              "impactedEntityNames": [
+                "DataPackage"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 412,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006146003204909421,
+        "explanation": "Coherence: 0.0/100 (Phi=59.999) | Psi=0.020 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.007 PF=0.125] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01992003749323366,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.007345601286891492,
+          "provenanceFragility": 0.1254546486679996
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0pfg00cqpzfa03fug473",
+            "actionProposalId": "cmmut0pee00cmpzfa8s5592ft",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01992003749323366,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.007345601286891492,
+            "provenanceFragility": 0.1254546486679996,
+            "impactedEntityIds": [
+              "cmmut0p5000bopzfabrrdjj3f"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0p5300bzpzfa50glo66n",
+                "entityId": "cmmut0p5000bopzfabrrdjj3f",
+                "predicate": "schema_version",
+                "confidence": 0.8745453513320004
+              },
+              {
+                "claimId": "cmmut0p5400c5pzfa9ec1unjg",
+                "entityId": "cmmut0p5000bopzfabrrdjj3f",
+                "predicate": "row_count",
+                "confidence": 0.8745453513320004
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.605Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.99854286396736
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-006",
+        "name": "Deploy ML model exceeding accuracy target",
+        "description": "MLModel.accuracy = 0.96 well above 0.95 target. Fresh eval pipeline.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "ml",
+          "deploy"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "ml-model",
+              "name": "MLModel",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "value": "0.96",
+              "confidence": 0.96,
+              "source": "eval-pipeline",
+              "staleness_s": 300
+            },
+            {
+              "entityId": "ml-model",
+              "attribute": "f1_score",
+              "value": "0.95",
+              "confidence": 0.96,
+              "source": "eval-pipeline",
+              "staleness_s": 300
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "operator": ">=",
+              "threshold": 0.95,
+              "description": "Target accuracy"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_model",
+              "name": "deploy_model",
+              "impactedEntityNames": [
+                "MLModel"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 421,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006146002107320454,
+        "explanation": "Coherence: 0.0/100 (Phi=59.999) | Psi=0.028 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.039 PF=0.149] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.02818813666233798,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.03871131170231593,
+          "provenanceFragility": 0.1492095993799373
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0pfy00ctpzfazakbcfor",
+            "actionProposalId": "cmmut0per00cnpzfavpcwu53q",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.02818813666233798,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.03871131170231593,
+            "provenanceFragility": 0.1492095993799373,
+            "impactedEntityIds": [
+              "cmmut0p5000bppzfaqa4pd5gl"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0p5400c3pzfapyk10xnq",
+                "entityId": "cmmut0p5000bppzfaqa4pd5gl",
+                "predicate": "f1_score",
+                "confidence": 0.8507904006200627
+              },
+              {
+                "claimId": "cmmut0p5300bxpzfa2u7f4ile",
+                "entityId": "cmmut0p5000bppzfaqa4pd5gl",
+                "predicate": "accuracy",
+                "confidence": 0.8507904006200627
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.623Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.998543756896495
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-007",
+        "name": "Activate reactor with sufficient coolant flow",
+        "description": "ReactorCoolant.flow_lpm = 75 (>= 50), temp nominal. Safe to activate.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "coolant",
+          "reactor"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "reactor-coolant",
+              "name": "ReactorCoolant",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "value": "75",
+              "confidence": 0.98,
+              "source": "flow-sensor",
+              "staleness_s": 5
+            },
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "temp_inlet_c",
+              "value": "18",
+              "confidence": 0.98,
+              "source": "temp-sensor",
+              "staleness_s": 5
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum coolant flow"
+            }
+          ],
+          "actions": [
+            {
+              "id": "activate_reactor",
+              "name": "activate_reactor",
+              "impactedEntityNames": [
+                "ReactorCoolant"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 421,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006146001558526857,
+        "explanation": "Coherence: 0.0/100 (Phi=59.999) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.001 PF=0.120] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01805505801219034,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0006389540138220983,
+          "provenanceFragility": 0.1197280994007802
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0pfy00cvpzfaqdkjmxgw",
+            "actionProposalId": "cmmut0per00copzfa6mog9zzt",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01805505801219034,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0006389540138220983,
+            "provenanceFragility": 0.1197280994007802,
+            "impactedEntityIds": [
+              "cmmut0p5000bqpzfadlmc3bem"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0p5400c1pzfapufqvb8p",
+                "entityId": "cmmut0p5000bqpzfadlmc3bem",
+                "predicate": "flow_lpm",
+                "confidence": 0.8802719005992198
+              },
+              {
+                "claimId": "cmmut0p5500c7pzfa0eh1vyjr",
+                "entityId": "cmmut0p5000bqpzfadlmc3bem",
+                "predicate": "temp_inlet_c",
+                "confidence": 0.8802719005992198
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:48.623Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.998544203360396
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-008",
+        "name": "Release API with no active dependencies broken",
+        "description": "APIModule dependencies all satisfied. High-confidence, fresh version claims.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "api",
+          "release"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "api-module",
+              "name": "APIModule",
+              "type": "service"
+            },
+            {
+              "id": "downstream",
+              "name": "DownstreamService",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "api-module",
+              "attribute": "version",
+              "value": "5.0.0",
+              "confidence": 0.99,
+              "source": "registry",
+              "staleness_s": 45
+            },
+            {
+              "entityId": "downstream",
+              "attribute": "compatibility",
+              "value": "v5-ready",
+              "confidence": 0.95,
+              "source": "registry",
+              "staleness_s": 45
+            }
+          ],
+          "dependencies": [],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_api",
+              "name": "release_api",
+              "impactedEntityNames": [
+                "APIModule"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-008",
+        "evaluatorId": "engine-v2",
+        "durationMs": 425,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006147872284147246,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.019 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.005 PF=0.124] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01940934686042982,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.00549436559440679,
+          "provenanceFragility": 0.123901280141792
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0prs00e1pzfa2bw54pm0",
+            "actionProposalId": "cmmut0pqq00dtpzfay2tri3c0",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01940934686042982,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.00549436559440679,
+            "provenanceFragility": 0.123901280141792,
+            "impactedEntityIds": [
+              "cmmut0pgp00cypzfaw5c8ubfr"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0pgt00dapzfaozt48lge",
+                "entityId": "cmmut0pgp00cypzfaw5c8ubfr",
+                "predicate": "version",
+                "confidence": 0.876098719858208
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.048Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.99702253032327
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-009",
+        "name": "Slew antenna with controller temperature nominal",
+        "description": "AntennaController.temp_c = 42 well below 85 limit. Fresh readings.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "antenna",
+          "nominal"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "ant-ctrl",
+              "name": "AntennaController",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "ant-ctrl",
+              "attribute": "temp_c",
+              "value": "42",
+              "confidence": 0.97,
+              "source": "thermal-monitor",
+              "staleness_s": 15
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "ant-ctrl",
+              "attribute": "temp_c",
+              "operator": "<=",
+              "threshold": 85,
+              "description": "Max controller temperature"
+            }
+          ],
+          "actions": [
+            {
+              "id": "slew_antenna",
+              "name": "slew_antenna",
+              "impactedEntityNames": [
+                "AntennaController"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-009",
+        "evaluatorId": "engine-v2",
+        "durationMs": 414,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006147872834978884,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.002 PF=0.121] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01839200046232672,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.001837961779964277,
+          "provenanceFragility": 0.1207753746355472
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0pr500dvpzfaikm0r8tz",
+            "actionProposalId": "cmmut0pq300drpzfafdjlqo48",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01839200046232672,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.001837961779964277,
+            "provenanceFragility": 0.1207753746355472,
+            "impactedEntityIds": [
+              "cmmut0pgq00czpzfajbku3orb"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0pgt00d7pzfapwadixjt",
+                "entityId": "cmmut0pgq00czpzfajbku3orb",
+                "predicate": "temp_c",
+                "confidence": 0.8792246253644528
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.025Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.9970220823377
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-vld-010",
+        "name": "Open fuel valve with tank pressure nominal",
+        "description": "FuelTank.pressure_psi = 2800 below 3000 max. Safe to open valve.",
+        "familyId": "calibration",
+        "category": "nominal",
+        "tags": [
+          "valid",
+          "fuel",
+          "valve"
+        ],
+        "expectedAction": "VALID",
+        "setup": {
+          "entities": [
+            {
+              "id": "fuel-tank",
+              "name": "FuelTank",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "value": "2800",
+              "confidence": 0.99,
+              "source": "pressure-sensor",
+              "staleness_s": 8
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "operator": "<=",
+              "threshold": 3000,
+              "description": "Maximum safe pressure"
+            }
+          ],
+          "actions": [
+            {
+              "id": "open_release_valve",
+              "name": "open_release_valve",
+              "impactedEntityNames": [
+                "FuelTank"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-vld-010",
+        "evaluatorId": "engine-v2",
+        "durationMs": 415,
+        "contradictionsDetected": [],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0006147873385811116,
+        "explanation": "Coherence: 0.0/100 (Phi=59.997) | Psi=0.018 [CVR=0.000 DBR=0.000 CA=0.000 UE=0.001 PF=0.120] DeltaPhi=2.000 | Decision: VALID — Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.01815592076516922,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0,
+          "uncertaintyExposure": 0.0009969910575607585,
+          "provenanceFragility": 0.120042480710234
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0prf00dypzfaak3h7268",
+            "actionProposalId": "cmmut0pq800dspzfauj4pfqi0",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.01815592076516922,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0,
+            "uncertaintyExposure": 0.0009969910575607585,
+            "provenanceFragility": 0.120042480710234,
+            "impactedEntityIds": [
+              "cmmut0pgq00d0pzfa8bjuldlq"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0pgt00d8pzfaq5urcqco",
+                "entityId": "cmmut0pgq00d0pzfa8bjuldlq",
+                "predicate": "pressure_psi",
+                "confidence": 0.879957519289766
+              }
+            ],
+            "reasons": [
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.035Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 59.99702163435168
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-001",
+        "name": "Deploy with conflicting CPU load reports on target server",
+        "description": "ServerNode.cpu_load_pct reported as 35 by monitor-a and 88 by monitor-b. Action deploy_app impacts ServerNode → open branch blocks classification.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "contradiction",
+          "deploy"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "server-node",
+              "name": "ServerNode",
+              "type": "service"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "value": "35",
+              "confidence": 0.8,
+              "source": "monitor-a"
+            },
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "value": "88",
+              "confidence": 0.8,
+              "source": "monitor-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "isOpen": true,
+              "candidates": [
+                "35",
+                "88"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "server-node",
+              "attribute": "cpu_load_pct",
+              "operator": "<=",
+              "threshold": 80,
+              "description": "CPU cap for deployment"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_app",
+              "name": "deploy_app",
+              "impactedEntityNames": [
+                "ServerNode"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-001",
+        "evaluatorId": "engine-v2",
+        "durationMs": 461,
+        "contradictionsDetected": [
+          {
+            "entityName": "ServerNode",
+            "predicate": "cpu_load_pct",
+            "description": "Status conflict on p2-cal-brd-001-1773763549074:ServerNode.cpu_load_pct: '88' vs '35'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          },
+          {
+            "entityName": "ServerNode",
+            "predicate": "cpu_load_pct",
+            "description": "Status conflict on p2-cal-brd-001-1773763549074:ServerNode.cpu_load_pct: '88' vs '35'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00014570321842360923,
+        "explanation": "Coherence: 0.0/100 (Phi=67.196) | Psi=0.239 [CVR=0.000 DBR=0.000 CA=0.960 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-001-1773763549074:ServerNode.cpu_load_pct: '88' vs '35'; Status conflict on p2-cal-brd-001-1773763549074:ServerNode.cpu_load_pct: '88' vs '35' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.80); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2385221954503752,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.96,
+          "uncertaintyExposure": 0.0001190282586133687,
+          "provenanceFragility": 0.3100289414105545
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0q4m00fupzfav0np5pvm",
+            "actionProposalId": "cmmut0q3900fnpzfablm3eks6",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2385221954503752,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.96,
+            "uncertaintyExposure": 0.0001190282586133687,
+            "provenanceFragility": 0.3100289414105545,
+            "impactedEntityIds": [
+              "cmmut0psi00e4pzfaunextt6r"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0psm00ehpzfayov9vkuq",
+                "entityId": "cmmut0psi00e4pzfaunextt6r",
+                "predicate": "cpu_load_pct",
+                "confidence": 0.6899710585894455
+              },
+              {
+                "claimId": "cmmut0pso00elpzfao5rnzjz4",
+                "entityId": "cmmut0psi00e4pzfaunextt6r",
+                "predicate": "cpu_load_pct",
+                "confidence": 0.6899710585894455
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.80)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.511Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 67.1955447080435
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-002",
+        "name": "Release build with branched test pass rate",
+        "description": "BuildArtifact.test_pass_rate is 0.97 from ci-a, 0.74 from ci-b. Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "software",
+          "release"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "build-artifact",
+              "name": "BuildArtifact",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "value": "0.97",
+              "confidence": 0.85,
+              "source": "ci-a"
+            },
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "value": "0.74",
+              "confidence": 0.85,
+              "source": "ci-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "isOpen": true,
+              "candidates": [
+                "0.97",
+                "0.74"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "build-artifact",
+              "attribute": "test_pass_rate",
+              "operator": ">=",
+              "threshold": 0.95,
+              "description": "Minimum test pass rate"
+            }
+          ],
+          "actions": [
+            {
+              "id": "release_build",
+              "name": "release_build",
+              "impactedEntityNames": [
+                "BuildArtifact"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-002",
+        "evaluatorId": "engine-v2",
+        "durationMs": 461,
+        "contradictionsDetected": [
+          {
+            "entityName": "BuildArtifact",
+            "predicate": "test_pass_rate",
+            "description": "Status conflict on p2-cal-brd-002-1773763549074:BuildArtifact.test_pass_rate: '0.97' vs '0.74'",
+            "score": 0.85,
+            "severity": "CRITICAL"
+          },
+          {
+            "entityName": "BuildArtifact",
+            "predicate": "test_pass_rate",
+            "description": "Status conflict on p2-cal-brd-002-1773763549074:BuildArtifact.test_pass_rate: '0.97' vs '0.74'",
+            "score": 0.85,
+            "severity": "CRITICAL"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00014570319222834534,
+        "explanation": "Coherence: 0.0/100 (Phi=67.196) | Psi=0.247 [CVR=0.000 DBR=0.000 CA=1.000 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-002-1773763549074:BuildArtifact.test_pass_rate: '0.97' vs '0.74'; Status conflict on p2-cal-brd-002-1773763549074:BuildArtifact.test_pass_rate: '0.97' vs '0.74' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.85); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.246522148963865,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 1,
+          "uncertaintyExposure": 0.0001187183485452651,
+          "provenanceFragility": 0.3100289414105545
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0q4k00fspzfayqw3dlzl",
+            "actionProposalId": "cmmut0q3700fmpzfagcl42pqg",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.246522148963865,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 1,
+            "uncertaintyExposure": 0.0001187183485452651,
+            "provenanceFragility": 0.3100289414105545,
+            "impactedEntityIds": [
+              "cmmut0psi00e3pzfa1tam91fo"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0psm00edpzfaes8zeejn",
+                "entityId": "cmmut0psi00e3pzfa1tam91fo",
+                "predicate": "test_pass_rate",
+                "confidence": 0.6899710585894455
+              },
+              {
+                "claimId": "cmmut0psn00ejpzfaooxjnxu8",
+                "entityId": "cmmut0psi00e3pzfa1tam91fo",
+                "predicate": "test_pass_rate",
+                "confidence": 0.6899710585894455
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.85)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.508Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 67.19554560696895
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-003",
+        "name": "Ignite thrusters with branched pressure reading",
+        "description": "ThrusterSystem.pressure_bar: 130 (sensor-a) vs 68 (sensor-b). Branch unresolved.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "thruster",
+          "safety_critical"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "thruster-sys",
+              "name": "ThrusterSystem",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "value": "130",
+              "confidence": 0.75,
+              "source": "sensor-a"
+            },
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "value": "68",
+              "confidence": 0.75,
+              "source": "sensor-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "isOpen": true,
+              "candidates": [
+                "130",
+                "68"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "thruster-sys",
+              "attribute": "pressure_bar",
+              "operator": ">=",
+              "threshold": 100,
+              "description": "Minimum ignition pressure"
+            }
+          ],
+          "actions": [
+            {
+              "id": "ignite_thrusters",
+              "name": "ignite_thrusters",
+              "impactedEntityNames": [
+                "ThrusterSystem"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-003",
+        "evaluatorId": "engine-v2",
+        "durationMs": 457,
+        "contradictionsDetected": [
+          {
+            "entityName": "ThrusterSystem",
+            "predicate": "pressure_bar",
+            "description": "Status conflict on p2-cal-brd-003-1773763549074:ThrusterSystem.pressure_bar: '130' vs '68'",
+            "score": 0.75,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "ThrusterSystem",
+            "predicate": "pressure_bar",
+            "description": "Status conflict on p2-cal-brd-003-1773763549074:ThrusterSystem.pressure_bar: '130' vs '68'",
+            "score": 0.75,
+            "severity": "HIGH"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0001457031791307351,
+        "explanation": "Coherence: 0.0/100 (Phi=67.196) | Psi=0.227 [CVR=0.000 DBR=0.000 CA=0.900 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-003-1773763549074:ThrusterSystem.pressure_bar: '130' vs '68'; Status conflict on p2-cal-brd-003-1773763549074:ThrusterSystem.pressure_bar: '130' vs '68' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.75); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2265220559907051,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.8999999999999999,
+          "uncertaintyExposure": 0.0001180985274793359,
+          "provenanceFragility": 0.3100289414105545
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0q4b00fppzfadefdfhan",
+            "actionProposalId": "cmmut0q3400flpzfa14rvhx40",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2265220559907051,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.8999999999999999,
+            "uncertaintyExposure": 0.0001180985274793359,
+            "provenanceFragility": 0.3100289414105545,
+            "impactedEntityIds": [
+              "cmmut0psi00e5pzfa4lm3tp3v"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0psm00efpzfaqa57z8na",
+                "entityId": "cmmut0psi00e5pzfa4lm3tp3v",
+                "predicate": "pressure_bar",
+                "confidence": 0.6899710585894455
+              },
+              {
+                "claimId": "cmmut0pso00enpzfar1e96esb",
+                "entityId": "cmmut0psi00e5pzfa4lm3tp3v",
+                "predicate": "pressure_bar",
+                "confidence": 0.6899710585894455
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.75)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.499Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 67.19554605643098
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-004",
+        "name": "Approve inspection with branched crack index",
+        "description": "StructuralComponent.crack_index: 0.31 (scan-a) vs 0.67 (scan-b). Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "structural",
+          "approve"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "struct-comp",
+              "name": "StructuralComponent",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "value": "0.31",
+              "confidence": 0.78,
+              "source": "scan-a"
+            },
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "value": "0.67",
+              "confidence": 0.78,
+              "source": "scan-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "isOpen": true,
+              "candidates": [
+                "0.31",
+                "0.67"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "struct-comp",
+              "attribute": "crack_index",
+              "operator": "<=",
+              "threshold": 0.5,
+              "description": "Maximum crack index"
+            }
+          ],
+          "actions": [
+            {
+              "id": "approve_inspection",
+              "name": "approve_inspection",
+              "impactedEntityNames": [
+                "StructuralComponent"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-004",
+        "evaluatorId": "engine-v2",
+        "durationMs": 467,
+        "contradictionsDetected": [
+          {
+            "entityName": "StructuralComponent",
+            "predicate": "crack_index",
+            "description": "Status conflict on p2-cal-brd-004-1773763549535:StructuralComponent.crack_index: '0.31' vs '0.67'",
+            "score": 0.78,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "StructuralComponent",
+            "predicate": "crack_index",
+            "description": "Status conflict on p2-cal-brd-004-1773763549535:StructuralComponent.crack_index: '0.31' vs '0.67'",
+            "score": 0.78,
+            "severity": "HIGH"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0001146097103340644,
+        "explanation": "Coherence: 0.0/100 (Phi=68.396) | Psi=0.234 [CVR=0.000 DBR=0.000 CA=0.936 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-004-1773763549535:StructuralComponent.crack_index: '0.31' vs '0.67'; Status conflict on p2-cal-brd-004-1773763549535:StructuralComponent.crack_index: '0.31' vs '0.67' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.78); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2337220737006687,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.9359999999999999,
+          "uncertaintyExposure": 0.0001177887790202472,
+          "provenanceFragility": 0.310029369225438
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0qh600hmpzfaqy8tn2dl",
+            "actionProposalId": "cmmut0qfy00hhpzfa0zsgmep0",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2337220737006687,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.9359999999999999,
+            "uncertaintyExposure": 0.0001177887790202472,
+            "provenanceFragility": 0.310029369225438,
+            "impactedEntityIds": [
+              "cmmut0q5c00fxpzfa7cn4chkd"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0q5f00g9pzfa3xmshjv7",
+                "entityId": "cmmut0q5c00fxpzfa7cn4chkd",
+                "predicate": "crack_index",
+                "confidence": 0.689970630774562
+              },
+              {
+                "claimId": "cmmut0q5h00ghpzfaqlrfeoe8",
+                "entityId": "cmmut0q5c00fxpzfa7cn4chkd",
+                "predicate": "crack_index",
+                "confidence": 0.689970630774562
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.78)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.962Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 68.39574105426188
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-005",
+        "name": "Activate reactor with branched coolant flow",
+        "description": "ReactorCoolant.flow_lpm: 80 (flowmeter-new) vs 22 (flowmeter-old). Unresolved branch.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "coolant",
+          "reactor"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "reactor-coolant",
+              "name": "ReactorCoolant",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "value": "80",
+              "confidence": 0.8,
+              "source": "flowmeter-new"
+            },
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "value": "22",
+              "confidence": 0.8,
+              "source": "flowmeter-old"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "isOpen": true,
+              "candidates": [
+                "80",
+                "22"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "reactor-coolant",
+              "attribute": "flow_lpm",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum coolant flow"
+            }
+          ],
+          "actions": [
+            {
+              "id": "activate_reactor",
+              "name": "activate_reactor",
+              "impactedEntityNames": [
+                "ReactorCoolant"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-005",
+        "evaluatorId": "engine-v2",
+        "durationMs": 466,
+        "contradictionsDetected": [
+          {
+            "entityName": "ReactorCoolant",
+            "predicate": "flow_lpm",
+            "description": "Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          },
+          {
+            "entityName": "ReactorCoolant",
+            "predicate": "flow_lpm",
+            "description": "Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          },
+          {
+            "entityName": "ReactorCoolant",
+            "predicate": "flow_lpm",
+            "description": "Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00011460979271896867,
+        "explanation": "Coherence: 0.0/100 (Phi=68.396) | Psi=0.268 [CVR=0.000 DBR=0.000 CA=1.000 UE=0.000 PF=0.450] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80'; Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80'; Status conflict on p2-cal-brd-005-1773763549535:ReactorCoolant.flow_lpm: '22' vs '80' | Decision: VALID — 3 existing contradictions involve impacted entities (avg score: 0.80); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.267551223533834,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 1,
+          "uncertaintyExposure": 0.0001710322758303812,
+          "provenanceFragility": 0.4501704579497297
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0qhb00hopzfaciv27fo5",
+            "actionProposalId": "cmmut0qfy00hgpzfa5z3l214h",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.267551223533834,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 1,
+            "uncertaintyExposure": 0.0001710322758303812,
+            "provenanceFragility": 0.4501704579497297,
+            "impactedEntityIds": [
+              "cmmut0q5c00fypzfaotw01f63"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0q5f00gbpzfaojplzkaq",
+                "entityId": "cmmut0q5c00fypzfaotw01f63",
+                "predicate": "flow_lpm",
+                "confidence": 0.5498295420502703
+              },
+              {
+                "claimId": "cmmut0q5h00ggpzfaeh0px4ik",
+                "entityId": "cmmut0q5c00fypzfaotw01f63",
+                "predicate": "flow_lpm",
+                "confidence": 0.5498295420502703
+              }
+            ],
+            "reasons": [
+              "3 existing contradictions involve impacted entities (avg score: 0.80)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.968Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 68.3957374601129
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-006",
+        "name": "Deploy ML model with branched accuracy report",
+        "description": "MLModel.accuracy: 0.97 (eval-a) vs 0.81 (eval-b). Branch open — eval run discrepancy.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "ml",
+          "deploy"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "ml-model",
+              "name": "MLModel",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "value": "0.97",
+              "confidence": 0.82,
+              "source": "eval-a"
+            },
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "value": "0.81",
+              "confidence": 0.82,
+              "source": "eval-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "isOpen": true,
+              "candidates": [
+                "0.97",
+                "0.81"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "ml-model",
+              "attribute": "accuracy",
+              "operator": ">=",
+              "threshold": 0.95,
+              "description": "Target accuracy for deployment"
+            }
+          ],
+          "actions": [
+            {
+              "id": "deploy_model",
+              "name": "deploy_model",
+              "impactedEntityNames": [
+                "MLModel"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-006",
+        "evaluatorId": "engine-v2",
+        "durationMs": 476,
+        "contradictionsDetected": [
+          {
+            "entityName": "MLModel",
+            "predicate": "accuracy",
+            "description": "Status conflict on p2-cal-brd-006-1773763549535:MLModel.accuracy: '0.97' vs '0.81'",
+            "score": 0.82,
+            "severity": "CRITICAL"
+          },
+          {
+            "entityName": "MLModel",
+            "predicate": "accuracy",
+            "description": "Status conflict on p2-cal-brd-006-1773763549535:MLModel.accuracy: '0.97' vs '0.81'",
+            "score": 0.82,
+            "severity": "CRITICAL"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00011460977212267537,
+        "explanation": "Coherence: 0.0/100 (Phi=68.396) | Psi=0.243 [CVR=0.000 DBR=0.000 CA=0.984 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-006-1773763549535:MLModel.accuracy: '0.97' vs '0.81'; Status conflict on p2-cal-brd-006-1773763549535:MLModel.accuracy: '0.97' vs '0.81' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.82); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.24332365422286,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.9839999999999999,
+          "uncertaintyExposure": 0.0001283255936285733,
+          "provenanceFragility": 0.310029369225438
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0qhu00hspzfa7euddww9",
+            "actionProposalId": "cmmut0qgv00hkpzfaet8zmigf",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.24332365422286,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.9839999999999999,
+            "uncertaintyExposure": 0.0001283255936285733,
+            "provenanceFragility": 0.310029369225438,
+            "impactedEntityIds": [
+              "cmmut0q5c00fzpzfaul2ht9ml"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0q5f00g7pzfaspp3u27e",
+                "entityId": "cmmut0q5c00fzpzfaul2ht9ml",
+                "predicate": "accuracy",
+                "confidence": 0.689970630774562
+              },
+              {
+                "claimId": "cmmut0q5g00gdpzfafo7sgru8",
+                "entityId": "cmmut0q5c00fzpzfaul2ht9ml",
+                "predicate": "accuracy",
+                "confidence": 0.689970630774562
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.82)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:49.986Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 68.39573835865284
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-007",
+        "name": "Release package with branched schema version",
+        "description": "DataPackage.schema_version: 3.0 (registry-a) vs 4.0 (registry-b). Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "data",
+          "release"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "data-pkg",
+              "name": "DataPackage",
+              "type": "artifact"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "data-pkg",
+              "attribute": "schema_version",
+              "value": "3.0",
+              "confidence": 0.77,
+              "source": "registry-a"
+            },
+            {
+              "entityId": "data-pkg",
+              "attribute": "schema_version",
+              "value": "4.0",
+              "confidence": 0.77,
+              "source": "registry-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "data-pkg",
+              "attribute": "schema_version",
+              "isOpen": true,
+              "candidates": [
+                "3.0",
+                "4.0"
+              ]
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "release_package",
+              "name": "release_package",
+              "impactedEntityNames": [
+                "DataPackage"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-007",
+        "evaluatorId": "engine-v2",
+        "durationMs": 468,
+        "contradictionsDetected": [
+          {
+            "entityName": "DataPackage",
+            "predicate": "schema_version",
+            "description": "Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0'",
+            "score": 0.77,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "DataPackage",
+            "predicate": "schema_version",
+            "description": "Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0'",
+            "score": 0.77,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "DataPackage",
+            "predicate": "schema_version",
+            "description": "Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0'",
+            "score": 0.77,
+            "severity": "HIGH"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00009659174519473658,
+        "explanation": "Coherence: 0.0/100 (Phi=69.251) | Psi=0.268 [CVR=0.000 DBR=0.000 CA=1.000 UE=0.000 PF=0.450] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0'; Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0'; Status conflict on p2-cal-brd-007-1773763550011:DataPackage.schema_version: '3.0' vs '4.0' | Decision: VALID — 3 existing contradictions involve impacted entities (avg score: 0.77); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2675520910187721,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 1,
+          "uncertaintyExposure": 0.0001750829262800605,
+          "provenanceFragility": 0.4501721905322003
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0quq00jppzfaq3dqmrfo",
+            "actionProposalId": "cmmut0qtd00jhpzfaw9m49dtz",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2675520910187721,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 1,
+            "uncertaintyExposure": 0.0001750829262800605,
+            "provenanceFragility": 0.4501721905322003,
+            "impactedEntityIds": [
+              "cmmut0qij00hupzfa3zqzx61w"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0qin00i4pzfa1el0vqoi",
+                "entityId": "cmmut0qij00hupzfa3zqzx61w",
+                "predicate": "schema_version",
+                "confidence": 0.5498278094677997
+              },
+              {
+                "claimId": "cmmut0qio00iapzfaukfu322l",
+                "entityId": "cmmut0qij00hupzfa3zqzx61w",
+                "predicate": "schema_version",
+                "confidence": 0.5498278094677997
+              }
+            ],
+            "reasons": [
+              "3 existing contradictions involve impacted entities (avg score: 0.77)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:50.451Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 69.25093729927943
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-008",
+        "name": "Finalize burn with branched delta-v estimate",
+        "description": "PropulsionModule.dv_remaining_ms: 120 (nav-a) vs 38 (nav-b). Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "propulsion",
+          "finalize"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "prop-module",
+              "name": "PropulsionModule",
+              "type": "subsystem"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "value": "120",
+              "confidence": 0.76,
+              "source": "nav-a"
+            },
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "value": "38",
+              "confidence": 0.76,
+              "source": "nav-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "isOpen": true,
+              "candidates": [
+                "120",
+                "38"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "prop-module",
+              "attribute": "dv_remaining_ms",
+              "operator": ">=",
+              "threshold": 50,
+              "description": "Minimum delta-v reserve"
+            }
+          ],
+          "actions": [
+            {
+              "id": "finalize_burn",
+              "name": "finalize_burn",
+              "impactedEntityNames": [
+                "PropulsionModule"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-008",
+        "evaluatorId": "engine-v2",
+        "durationMs": 467,
+        "contradictionsDetected": [
+          {
+            "entityName": "PropulsionModule",
+            "predicate": "dv_remaining_ms",
+            "description": "Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38'",
+            "score": 0.76,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "PropulsionModule",
+            "predicate": "dv_remaining_ms",
+            "description": "Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38'",
+            "score": 0.76,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "PropulsionModule",
+            "predicate": "dv_remaining_ms",
+            "description": "Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38'",
+            "score": 0.76,
+            "severity": "HIGH"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0000965916931430934,
+        "explanation": "Coherence: 0.0/100 (Phi=69.251) | Psi=0.265 [CVR=0.000 DBR=0.000 CA=0.988 UE=0.000 PF=0.450] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38'; Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38'; Status conflict on p2-cal-brd-008-1773763550011:PropulsionModule.dv_remaining_ms: '120' vs '38' | Decision: VALID — 3 existing contradictions involve impacted entities (avg score: 0.76); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2651521888765888,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.9880000000000002,
+          "uncertaintyExposure": 0.0001759828228373568,
+          "provenanceFragility": 0.4501719430210873
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0quq00jnpzfa8w3te8t5",
+            "actionProposalId": "cmmut0qtg00jjpzfazyo2kumd",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2651521888765888,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.9880000000000002,
+            "uncertaintyExposure": 0.0001759828228373568,
+            "provenanceFragility": 0.4501719430210873,
+            "impactedEntityIds": [
+              "cmmut0qij00hvpzfaoiyx7m0d"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0qio00icpzfas46wc468",
+                "entityId": "cmmut0qij00hvpzfaoiyx7m0d",
+                "predicate": "dv_remaining_ms",
+                "confidence": 0.5498280569789127
+              },
+              {
+                "claimId": "cmmut0qin00i6pzfadueeficu",
+                "entityId": "cmmut0qij00hvpzfaoiyx7m0d",
+                "predicate": "dv_remaining_ms",
+                "confidence": 0.5498280569789127
+              }
+            ],
+            "reasons": [
+              "3 existing contradictions involve impacted entities (avg score: 0.76)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:50.450Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 69.25093999369483
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-009",
+        "name": "Open valve with branched tank pressure",
+        "description": "FuelTank.pressure_psi: 2750 (sensor-a) vs 3150 (sensor-b). Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "fuel",
+          "valve"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "fuel-tank",
+              "name": "FuelTank",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "value": "2750",
+              "confidence": 0.79,
+              "source": "sensor-a"
+            },
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "value": "3150",
+              "confidence": 0.79,
+              "source": "sensor-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "isOpen": true,
+              "candidates": [
+                "2750",
+                "3150"
+              ]
+            }
+          ],
+          "constraints": [
+            {
+              "entityId": "fuel-tank",
+              "attribute": "pressure_psi",
+              "operator": "<=",
+              "threshold": 3000,
+              "description": "Maximum safe pressure"
+            }
+          ],
+          "actions": [
+            {
+              "id": "open_release_valve",
+              "name": "open_release_valve",
+              "impactedEntityNames": [
+                "FuelTank"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-009",
+        "evaluatorId": "engine-v2",
+        "durationMs": 467,
+        "contradictionsDetected": [
+          {
+            "entityName": "FuelTank",
+            "predicate": "pressure_psi",
+            "description": "Status conflict on p2-cal-brd-009-1773763550011:FuelTank.pressure_psi: '3150' vs '2750'",
+            "score": 0.79,
+            "severity": "HIGH"
+          },
+          {
+            "entityName": "FuelTank",
+            "predicate": "pressure_psi",
+            "description": "Status conflict on p2-cal-brd-009-1773763550011:FuelTank.pressure_psi: '3150' vs '2750'",
+            "score": 0.79,
+            "severity": "HIGH"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.00009659172784415085,
+        "explanation": "Coherence: 0.0/100 (Phi=69.251) | Psi=0.236 [CVR=0.000 DBR=0.000 CA=0.948 UE=0.000 PF=0.310] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-009-1773763550011:FuelTank.pressure_psi: '3150' vs '2750'; Status conflict on p2-cal-brd-009-1773763550011:FuelTank.pressure_psi: '3150' vs '2750' | Decision: VALID — 2 existing contradictions involve impacted entities (avg score: 0.79); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2361226846705139,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.948,
+          "uncertaintyExposure": 0.0001205784698545392,
+          "provenanceFragility": 0.310030652666905
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0qup00jlpzfa9imhoxjj",
+            "actionProposalId": "cmmut0qtf00jipzfazlok4icu",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2361226846705139,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.948,
+            "uncertaintyExposure": 0.0001205784698545392,
+            "provenanceFragility": 0.310030652666905,
+            "impactedEntityIds": [
+              "cmmut0qij00hwpzfa8fh1cqoa"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0qin00i8pzfa4tf32vgl",
+                "entityId": "cmmut0qij00hwpzfa8fh1cqoa",
+                "predicate": "pressure_psi",
+                "confidence": 0.689969347333095
+              },
+              {
+                "claimId": "cmmut0qip00iepzfazy1lqq2k",
+                "entityId": "cmmut0qij00hwpzfa8fh1cqoa",
+                "predicate": "pressure_psi",
+                "confidence": 0.689969347333095
+              }
+            ],
+            "reasons": [
+              "2 existing contradictions involve impacted entities (avg score: 0.79)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:50.449Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 69.2509381974197
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    },
+    {
+      "scenario": {
+        "id": "cal-brd-010",
+        "name": "Finalize calibration with branched reference temperature",
+        "description": "CalibrationTarget.reference_temp_c: 20.0 (ref-a) vs 25.8 (ref-b). Branch open.",
+        "familyId": "calibration",
+        "category": "branch",
+        "tags": [
+          "branch_dependent",
+          "calibration",
+          "sensor"
+        ],
+        "expectedAction": "BRANCH_DEPENDENT",
+        "setup": {
+          "entities": [
+            {
+              "id": "cal-target",
+              "name": "CalibrationTarget",
+              "type": "component"
+            }
+          ],
+          "claims": [
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "value": "20.0",
+              "confidence": 0.8,
+              "source": "ref-a"
+            },
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "value": "25.8",
+              "confidence": 0.8,
+              "source": "ref-b"
+            }
+          ],
+          "branches": [
+            {
+              "entityId": "cal-target",
+              "attribute": "reference_temp_c",
+              "isOpen": true,
+              "candidates": [
+                "20.0",
+                "25.8"
+              ]
+            }
+          ],
+          "constraints": [],
+          "actions": [
+            {
+              "id": "finalize_calibration",
+              "name": "finalize_calibration",
+              "impactedEntityNames": [
+                "CalibrationTarget"
+              ]
+            }
+          ]
+        }
+      },
+      "result": {
+        "scenarioId": "cal-brd-010",
+        "evaluatorId": "engine-v2",
+        "durationMs": 288,
+        "contradictionsDetected": [
+          {
+            "entityName": "CalibrationTarget",
+            "predicate": "reference_temp_c",
+            "description": "Status conflict on p2-cal-brd-010-1773763550479:CalibrationTarget.reference_temp_c: '25.8' vs '20.0'",
+            "score": 0.8,
+            "severity": "CRITICAL"
+          }
+        ],
+        "branchCreated": false,
+        "actionAdmissibility": "VALID",
+        "invalidatedEntityNames": [],
+        "coherenceScore": 0.0004834802246359313,
+        "explanation": "Coherence: 0.0/100 (Phi=61.198) | Psi=0.206 [CVR=0.000 DBR=0.000 CA=0.880 UE=0.000 PF=0.200] DeltaPhi=2.000 | Contradictions: Status conflict on p2-cal-brd-010-1773763550479:CalibrationTarget.reference_temp_c: '25.8' vs '20.0' | Decision: VALID — 1 existing contradictions involve impacted entities (avg score: 0.80); Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities",
+        "rawScores": {
+          "psiScore": 0.2060071991360692,
+          "deltaPhi": 2,
+          "constraintViolationRisk": 0,
+          "dependencyBreakageRisk": 0,
+          "contradictionAmplification": 0.8800000000000001,
+          "uncertaintyExposure": 0.00004799424046078026,
+          "provenanceFragility": 0.2
+        },
+        "rawOutput": {
+          "validation": {
+            "id": "cmmut0r2z00k9pzfahqrdljr0",
+            "actionProposalId": "cmmut0r2900k7pzfaszv9ljgy",
+            "admissibility": "VALID",
+            "deltaPhi": 2,
+            "psiScore": 0.2060071991360692,
+            "constraintViolationRisk": 0,
+            "dependencyBreakageRisk": 0,
+            "contradictionAmplification": 0.8800000000000001,
+            "uncertaintyExposure": 0.00004799424046078026,
+            "provenanceFragility": 0.2,
+            "impactedEntityIds": [
+              "cmmut0qvj00jtpzfazyreju79"
+            ],
+            "provenanceChain": [
+              {
+                "claimId": "cmmut0qvo00jzpzfajqhym69h",
+                "entityId": "cmmut0qvj00jtpzfazyreju79",
+                "predicate": "reference_temp_c",
+                "confidence": 0.8
+              },
+              {
+                "claimId": "cmmut0qvm00jxpzfa186vatuk",
+                "entityId": "cmmut0qvj00jtpzfazyreju79",
+                "predicate": "reference_temp_c",
+                "confidence": 0.8
+              }
+            ],
+            "reasons": [
+              "1 existing contradictions involve impacted entities (avg score: 0.80)",
+              "Estimated DeltaPhi=2.000 based on 0 existing violations on impacted entities"
+            ],
+            "createdAt": "2026-03-17T16:05:50.747Z"
+          },
+          "settlingRounds": 2,
+          "phiFinal": 61.198351651691056
+        }
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0
+      }
+    }
+  ]
+}
