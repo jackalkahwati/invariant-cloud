@@ -36,6 +36,7 @@ export const engineConfig: EngineConfig = {
   branchThreshold: getEnvFloat('BRANCH_THRESHOLD', 0.7),
   actionBudget: getEnvFloat('ACTION_BUDGET', 5.0),
   actionEpsilon: getEnvFloat('ACTION_EPSILON', 0.6),
+  settlingMaxRounds: parseInt(process.env['SETTLING_MAX_ROUNDS'] ?? '50', 10),
 };
 
 export const serverConfig = {

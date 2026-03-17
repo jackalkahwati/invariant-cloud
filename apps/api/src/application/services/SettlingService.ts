@@ -57,7 +57,7 @@ export interface SettlingResult {
 
 export class SettlingService {
   private detector: ContradictionDetectorRegistry;
-  private readonly MAX_ROUNDS = 50;
+  private readonly MAX_ROUNDS: number;
 
   constructor(
     private readonly claimRepo: IClaimRepository,
@@ -70,6 +70,7 @@ export class SettlingService {
     private readonly config: EngineConfig,
   ) {
     this.detector = new ContradictionDetectorRegistry();
+    this.MAX_ROUNDS = config.settlingMaxRounds ?? 50;
   }
 
   /**
@@ -284,6 +285,8 @@ export class SettlingService {
 
     // ── Step 5: Recompute confidence for active claims ───────────
     const refreshedClaims = await this.claimRepo.findAll({ status: 'ACTIVE' });
+    // Hoist contradiction query outside the per-claim loop (fixes N+1 query)
+    const allContradictions = await this.contradictionRepo.findAll('OPEN');
 
     for (const claim of refreshedClaims) {
       const staleness = computeStaleness(claim.timestamp, now, this.config.stalenessLambda);
@@ -302,7 +305,6 @@ export class SettlingService {
       const corroboration = total.length > 1 ? corroborating.length / (total.length - 1) : 0;
 
       // Count contradictions applying to this claim
-      const allContradictions = await this.contradictionRepo.findAll('OPEN');
       const claimContradictions = allContradictions.filter(
         c => c.claimAId === claim.id || c.claimBId === claim.id
       );

@@ -395,4 +395,5 @@ export interface EngineConfig {
   branchThreshold: number;         // score above which to create branch
   actionBudget: number;            // DeltaPhi budget for action admissibility
   actionEpsilon: number;           // Psi threshold for action admissibility
+  settlingMaxRounds?: number;      // max settling iterations (default 50)
 }

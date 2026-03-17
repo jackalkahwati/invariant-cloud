@@ -13,7 +13,7 @@
  *   6. no_budget         — DeltaPhi budget=Infinity, only Psi enforced
  */
 
-import { engineConfig } from '../../src/infrastructure/config.js';
+import { engineConfig } from '../../../api/src/infrastructure/config.js';
 import { runScenarioThroughEngine, type HarnessConfig } from './harness.js';
 import type { Scenario, EvaluationResult } from '../scenarios/types.js';
 

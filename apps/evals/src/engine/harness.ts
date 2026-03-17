@@ -10,20 +10,20 @@
  *     a modified execution plan)
  */
 
-import prisma from '../../src/infrastructure/database/prisma.js';
-import { PrismaEntityRepository } from '../../src/infrastructure/database/repositories/EntityRepository.js';
-import { PrismaSourceRepository } from '../../src/infrastructure/database/repositories/SourceRepository.js';
-import { PrismaClaimRepository } from '../../src/infrastructure/database/repositories/ClaimRepository.js';
-import { PrismaConstraintRepository } from '../../src/infrastructure/database/repositories/ConstraintRepository.js';
-import { PrismaDependencyRepository } from '../../src/infrastructure/database/repositories/DependencyRepository.js';
-import { PrismaContradictionRepository } from '../../src/infrastructure/database/repositories/ContradictionRepository.js';
-import { PrismaBranchRepository } from '../../src/infrastructure/database/repositories/BranchRepository.js';
-import { PrismaActionRepository } from '../../src/infrastructure/database/repositories/ActionRepository.js';
-import { PrismaSnapshotRepository } from '../../src/infrastructure/database/repositories/SnapshotRepository.js';
-import { PrismaAuditRepository } from '../../src/infrastructure/database/repositories/AuditRepository.js';
-import { SettlingService } from '../../src/application/services/SettlingService.js';
-import { ActionValidationService } from '../../src/application/services/ActionValidationService.js';
-import type { EngineConfig } from '../../src/domain/entities/types.js';
+import prisma from '../../../api/src/infrastructure/database/prisma.js';
+import { PrismaEntityRepository } from '../../../api/src/infrastructure/database/repositories/EntityRepository.js';
+import { PrismaSourceRepository } from '../../../api/src/infrastructure/database/repositories/SourceRepository.js';
+import { PrismaClaimRepository } from '../../../api/src/infrastructure/database/repositories/ClaimRepository.js';
+import { PrismaConstraintRepository } from '../../../api/src/infrastructure/database/repositories/ConstraintRepository.js';
+import { PrismaDependencyRepository } from '../../../api/src/infrastructure/database/repositories/DependencyRepository.js';
+import { PrismaContradictionRepository } from '../../../api/src/infrastructure/database/repositories/ContradictionRepository.js';
+import { PrismaBranchRepository } from '../../../api/src/infrastructure/database/repositories/BranchRepository.js';
+import { PrismaActionRepository } from '../../../api/src/infrastructure/database/repositories/ActionRepository.js';
+import { PrismaSnapshotRepository } from '../../../api/src/infrastructure/database/repositories/SnapshotRepository.js';
+import { PrismaAuditRepository } from '../../../api/src/infrastructure/database/repositories/AuditRepository.js';
+import { SettlingService } from '../../../api/src/application/services/SettlingService.js';
+import { ActionValidationService } from '../../../api/src/application/services/ActionValidationService.js';
+import type { EngineConfig } from '../../../api/src/domain/entities/types.js';
 import type { Scenario, EvaluationResult, ActionAdmissibility } from '../scenarios/types.js';
 
 export interface HarnessConfig {
@@ -273,10 +273,48 @@ export async function runScenarioThroughEngine(
       coherenceScore,
     );
 
-    // ── 13. Cleanup: mark entities inactive (to avoid cross-run interference) ─
-    for (const entityId of entityMap.values()) {
-      await entityRepo.update(entityId, { isActive: false });
+    // ── 13. Cleanup: hard-delete all namespace records to keep the DB lean ─────
+    const entityIds = [...entityMap.values()];
+    const sourceIds = [...sourceMap.values()];
+
+    // Get claim IDs for these entities
+    const nsClaims = await prisma.claim.findMany({ where: { entityId: { in: entityIds } }, select: { id: true } });
+    const nsClaimIds = nsClaims.map(c => c.id);
+
+    // Get constraint IDs that reference these entities (entityIds is a Postgres array field)
+    const nsConstraints = await prisma.constraint.findMany({
+      where: { entityIds: { hasSome: entityIds } }, select: { id: true }
+    });
+    const nsConstraintIds = nsConstraints.map(c => c.id);
+
+    // Get contradiction IDs involving our claims
+    const nsContradictions = await prisma.contradiction.findMany({
+      where: { OR: [{ claimAId: { in: nsClaimIds } }, { claimBId: { in: nsClaimIds } }] },
+      select: { id: true, branchId: true },
+    });
+    const nsContradictionIds = nsContradictions.map(c => c.id);
+    const nsBranchIds = nsContradictions.map(c => c.branchId).filter(Boolean) as string[];
+
+    // Delete in FK-safe order
+    // First get action proposal IDs for this namespace
+    const nsProposals = await prisma.actionProposal.findMany({
+      where: { impactedEntityIds: { hasSome: entityIds } }, select: { id: true }
+    });
+    const nsProposalIds = nsProposals.map(p => p.id);
+    await prisma.actionValidation.deleteMany({ where: { actionProposalId: { in: nsProposalIds } } });
+    await prisma.actionProposal.deleteMany({ where: { id: { in: nsProposalIds } } });
+    await prisma.contradiction.deleteMany({ where: { id: { in: nsContradictionIds } } });
+    if (nsBranchIds.length > 0) {
+      await prisma.branch.deleteMany({ where: { id: { in: nsBranchIds } } });
     }
+    await prisma.constraintViolation.deleteMany({ where: { constraintId: { in: nsConstraintIds } } });
+    await prisma.dependency.deleteMany({ where: { OR: [{ fromEntityId: { in: entityIds } }, { toEntityId: { in: entityIds } }] } });
+    await prisma.constraint.deleteMany({ where: { id: { in: nsConstraintIds } } });
+    await prisma.provenanceEdge.deleteMany({ where: { OR: [{ sourceClaimId: { in: nsClaimIds } }, { targetClaimId: { in: nsClaimIds } }] } });
+    await prisma.claimEvidence.deleteMany({ where: { claimId: { in: nsClaimIds } } });
+    await prisma.claim.deleteMany({ where: { id: { in: nsClaimIds } } });
+    await prisma.entity.deleteMany({ where: { id: { in: entityIds } } });
+    await prisma.source.deleteMany({ where: { id: { in: sourceIds } } });
 
     return {
       scenarioId: scenario.id,

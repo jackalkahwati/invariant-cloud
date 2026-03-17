@@ -78,7 +78,7 @@ if (ablationsOnly) {
 await runEvals({
   scenarios,
   evaluators,
-  concurrency: parseInt(process.env['EVAL_CONCURRENCY'] ?? '3', 10),
+  concurrency: parseInt(process.env['EVAL_CONCURRENCY'] ?? '1', 10),
   runId: `coherence-evals-${suite}`,
   verbose: process.env['EVAL_VERBOSE'] === '1',
   saveJson: true,

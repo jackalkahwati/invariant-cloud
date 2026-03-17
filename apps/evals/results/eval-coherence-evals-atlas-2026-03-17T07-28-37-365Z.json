@@ -1,0 +1,5201 @@
+{
+  "runId": "coherence-evals-atlas",
+  "timestamp": "2026-03-17T07:28:37.365Z",
+  "summary": [
+    {
+      "evaluatorId": "engine_full",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4747789791907441,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.45959251416184205,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5570346320346321
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.5427880126409538
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_no_branching",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.7931034482758621,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.034482758620689655,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4221927722941923,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.40512822844755636,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5903679653679654
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.41957372692666806
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_no_settling",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4747789791907441,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.45959251416184205,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5570346320346321
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.5427880126409538
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_unsigned_deps",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.034482758620689655,
+      "meanReasoningCoverage": 0.46406174398060795,
+      "meanOverallScore": 0.4346245652026583,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.41443258538846767,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 1,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5310606060606061
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.2889838556505223
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.48692100383276854
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_no_provenance",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4747789791907441,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.45959251416184205,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5570346320346321
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.5427880126409538
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_no_staleness",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4747789791907441,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.45959251416184205,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5570346320346321
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.5427880126409538
+        }
+      }
+    },
+    {
+      "evaluatorId": "ablation_no_budget",
+      "scenarioCount": 29,
+      "meanContradictionF1": 0.6459770114942529,
+      "meanBranchF1": 0.9655172413793104,
+      "actionAccuracy": 0.034482758620689655,
+      "actionWithinRiskRate": 0.13793103448275862,
+      "meanInvalidationF1": 0.34482758620689646,
+      "meanReasoningCoverage": 0.5552610562752548,
+      "meanOverallScore": 0.4747789791907441,
+      "byCategory": {
+        "action_safety": {
+          "count": 28,
+          "meanOverallScore": 0.45959251416184205,
+          "actionAccuracy": 0
+        },
+        "contradiction": {
+          "count": 1,
+          "meanOverallScore": 0.9,
+          "actionAccuracy": 1
+        }
+      },
+      "byDifficulty": {
+        "easy": {
+          "count": 6,
+          "meanOverallScore": 0.5570346320346321
+        },
+        "medium": {
+          "count": 9,
+          "meanOverallScore": 0.31415004748338077
+        },
+        "hard": {
+          "count": 14,
+          "meanOverallScore": 0.5427880126409538
+        }
+      }
+    }
+  ],
+  "ablationDeltas": [
+    {
+      "ablationId": "ablation_no_branching",
+      "ablationName": "no branching",
+      "deltaOverallScore": 0.0525862068965518,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0.1724137931034483,
+      "deltaInvalidationF1": 0,
+      "percentageDrop": 11.075934108579208
+    },
+    {
+      "ablationId": "ablation_no_settling",
+      "ablationName": "no settling",
+      "deltaOverallScore": 0,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0,
+      "deltaInvalidationF1": 0,
+      "percentageDrop": 0
+    },
+    {
+      "ablationId": "ablation_unsigned_deps",
+      "ablationName": "unsigned deps",
+      "deltaOverallScore": 0.04015441398808578,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0,
+      "deltaInvalidationF1": 0.3103448275862068,
+      "percentageDrop": 8.457496171487746
+    },
+    {
+      "ablationId": "ablation_no_provenance",
+      "ablationName": "no provenance",
+      "deltaOverallScore": 0,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0,
+      "deltaInvalidationF1": 0,
+      "percentageDrop": 0
+    },
+    {
+      "ablationId": "ablation_no_staleness",
+      "ablationName": "no staleness",
+      "deltaOverallScore": 0,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0,
+      "deltaInvalidationF1": 0,
+      "percentageDrop": 0
+    },
+    {
+      "ablationId": "ablation_no_budget",
+      "ablationName": "no budget",
+      "deltaOverallScore": 0,
+      "deltaActionAccuracy": 0,
+      "deltaContradictionF1": 0,
+      "deltaBranchF1": 0,
+      "deltaInvalidationF1": 0,
+      "percentageDrop": 0
+    }
+  ],
+  "rawResults": [
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.45
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-not_started-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0,
+        "overallScore": 0.45
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-t7-in_progress-clean",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.14285714285714285,
+        "overallScore": 0.4642857142857143
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-20.1",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-21.3",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.3712121212121212
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.3712121212121212
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.29545454545454547
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.3712121212121212
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.3712121212121212
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-mass-24",
+        "category": "action_safety",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.3712121212121212
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 1
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-clean-pass",
+        "category": "contradiction",
+        "difficulty": "easy"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": true,
+        "actionWithinRisk": true,
+        "invalidationRecall": 1,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 1,
+        "overallScore": 0.9
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-not_started",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.4444444444444444,
+        "overallScore": 0.24444444444444446
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-req-complete-verif-in_progress",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-not_started-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6666666666666666,
+        "overallScore": 0.26666666666666666
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.4444444444444444,
+        "overallScore": 0.24444444444444446
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-green",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.4444444444444444,
+        "overallScore": 0.24444444444444446
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-multihop-in_progress-launch-amber",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.2772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.18181818181818182,
+        "overallScore": 0.4681818181818182
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.2772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.18181818181818182,
+        "overallScore": 0.4681818181818182
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.2772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.18181818181818182,
+        "overallScore": 0.4681818181818182
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.2727272727272727,
+        "overallScore": 0.4772727272727273
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-3600s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-86400s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-stale-launch-604800s",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6153846153846154,
+        "overallScore": 0.42820512820512824
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-1",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.4444444444444444,
+        "overallScore": 0.24444444444444446
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-2",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6153846153846154,
+        "overallScore": 0.42820512820512824
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-3",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6153846153846154,
+        "overallScore": 0.42820512820512824
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-4",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.45454545454545453,
+        "overallScore": 0.4954545454545455
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-compound-5",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 1,
+        "contradictionPrecision": 1,
+        "contradictionF1": 1,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.5454545454545454,
+        "overallScore": 0.5712121212121213
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6153846153846154,
+        "overallScore": 0.42820512820512824
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-18",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.6153846153846154,
+        "overallScore": 0.42820512820512824
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-19.5",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.5,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.6666666666666666,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6923076923076923,
+        "overallScore": 0.5025641025641026
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.4444444444444444,
+        "overallScore": 0.24444444444444446
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-alt-limit-22",
+        "category": "action_safety",
+        "difficulty": "medium"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0,
+        "contradictionPrecision": 0,
+        "contradictionF1": 0,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5555555555555556,
+        "overallScore": 0.2555555555555556
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.33137254901960783
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5882352941176471,
+        "overallScore": 0.6338235294117647
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-red",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.33137254901960783
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5882352941176471,
+        "overallScore": 0.6338235294117647
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-green-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "engine_full",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_branching",
+        "admissibility": "VALID"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 0,
+        "branchRecall": 0,
+        "actionCorrect": false,
+        "actionWithinRisk": false,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.33137254901960783
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_settling",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_unsigned_deps",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0,
+        "invalidationPrecision": 0,
+        "reasoningKeywordCoverage": 0.5882352941176471,
+        "overallScore": 0.6338235294117647
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_provenance",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_staleness",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    },
+    {
+      "scenario": {
+        "id": "atlas-conflict-mass-red-vs-amber",
+        "category": "action_safety",
+        "difficulty": "hard"
+      },
+      "result": {
+        "evaluatorId": "ablation_no_budget",
+        "admissibility": "BRANCH_DEPENDENT"
+      },
+      "metrics": {
+        "contradictionRecall": 0.6666666666666666,
+        "contradictionPrecision": 1,
+        "contradictionF1": 0.8,
+        "branchPrecision": 1,
+        "branchRecall": 1,
+        "actionCorrect": false,
+        "actionWithinRisk": true,
+        "invalidationRecall": 0.5,
+        "invalidationPrecision": 1,
+        "reasoningKeywordCoverage": 0.6470588235294118,
+        "overallScore": 0.7063725490196078
+      }
+    }
+  ]
+}
