@@ -79,7 +79,7 @@ export async function runScenarioV2ThroughEngine(
     for (const e of setup.entities) {
       const entity = await entityRepo.create({
         name: `${namespace}:${e.name}`,
-        type: e.type as never,
+        type: normalizeEntityType(e.type) as never,
         description: undefined,
         metadata: { evalNamespace: namespace, originalName: e.name, localId: e.id },
         isActive: true,
@@ -122,7 +122,7 @@ export async function runScenarioV2ThroughEngine(
       await claimRepo.create({
         entityId: entityDbId,
         predicate: cs.attribute,
-        value: cs.value,
+        value: coerceClaimValue(cs.value),
         confidence: cs.confidence ?? 0.9,
         sourceId,
         timestamp,
@@ -149,11 +149,7 @@ export async function runScenarioV2ThroughEngine(
         name: `${namespace}:${cs.entityId}:${cs.attribute}`,
         description: cs.description ?? `${cs.attribute} ${cs.operator} ${cs.threshold}`,
         type: 'NUMERIC_RANGE' as never,
-        expression: {
-          attribute: cs.attribute,
-          operator: cs.operator,
-          value: cs.threshold,
-        } as never,
+        expression: buildConstraintExpression(cs.attribute, cs.operator, cs.threshold, entityDbId),
         entityIds: [entityDbId],
         weight: cs.severity ?? 1.0,
         isActive: true,
@@ -222,10 +218,10 @@ export async function runScenarioV2ThroughEngine(
       await contradictionRepo.create({
         claimAId: claimA.id,
         claimBId: claimB.id,
-        type: 'VALUE_CONFLICT' as never,
+        type: 'NUMERIC_CONFLICT' as never,
         description: `Contradictory values for ${ctr.attribute}: ${ctr.valueA} vs ${ctr.valueB}`,
         score: 0.8,
-        severity: 0.8,
+        severity: 'HIGH' as never,
         status: 'OPEN' as never,
         branchId: null,
       });
@@ -252,21 +248,44 @@ export async function runScenarioV2ThroughEngine(
       const entityDbId = entityIdMap.get(br.entityId);
       if (!entityDbId) continue;
 
-      // Find the contradiction for this entity+attribute (created above or detected)
+      // Find or create the contradiction for this entity+attribute.
+      // Keep contradiction status OPEN so ActionValidationService's hasBranchDependence
+      // check (openBranches > 0 && openContradictions on entity) fires correctly.
       const allContradictions = await contradictionRepo.findAll();
-      const matching = allContradictions.find(c => {
-        const claimAEntityId = (c as { claimA?: { entityId?: string } }).claimA?.entityId;
-        return claimAEntityId === entityDbId;
-      });
+      let matching = (allContradictions as Array<{ id: string; claimA?: { entityId?: string; predicate?: string } }>)
+        .find(c => c.claimA?.entityId === entityDbId && c.claimA?.predicate === br.attribute);
+
+      if (!matching) {
+        // No pre-existing contradiction — create one from conflicting claims on this entity/attribute
+        const entityClaims = await claimRepo.findAll('ACTIVE');
+        const relevantClaims = (entityClaims as Array<{ id: string; entityId: string; predicate: string }>)
+          .filter(c => c.entityId === entityDbId && c.predicate === br.attribute);
+
+        if (relevantClaims.length >= 2) {
+          // Use the default system source
+          const defaultSourceId = sourceMap.get('system') ?? [...sourceMap.values()][0];
+          const newContradiction = await contradictionRepo.create({
+            claimAId: relevantClaims[0]!.id,
+            claimBId: relevantClaims[1]!.id,
+            type: 'NUMERIC_CONFLICT' as never,
+            description: `Conflicting values for ${br.attribute}: candidates [${br.candidates.join(', ')}]`,
+            score: 0.9,
+            severity: 'HIGH' as never,
+            status: 'OPEN' as never,
+            branchId: null,
+          });
+          matching = { id: newContradiction.id, claimA: { entityId: entityDbId, predicate: br.attribute } };
+          void defaultSourceId; // suppress unused warning
+        }
+      }
 
       if (matching) {
-        // Create an open branch for this contradiction
-        const branch = await branchRepo.create({
+        await branchRepo.create({
+          name: `branch:${br.attribute}:[${br.candidates.join('|')}]`,
           contradictionId: matching.id,
           status: 'OPEN' as never,
           description: `Open branch on ${br.attribute}: candidates [${br.candidates.join(', ')}]`,
         });
-        await contradictionRepo.update(matching.id, { branchId: branch.id, status: 'BRANCHED' as never });
       }
     }
 
@@ -450,7 +469,17 @@ async function cleanupNamespace(
     select: { id: true, branchId: true },
   });
   const nsContradictionIds = nsContradictions.map(c => c.id);
-  const nsBranchIds = nsContradictions.map(c => c.branchId).filter(Boolean) as string[];
+  // Collect branch IDs from both contradiction.branchId and branch.contradictionId
+  const nsBranchIdsFromContradiction = nsContradictions.map(c => c.branchId).filter(Boolean) as string[];
+  const nsBranchesFromContradictionId = nsContradictionIds.length > 0
+    ? await db.branch.findMany({
+        where: { contradictionId: { in: nsContradictionIds } },
+        select: { id: true },
+      })
+    : [];
+  const nsBranchIds = [
+    ...new Set([...nsBranchIdsFromContradiction, ...nsBranchesFromContradictionId.map(b => b.id)]),
+  ];
 
   const nsProposals = await db.actionProposal.findMany({
     where: { impactedEntityIds: { hasSome: entityIds } }, select: { id: true }
@@ -533,4 +562,70 @@ function buildV2Explanation(
   parts.push(`Decision: ${admissibility}${reasons.length ? ` — ${reasons.join('; ')}` : ''}`);
 
   return parts.join(' | ');
+}
+
+// ── Entity type normalizer ─────────────────────────────────────────────────────
+
+const ENTITY_TYPE_MAP: Record<string, string> = {
+  component: 'COMPONENT',
+  subsystem: 'SUBSYSTEM',
+  system: 'GENERIC',
+  artifact: 'FILE',
+  service: 'AGENT',
+  agent: 'AGENT',
+  person: 'PERSON',
+  project: 'PROJECT',
+  task: 'TASK',
+  file: 'FILE',
+  requirement: 'REQUIREMENT',
+  experiment: 'EXPERIMENT',
+  hypothesis: 'HYPOTHESIS',
+  environment: 'ENVIRONMENT_STATE',
+  generic: 'GENERIC',
+};
+
+function normalizeEntityType(raw: string): string {
+  return ENTITY_TYPE_MAP[raw.toLowerCase()] ?? raw.toUpperCase();
+}
+
+// ── Claim value coercion ──────────────────────────────────────────────────────
+// Numeric strings like '45.0' → 45.0 so checkConstraintViolation can compare them.
+
+function coerceClaimValue(v: unknown): unknown {
+  if (typeof v === 'string') {
+    const n = Number(v);
+    if (!isNaN(n) && v.trim() !== '') return n;
+  }
+  return v;
+}
+
+// ── Constraint expression builder ─────────────────────────────────────────────
+// Maps V2 { attribute, operator, threshold } → engine NUMERIC_RANGE expression
+
+function buildConstraintExpression(
+  attribute: string,
+  operator: string,
+  threshold: number,
+  entityId: string,
+): Record<string, unknown> {
+  const expr: Record<string, unknown> = {
+    type: 'NUMERIC_RANGE',
+    predicate: attribute,
+    entityIds: [entityId],
+  };
+
+  switch (operator) {
+    case '>=': case '>':
+      expr['min'] = threshold;
+      break;
+    case '<=': case '<':
+      expr['max'] = threshold;
+      break;
+    case '==': case '===':
+      expr['min'] = threshold;
+      expr['max'] = threshold;
+      break;
+  }
+
+  return expr;
 }

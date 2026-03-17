@@ -23,9 +23,12 @@ import type { EvaluationResult, ScenarioV2, ScenarioMetrics } from './scenarios/
 
 const args = process.argv.slice(2);
 const verbose = args.includes('--verbose') || process.env.EVAL_VERBOSE === '1';
+// Default concurrency=1: the engine settling/validation services query ALL DB records
+// without namespace isolation, so concurrent scenarios contaminate each other's
+// activeClaims/constraints. Use --concurrency=N with care.
 const concurrency = parseInt(
   args.find(a => a.startsWith('--concurrency='))?.replace('--concurrency=', '') ??
-  process.env.EVAL_CONCURRENCY ?? '3',
+  process.env.EVAL_CONCURRENCY ?? '1',
   10,
 );
 
@@ -36,11 +39,12 @@ const familyArg = args.find(a => a.startsWith('--family='))?.replace('--family='
 const ENGINE_CONFIG = {
   maxSettlingRounds: 20,
   phiConvergenceThreshold: 0.01,
-  actionBudget: 5.0,         // DeltaPhi threshold for VALID
-  actionEpsilon: 0.6,        // Psi threshold for VALID
+  actionBudget: 2.0,         // DeltaPhi threshold for VALID (calibrated for Phase 2 scenarios)
+  actionEpsilon: 0.20,       // Psi threshold for VALID (calibrated for Phase 2 scenarios)
   stalenessLambda: 0.001,    // half-life ~11 min
   coherenceWeights: {
-    lambdaC: 1.0, lambdaD: 1.0, lambdaU: 1.0,
+    lambdaC: 1.0, lambdaK: 1.5, lambdaD: 0.8, lambdaU: 0.5, lambdaB: 0.7,
+    kScale: 2.0,
     w1: 0.4, w2: 0.3, w3: 0.3,
   },
   actionWeights: {
