@@ -358,13 +358,14 @@ model ActionValidation {
   // DeltaPhi(a) = Phi(G after action) - Phi(G current)
   deltaPhi                Float
 
-  // Psi(a,G) = mu1*CVR + mu2*DBR + mu3*CA + mu4*UE + mu5*PF
+  // Psi(a,G) = mu1*CVR + mu2*DBR + mu3*CA + mu4*UE + mu5*PF + mu6*PropagatedRisk
   psiScore                Float
   constraintViolationRisk Float
   dependencyBreakageRisk  Float
   contradictionAmplification Float
   uncertaintyExposure     Float
   provenanceFragility     Float
+  propagatedRisk          Float  @default(0)  // Phase 1: transitive risk via dependency graph
 
   impactedEntityIds       String[]
   provenanceChain         Json     @default("[]")

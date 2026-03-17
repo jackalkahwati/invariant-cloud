@@ -244,13 +244,14 @@ export function computeCoherenceScore(phi: number, kScale: number, phiRef = 10.0
 
 /**
  * Psi(a, G) =
- *     mu_1 * ConstraintViolationRisk(a, G)
- *   + mu_2 * DependencyBreakageRisk(a, G)
- *   + mu_3 * ContradictionAmplification(a, G)
- *   + mu_4 * UncertaintyExposure(a, G)
- *   + mu_5 * ProvenanceFragility(a, G)
+ *     mu_1 * ConstraintViolationRisk(a, G)       — direct constraint violations on impacted entities
+ *   + mu_2 * DependencyBreakageRisk(a, G)         — direct dependency breakage
+ *   + mu_3 * ContradictionAmplification(a, G)     — direct contradiction amplification
+ *   + mu_4 * UncertaintyExposure(a, G)            — staleness / confidence uncertainty
+ *   + mu_5 * ProvenanceFragility(a, G)            — provenance chain fragility
+ *   + mu_6 * PropagatedRisk(a, G)                 — transitive risk via dependency graph (Phase 1)
  *
- * Each component is [0,1].
+ * Each component is [0,1]. mu6 defaults to 0.20 if not set.
  */
 export function computePsi(
   components: {
@@ -259,15 +260,18 @@ export function computePsi(
     contradictionAmplification: number;
     uncertaintyExposure: number;
     provenanceFragility: number;
+    propagatedRisk?: number;  // graph-propagated transitive risk (Phase 1)
   },
   weights: ActionWeights,
 ): number {
+  const mu6 = weights.mu6 ?? 0.20;
   return (
     weights.mu1 * components.constraintViolationRisk
     + weights.mu2 * components.dependencyBreakageRisk
     + weights.mu3 * components.contradictionAmplification
     + weights.mu4 * components.uncertaintyExposure
     + weights.mu5 * components.provenanceFragility
+    + mu6 * (components.propagatedRisk ?? 0)
   );
 }
 
@@ -276,19 +280,32 @@ export function computePsi(
 // ============================================================
 
 /**
- * An action is:
- *   VALID           if DeltaPhi <= budget AND Psi <= epsilon
- *   RISKY           if slightly above threshold but reviewable
- *   BLOCKED         if well above threshold
- *   BRANCH_DEPENDENT if validity differs by active branch
+ * Classify action admissibility.
+ *
+ * Classification rules (in priority order):
+ *   1. BRANCH_DEPENDENT if validity differs by active branch
+ *   2. BLOCKED if propagatedRisk alone exceeds the global threshold θ_global
+ *      (transitive hard-constraint violations trigger this even with low local risk)
+ *   3. BLOCKED if DeltaPhi > budget OR Psi > epsilon by more than the RISKY band
+ *   4. RISKY   if slightly above thresholds (within 50%)
+ *   5. VALID   otherwise
+ *
+ * The key addition is rule 2: propagated risk can trigger BLOCKED independently
+ * of local Psi, addressing the root cause of BLOCKED under-classification.
  */
 export function classifyActionAdmissibility(
   deltaPhi: number,
   psi: number,
-  config: Pick<EngineConfig, 'actionBudget' | 'actionEpsilon'>,
+  config: Pick<EngineConfig, 'actionBudget' | 'actionEpsilon' | 'propagatedRiskGlobalThreshold'>,
   hasBranchDependence: boolean,
+  propagatedRisk = 0,
 ): 'VALID' | 'RISKY' | 'BLOCKED' | 'BRANCH_DEPENDENT' {
   if (hasBranchDependence) return 'BRANCH_DEPENDENT';
+
+  // Rule 2: propagated risk alone can trigger BLOCKED
+  // Default threshold θ_global = 0.70
+  const thetaGlobal = config.propagatedRiskGlobalThreshold ?? 0.70;
+  if (propagatedRisk > thetaGlobal) return 'BLOCKED';
 
   const phiOk = deltaPhi <= config.actionBudget;
   const psiOk = psi <= config.actionEpsilon;

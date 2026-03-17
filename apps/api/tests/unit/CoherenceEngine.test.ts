@@ -33,11 +33,13 @@ const actionWeights: ActionWeights = {
   mu3: 0.20,
   mu4: 0.15,
   mu5: 0.15,
+  mu6: 0.20,  // propagated risk weight
 };
 
-const config: Pick<EngineConfig, 'actionBudget' | 'actionEpsilon'> = {
+const config: Pick<EngineConfig, 'actionBudget' | 'actionEpsilon' | 'propagatedRiskGlobalThreshold'> = {
   actionBudget: 5.0,
   actionEpsilon: 0.6,
+  propagatedRiskGlobalThreshold: 0.70,
 };
 
 // ── Staleness ─────────────────────────────────────────────────
@@ -300,13 +302,20 @@ describe('computeCoherenceScore', () => {
 describe('computePsi', () => {
   it('returns 0 for all-zero components', () => {
     const psi = computePsi(
-      { constraintViolationRisk: 0, dependencyBreakageRisk: 0, contradictionAmplification: 0, uncertaintyExposure: 0, provenanceFragility: 0 },
+      { constraintViolationRisk: 0, dependencyBreakageRisk: 0, contradictionAmplification: 0, uncertaintyExposure: 0, provenanceFragility: 0, propagatedRisk: 0 },
       actionWeights,
     );
     expect(psi).toBe(0);
   });
 
-  it('returns weighted sum of components', () => {
+  it('returns weighted sum of components including propagated risk', () => {
+    const components = { constraintViolationRisk: 0.8, dependencyBreakageRisk: 0.6, contradictionAmplification: 0.4, uncertaintyExposure: 0.2, provenanceFragility: 0.3, propagatedRisk: 0.5 };
+    const psi = computePsi(components, actionWeights);
+    const expected = 0.25*0.8 + 0.25*0.6 + 0.20*0.4 + 0.15*0.2 + 0.15*0.3 + 0.20*0.5;
+    expect(psi).toBeCloseTo(expected, 5);
+  });
+
+  it('propagatedRisk defaults to 0 when omitted', () => {
     const components = { constraintViolationRisk: 0.8, dependencyBreakageRisk: 0.6, contradictionAmplification: 0.4, uncertaintyExposure: 0.2, provenanceFragility: 0.3 };
     const psi = computePsi(components, actionWeights);
     const expected = 0.25*0.8 + 0.25*0.6 + 0.20*0.4 + 0.15*0.2 + 0.15*0.3;
@@ -331,6 +340,33 @@ describe('classifyActionAdmissibility', () => {
 
   it('BRANCH_DEPENDENT when branch dependence exists', () => {
     expect(classifyActionAdmissibility(0, 0, config, true)).toBe('BRANCH_DEPENDENT');
+  });
+
+  // Phase 1: global threshold rule — propagated risk alone triggers BLOCKED
+  it('BLOCKED when propagated risk exceeds global threshold even with low local Psi', () => {
+    // action looks locally safe (deltaPhi=0, psi=0.1) but has a hard constraint
+    // violation reachable downstream (propagatedRisk=0.9 > theta_global=0.70)
+    expect(classifyActionAdmissibility(0, 0.1, config, false, 0.9)).toBe('BLOCKED');
+  });
+
+  it('VALID when propagated risk is below global threshold', () => {
+    // modest transitive risk (0.3) does not trigger global threshold
+    expect(classifyActionAdmissibility(2.0, 0.3, config, false, 0.3)).toBe('VALID');
+  });
+
+  it('RISKY when propagated risk is low but Psi is slightly elevated', () => {
+    expect(classifyActionAdmissibility(6.5, 0.7, config, false, 0.1)).toBe('RISKY');
+  });
+
+  it('BRANCH_DEPENDENT takes priority over propagated risk global threshold', () => {
+    // even with severe propagated risk, branch dependence is evaluated first
+    expect(classifyActionAdmissibility(0, 0.1, config, true, 0.9)).toBe('BRANCH_DEPENDENT');
+  });
+
+  it('BLOCKED when propagated risk equals the threshold exactly (boundary)', () => {
+    // strictly greater than, so exactly at threshold = not blocked by global rule
+    expect(classifyActionAdmissibility(2.0, 0.3, config, false, 0.70)).toBe('VALID');
+    expect(classifyActionAdmissibility(2.0, 0.3, config, false, 0.701)).toBe('BLOCKED');
   });
 });
 

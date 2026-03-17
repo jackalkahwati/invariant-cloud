@@ -25,11 +25,12 @@ export const engineConfig: EngineConfig = {
     kScale:  getEnvFloat('COHERENCE_K_SCALE',  2.0),
   },
   actionWeights: {
-    mu1: 0.25,  // constraint violation risk
-    mu2: 0.25,  // dependency breakage risk
-    mu3: 0.20,  // contradiction amplification
-    mu4: 0.15,  // uncertainty exposure
+    mu1: 0.20,  // constraint violation risk
+    mu2: 0.20,  // dependency breakage risk
+    mu3: 0.15,  // contradiction amplification
+    mu4: 0.10,  // uncertainty exposure
     mu5: 0.15,  // provenance fragility
+    mu6: 0.20,  // propagated risk (Phase 1: graph-traversal transitive risk)
   },
   stalenessLambda: getEnvFloat('STALENESS_LAMBDA', 0.001),
   contradictionThreshold: getEnvFloat('CONTRADICTION_THRESHOLD', 0.5),
@@ -37,6 +38,10 @@ export const engineConfig: EngineConfig = {
   actionBudget: getEnvFloat('ACTION_BUDGET', 5.0),
   actionEpsilon: getEnvFloat('ACTION_EPSILON', 0.6),
   settlingMaxRounds: parseInt(process.env['SETTLING_MAX_ROUNDS'] ?? '50', 10),
+  // Phase 1: propagated risk via dependency graph traversal
+  propagatedRiskGlobalThreshold: getEnvFloat('PROPAGATED_RISK_GLOBAL_THRESHOLD', 0.70),
+  propagationHops: parseInt(process.env['PROPAGATION_HOPS'] ?? '4', 10),
+  propagationDecay: getEnvFloat('PROPAGATION_DECAY', 0.7),
 };
 
 export const serverConfig = {

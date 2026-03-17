@@ -61,6 +61,7 @@ export class PrismaActionRepository implements IActionRepository {
         contradictionAmplification: data.contradictionAmplification,
         uncertaintyExposure: data.uncertaintyExposure,
         provenanceFragility: data.provenanceFragility,
+        propagatedRisk: data.propagatedRisk,
         impactedEntityIds: data.impactedEntityIds,
         provenanceChain: data.provenanceChain as never,
         reasons: data.reasons,

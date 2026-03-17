@@ -283,13 +283,14 @@ export interface ActionValidation {
   actionProposalId: string;
   admissibility: ActionStatus;
 
-  deltaPhi: number;                  // coherence cost
-  psiScore: number;                  // total inconsistency score
-  constraintViolationRisk: number;   // mu1 component
-  dependencyBreakageRisk: number;    // mu2 component
+  deltaPhi: number;                   // coherence cost
+  psiScore: number;                   // total inconsistency score
+  constraintViolationRisk: number;    // mu1 component
+  dependencyBreakageRisk: number;     // mu2 component
   contradictionAmplification: number; // mu3 component
-  uncertaintyExposure: number;       // mu4 component
-  provenanceFragility: number;       // mu5 component
+  uncertaintyExposure: number;        // mu4 component
+  provenanceFragility: number;        // mu5 component
+  propagatedRisk: number;             // mu6 component: transitive risk via dependency graph
 
   impactedEntityIds: string[];
   provenanceChain: ProvenanceRef[];
@@ -380,20 +381,25 @@ export interface CoherenceWeights {
 }
 
 export interface ActionWeights {
-  mu1: number;  // constraint violation risk weight
-  mu2: number;  // dependency breakage risk weight
-  mu3: number;  // contradiction amplification weight
-  mu4: number;  // uncertainty exposure weight
-  mu5: number;  // provenance fragility weight
+  mu1: number;   // constraint violation risk weight
+  mu2: number;   // dependency breakage risk weight
+  mu3: number;   // contradiction amplification weight
+  mu4: number;   // uncertainty exposure weight
+  mu5: number;   // provenance fragility weight
+  mu6?: number;  // propagated risk weight (graph-propagated transitive risk)
 }
 
 export interface EngineConfig {
   coherenceWeights: CoherenceWeights;
   actionWeights: ActionWeights;
-  stalenessLambda: number;         // decay constant for staleness
-  contradictionThreshold: number;  // score above which to flag contradiction
-  branchThreshold: number;         // score above which to create branch
-  actionBudget: number;            // DeltaPhi budget for action admissibility
-  actionEpsilon: number;           // Psi threshold for action admissibility
-  settlingMaxRounds?: number;      // max settling iterations (default 50)
+  stalenessLambda: number;                    // decay constant for staleness
+  contradictionThreshold: number;             // score above which to flag contradiction
+  branchThreshold: number;                    // score above which to create branch
+  actionBudget: number;                       // DeltaPhi budget for action admissibility
+  actionEpsilon: number;                      // Psi threshold for action admissibility
+  settlingMaxRounds?: number;                 // max settling iterations (default 50)
+  // Phase 1: propagated risk via dependency graph traversal
+  propagatedRiskGlobalThreshold?: number;     // θ_global: propagated risk alone triggers BLOCKED (default 0.70)
+  propagationHops?: number;                   // k: max BFS depth for graph traversal (default 4)
+  propagationDecay?: number;                  // δ: per-hop risk decay factor (default 0.7)
 }
