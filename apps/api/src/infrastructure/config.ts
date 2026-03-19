@@ -50,3 +50,26 @@ export const serverConfig = {
   apiKey: getEnvString('API_KEY', 'dev-api-key'),
   logLevel: getEnvString('LOG_LEVEL', 'info') as 'trace' | 'debug' | 'info' | 'warn' | 'error',
 };
+
+export const stripeConfig = {
+  secretKey:           process.env['STRIPE_SECRET_KEY']            ?? '',
+  teamPriceId:         process.env['STRIPE_TEAM_PRICE_ID']         ?? process.env['STRIPE_PRICE_ID'] ?? '',
+  enterprisePriceId:   process.env['STRIPE_ENTERPRISE_PRICE_ID']   ?? '',
+  webhookSecret:       process.env['STRIPE_WEBHOOK_SECRET']        ?? '',
+  successUrl:          getEnvString('STRIPE_SUCCESS_URL', 'http://localhost:8080/success.html'),
+  cancelUrl:           getEnvString('STRIPE_CANCEL_URL',  'http://localhost:8080/pricing.html'),
+};
+
+export const authConfig = {
+  jwtSecret:    getEnvString('JWT_SECRET', 'dev-jwt-secret-change-in-prod'),
+  jwtExpiresIn: getEnvString('JWT_EXPIRES_IN', '7d'),
+};
+
+export const emailConfig = {
+  host:     getEnvString('SMTP_HOST',     'smtp.gmail.com'),
+  port:     parseInt(getEnvString('SMTP_PORT', '587'), 10),
+  user:     getEnvString('SMTP_USER',     ''),
+  pass:     getEnvString('SMTP_PASS',     ''),
+  from:     getEnvString('SMTP_FROM',     'Invariant <hello@invariant.dev>'),
+  enabled:  process.env['SMTP_USER'] !== undefined && process.env['SMTP_USER'] !== '',
+};

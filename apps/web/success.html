@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Welcome to Team</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#adc6ff",
+        "primary-container": "#4d8eff",
+        "on-primary": "#002e6a",
+        "on-primary-container": "#00285d",
+        "secondary": "#ffb95f",
+        "tertiary": "#4edea3",
+        "on-surface": "#dae2fd",
+        "on-surface-variant": "#c2c6d6",
+        "surface": "#0b1326",
+        "surface-container-lowest": "#060e20",
+        "surface-container-low": "#131b2e",
+        "surface-container": "#171f33",
+        "surface-container-high": "#222a3d",
+        "surface-container-highest": "#2d3449",
+        "outline": "#8c909f",
+        "outline-variant": "#424754",
+      },
+      fontFamily: {
+        headline: ["Space Grotesk", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+    },
+  },
+};
+</script>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col items-center justify-center px-6">
+
+<!-- Top nav -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326]">
+  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-headline">Invariant</a>
+  <div class="flex items-center gap-3">
+    <a href="account.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">My Account</a>
+    <a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+  </div>
+</nav>
+
+<main class="max-w-lg w-full text-center pt-16">
+  <!-- Success icon -->
+  <div class="w-20 h-20 rounded-full bg-tertiary/10 flex items-center justify-center mx-auto mb-8">
+    <span class="material-symbols-outlined text-tertiary" style="font-size:40px;font-variation-settings:'FILL' 1;">check_circle</span>
+  </div>
+
+  <div class="font-mono text-[10px] text-tertiary uppercase tracking-widest mb-4">Subscription Active</div>
+  <h1 class="font-headline text-4xl font-bold tracking-tight mb-4">You're on Team.</h1>
+  <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+    Your 14-day free trial has started. No charge until it ends.<br/>
+    Full access to Invariant Cloud — managed hosting, audit exports, and webhook alerts.
+  </p>
+
+  <!-- Next steps -->
+  <div class="bg-surface-container-low rounded-xl p-6 text-left mb-8 space-y-4">
+    <h2 class="font-headline font-bold text-base mb-4">Next steps</h2>
+
+    <div class="flex items-start gap-4">
+      <div class="w-7 h-7 rounded bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+        <span class="font-mono text-[11px] text-primary font-bold">1</span>
+      </div>
+      <div>
+        <div class="font-medium text-sm mb-1">Point your SDK at Invariant Cloud</div>
+        <code class="text-xs font-mono text-on-surface-variant bg-surface-container px-2 py-1 rounded block">
+          new InvariantClient({ baseUrl: 'https://api.invariant.dev' })
+        </code>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-4">
+      <div class="w-7 h-7 rounded bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+        <span class="font-mono text-[11px] text-primary font-bold">2</span>
+      </div>
+      <div>
+        <div class="font-medium text-sm mb-1">Check the World State dashboard</div>
+        <p class="text-xs text-on-surface-variant">See your agents' claims, contradictions, and coherence score in real time.</p>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-4">
+      <div class="w-7 h-7 rounded bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+        <span class="font-mono text-[11px] text-primary font-bold">3</span>
+      </div>
+      <div>
+        <div class="font-medium text-sm mb-1">Read the SDK docs</div>
+        <p class="text-xs text-on-surface-variant">Full API reference, code examples, and constraint authoring guide.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="dashboard.html" class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm">
+      <span class="material-symbols-outlined text-sm">dashboard</span>
+      Open Dashboard
+    </a>
+    <a href="docs.html" class="px-6 py-3 bg-surface-container-high text-on-surface font-bold rounded-lg hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2 text-sm">
+      <span class="material-symbols-outlined text-sm">description</span>
+      View Docs
+    </a>
+  </div>
+</main>
+
+<footer class="mt-auto py-8 text-xs font-mono text-outline">© 2026 Invariant</footer>
+
+</body></html>

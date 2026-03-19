@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Pricing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#adc6ff",
+                        "on-secondary": "#472a00",
+                        "on-tertiary-container": "#00311f",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error": "#690005",
+                        "surface-container": "#171f33",
+                        "secondary-container": "#ee9800",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-tertiary-fixed": "#002113",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#283044",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#c2c6d6",
+                        "secondary": "#ffb95f",
+                        "on-surface": "#dae2fd",
+                        "surface-bright": "#31394d",
+                        "on-primary": "#002e6a",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#2d3449",
+                        "inverse-primary": "#005ac2",
+                        "tertiary-container": "#00a572",
+                        "surface-variant": "#2d3449",
+                        "on-background": "#dae2fd",
+                        "on-secondary-container": "#5b3800",
+                        "outline": "#8c909f",
+                        "surface": "#0b1326",
+                        "on-primary-container": "#00285d",
+                        "primary-container": "#4d8eff",
+                        "on-tertiary": "#003824",
+                        "error-container": "#93000a",
+                        "outline-variant": "#424754",
+                        "surface-dim": "#0b1326",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-low": "#131b2e",
+                        "tertiary": "#4edea3",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed": "#ffddb8",
+                        "surface-container-high": "#222a3d",
+                        "surface-tint": "#adc6ff",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(34, 42, 61, 0.8);
+            backdrop-filter: blur(16px);
+        }
+        .math-gradient {
+            background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .node-link-bg {
+            background-image: radial-gradient(#424754 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .cta-primary {
+            background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- TopNavBar -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight border-b border-outline-variant/10">
+<div class="flex items-center gap-8">
+<a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter hover:text-primary transition-colors">Invariant</a>
+<div class="hidden md:flex gap-6">
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="index.html">Home</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="docs.html">Docs</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="dashboard.html">Dashboard</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank">GitHub</a>
+<a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] h-16 flex items-center" href="pricing.html">Pricing</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+</div>
+</nav>
+
+<main class="pt-16">
+
+<!-- Hero -->
+<section class="relative py-24 px-6 flex flex-col items-center justify-center overflow-hidden">
+<div class="absolute inset-0 node-link-bg opacity-10 pointer-events-none"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-primary/8 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="relative z-10 max-w-3xl w-full text-center">
+<div class="inline-flex items-center px-3 py-1 bg-surface-container-high rounded border border-outline-variant/20 mb-6">
+<span class="font-mono text-[10px] uppercase tracking-widest text-primary">Open Core Model</span>
+</div>
+<h1 class="font-headline text-5xl md:text-7xl font-bold tracking-tighter mb-6 leading-[0.95]">
+Simple, honest pricing
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+The engine is open source. You pay for the platform around it.
+</p>
+</div>
+</section>
+
+<!-- Pricing Cards -->
+<section class="py-16 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+
+<!-- Free — Self-Hosted -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col">
+<div class="mb-6">
+<h2 class="font-headline text-xl font-bold text-on-surface mb-1">Free</h2>
+<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Self-Hosted</p>
+<div class="mb-4">
+<span class="font-headline text-4xl font-bold text-on-surface">$0</span>
+<span class="text-on-surface-variant text-sm ml-1">/ forever</span>
+</div>
+<p class="text-sm text-on-surface-variant">For individuals and open source projects</p>
+</div>
+
+<a href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank" class="mb-8 w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">code</span>
+View on GitHub
+</a>
+
+<ul class="space-y-3 flex-1">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Full CoherenceEngine source code</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Unlimited claims &amp; observations</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Contradiction detection &amp; branching</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Action validation (&#936; scoring)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">REST API + SDK</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Community support (GitHub Issues)</span>
+</li>
+</ul>
+
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<p class="text-xs font-mono text-outline">Apache 2.0 license</p>
+</div>
+</div>
+
+<!-- Team — Cloud (HIGHLIGHTED) -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-primary/40 flex flex-col relative" style="box-shadow: 0 0 32px rgba(173,198,255,0.08);">
+<div class="absolute -top-3 left-8">
+<span class="bg-primary/10 text-primary font-mono text-[10px] px-2 py-0.5 rounded border border-primary/20 uppercase tracking-wider">Most Popular</span>
+</div>
+
+<div class="mb-6">
+<h2 class="font-headline text-xl font-bold text-on-surface mb-1">Team</h2>
+<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud</p>
+<div class="mb-4">
+<span class="font-headline text-4xl font-bold text-on-surface">$200</span>
+<span class="text-on-surface-variant text-sm ml-1">/ month</span>
+</div>
+<p class="text-sm text-on-surface-variant">For teams shipping AI agents to production</p>
+</div>
+
+<button id="checkout-btn" onclick="startCheckout()" class="mb-8 w-full py-2.5 px-4 cta-primary text-on-primary font-bold text-sm rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span id="checkout-btn-text">Start free trial</span>
+</button>
+
+<ul class="space-y-3 flex-1">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Everything in Free</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Managed cloud hosting (no ops)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Multi-agent session management</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Team world state — shared graph across agents</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Audit log exports (JSON, CSV)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Webhook alerts when &#934; exceeds threshold</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Slack &amp; PagerDuty integrations</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Email support, 48h SLA</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Up to 10M claims/month included</span>
+</li>
+</ul>
+
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<p class="text-xs font-mono text-outline">Additional claims at $0.01 per 10k</p>
+</div>
+</div>
+
+<!-- Enterprise — Cloud -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col">
+<div class="mb-6">
+<h2 class="font-headline text-xl font-bold text-on-surface mb-1">Enterprise</h2>
+<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud</p>
+<div class="mb-4">
+<span class="font-headline text-4xl font-bold text-on-surface">$800</span>
+<span class="text-on-surface-variant text-sm"> / month</span>
+</div>
+<p class="text-sm text-on-surface-variant">For regulated industries and large-scale deployments</p>
+</div>
+
+<button id="enterprise-checkout-btn" onclick="startCheckout('enterprise')" class="mb-2 w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">shield</span>
+<span id="enterprise-checkout-btn-text">Start free trial</span>
+</button>
+<a href="mailto:hello@invariant.dev" class="mb-6 w-full text-center text-xs text-outline hover:text-primary transition-colors block">
+Need on-premise or custom SLA? Contact us →
+</a>
+
+<ul class="space-y-3 flex-1">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Everything in Team</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">SOC 2 Type II compliance</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">HIPAA-ready audit trails</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">On-premise / VPC deployment option</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Custom claim volume + SLA</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">SSO / SAML / RBAC</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Dedicated Slack channel</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Custom constraint policy authoring (UI)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Priority support, 4h SLA</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Quarterly architecture review</span>
+</li>
+</ul>
+
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<p class="text-xs font-mono text-outline">Custom billing &amp; contract terms</p>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- Comparison Table -->
+<section class="py-16 px-6 bg-surface-container-low">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-12">
+<h2 class="font-headline text-3xl font-bold tracking-tight mb-3">Full comparison</h2>
+<p class="text-on-surface-variant text-sm">Every tier, every feature, no fine print surprises.</p>
+</div>
+
+<div class="rounded-xl overflow-hidden border border-outline-variant/20">
+<!-- Table header -->
+<div class="grid grid-cols-4 bg-surface-container-highest px-6 py-4">
+<div class="text-xs font-mono text-outline uppercase tracking-wider">Feature</div>
+<div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Free</div>
+<div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Team</div>
+<div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Enterprise</div>
+</div>
+
+<!-- Row 1 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">Hosting</div>
+<div class="text-xs text-center text-on-surface-variant">Self-managed</div>
+<div class="text-xs text-center text-on-surface-variant">Invariant Cloud</div>
+<div class="text-xs text-center text-on-surface-variant">Invariant Cloud / VPC</div>
+</div>
+
+<!-- Row 2 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">Claims/month</div>
+<div class="text-xs text-center text-on-surface-variant">Unlimited (self)</div>
+<div class="text-xs text-center text-on-surface-variant">10M included</div>
+<div class="text-xs text-center text-on-surface-variant">Custom</div>
+</div>
+
+<!-- Row 3 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">World state persistence</div>
+<div class="text-xs text-center text-on-surface-variant">Local DB</div>
+<div class="text-xs text-center text-on-surface-variant">Managed Postgres</div>
+<div class="text-xs text-center text-on-surface-variant">Managed / Bring your own</div>
+</div>
+
+<!-- Row 4 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">Audit exports</div>
+<div class="text-xs text-center text-outline">—</div>
+<div class="text-xs text-center text-on-surface-variant">JSON, CSV</div>
+<div class="text-xs text-center text-on-surface-variant">JSON, CSV, PDF, SIEM</div>
+</div>
+
+<!-- Row 5 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">SSO / RBAC</div>
+<div class="text-xs text-center text-outline">—</div>
+<div class="text-xs text-center text-outline">—</div>
+<div class="text-xs text-center">
+<span class="material-symbols-outlined text-tertiary text-sm">check</span>
+</div>
+</div>
+
+<!-- Row 6 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">SLA</div>
+<div class="text-xs text-center text-on-surface-variant">Community</div>
+<div class="text-xs text-center text-on-surface-variant">48h</div>
+<div class="text-xs text-center text-on-surface-variant">4h</div>
+</div>
+
+<!-- Row 7 -->
+<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
+<div class="text-sm text-on-surface-variant font-mono text-xs">Compliance</div>
+<div class="text-xs text-center text-outline">—</div>
+<div class="text-xs text-center text-outline">—</div>
+<div class="text-xs text-center text-on-surface-variant">SOC 2, HIPAA</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="py-24 px-6">
+<div class="max-w-3xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-4xl font-bold tracking-tight mb-3">Frequently asked</h2>
+<p class="text-on-surface-variant">Straight answers to real questions.</p>
+</div>
+
+<div class="space-y-4">
+
+<!-- FAQ 1 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-lg mb-4">Is the engine really fully open source?</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The CoherenceEngine, SettlingService, ContradictionDetector, and ActionValidationService are all Apache 2.0. Fork it, self-host it, build on it. No "open core tricks" inside the core engine — the limits are at the platform layer only.</p>
+</div>
+
+<!-- FAQ 2 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-lg mb-4">What counts as a "claim"?</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">A claim is any assertion pushed to <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /claims</code> or extracted from <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /observations</code>. Think of it as one fact about one entity at one point in time. Claims are lightweight — typical agent sessions generate hundreds to thousands, not millions.</p>
+</div>
+
+<!-- FAQ 3 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-lg mb-4">Can I start self-hosted and migrate to Cloud later?</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The Cloud API is a drop-in replacement for your self-hosted endpoint. Change one line in your <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">InvariantClient</code> config — same SDK, same methods, same response shapes. No data migration required.</p>
+</div>
+
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="py-12 px-6 border-t border-outline-variant/5 bg-surface-container-lowest">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold text-[#dae2fd] tracking-tighter">Invariant Engine</span>
+<span class="text-[10px] font-mono text-outline">v2.4.0-stable</span>
+</div>
+<div class="flex gap-8">
+<a class="text-sm text-outline hover:text-primary transition-colors" href="docs.html">Docs</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank">GitHub</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="pricing.html">Pricing</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="mailto:hello@invariant.dev">Enterprise</a>
+</div>
+<div class="text-sm text-outline font-mono">
+                &copy; 2026 Invariant
+            </div>
+</div>
+</footer>
+
+<script>
+const API_BASE = 'http://localhost:3000';
+
+async function startCheckout(tier = 'team') {
+  const btnId   = tier === 'enterprise' ? 'enterprise-checkout-btn' : 'checkout-btn';
+  const textId  = tier === 'enterprise' ? 'enterprise-checkout-btn-text' : 'checkout-btn-text';
+  const btn     = document.getElementById(btnId);
+  const btnText = document.getElementById(textId);
+
+  btn.disabled = true;
+  btnText.textContent = 'Redirecting…';
+  btn.classList.add('opacity-70');
+
+  try {
+    // Pass workspaceId and email from localStorage if user is signed in
+    const wsRaw = localStorage.getItem('inv_workspace');
+    const ws = wsRaw ? JSON.parse(wsRaw) : null;
+    const body = { tier };
+    if (ws?.id) body.workspaceId = ws.id;
+    const token = localStorage.getItem('inv_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload?.email) body.email = payload.email;
+      } catch {}
+    }
+
+    const res = await fetch(`${API_BASE}/checkout/session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.error || 'Could not start checkout. Is the API running?');
+      btnText.textContent = 'Start free trial';
+      btn.disabled = false;
+      btn.classList.remove('opacity-70');
+      return;
+    }
+
+    window.location.href = data.url;
+  } catch (e) {
+    alert('Could not reach the API. Make sure the server is running on localhost:3000.');
+    btnText.textContent = 'Start free trial';
+    btn.disabled = false;
+    btn.classList.remove('opacity-70');
+  }
+}
+</script>
+</body></html>

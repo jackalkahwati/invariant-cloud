@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | SDK &amp; API Docs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .syntax-keyword { color: #adc6ff; } /* primary */
+        .syntax-string { color: #4edea3; }  /* tertiary / Success Green */
+        .syntax-comment { color: #8c909f; } /* outline */
+        .syntax-function { color: #ffb95f; } /* secondary / Warning Amber */
+        .syntax-constant { color: #4d8eff; } /* primary-container / Safety Blue */
+        
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        code, pre { font-family: 'Fira Code', monospace; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b1326; }
+        ::-webkit-scrollbar-thumb { background: #2d3449; border-radius: 10px; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#adc6ff",
+                "on-secondary": "#472a00",
+                "on-tertiary-container": "#00311f",
+                "tertiary-fixed": "#6ffbbe",
+                "on-error": "#690005",
+                "surface-container": "#171f33",
+                "secondary-container": "#ee9800",
+                "on-secondary-fixed": "#2a1700",
+                "on-tertiary-fixed": "#002113",
+                "on-error-container": "#ffdad6",
+                "primary-fixed": "#d8e2ff",
+                "inverse-on-surface": "#283044",
+                "on-tertiary-fixed-variant": "#005236",
+                "on-surface-variant": "#c2c6d6",
+                "secondary": "#ffb95f",
+                "on-surface": "#dae2fd",
+                "surface-bright": "#31394d",
+                "on-primary": "#002e6a",
+                "inverse-surface": "#dae2fd",
+                "on-secondary-fixed-variant": "#653e00",
+                "surface-container-highest": "#2d3449",
+                "inverse-primary": "#005ac2",
+                "tertiary-container": "#00a572",
+                "surface-variant": "#2d3449",
+                "on-background": "#dae2fd",
+                "on-secondary-container": "#5b3800",
+                "outline": "#8c909f",
+                "surface": "#0b1326",
+                "on-primary-container": "#00285d",
+                "primary-container": "#4d8eff",
+                "on-tertiary": "#003824",
+                "error-container": "#93000a",
+                "outline-variant": "#424754",
+                "surface-dim": "#0b1326",
+                "on-primary-fixed": "#001a42",
+                "on-primary-fixed-variant": "#004395",
+                "tertiary-fixed-dim": "#4edea3",
+                "surface-container-low": "#131b2e",
+                "tertiary": "#4edea3",
+                "error": "#ffb4ab",
+                "secondary-fixed-dim": "#ffb95f",
+                "surface-container-lowest": "#060e20",
+                "secondary-fixed": "#ffddb8",
+                "surface-container-high": "#222a3d",
+                "surface-tint": "#adc6ff",
+                "background": "#0b1326",
+                "primary-fixed-dim": "#adc6ff"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/30">
+<!-- TopNavBar Implementation -->
+<header class="bg-[#0b1326] flex justify-between items-center w-full px-6 h-16 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk']">Invariant</span>
+<nav class="hidden md:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="index.html">Coherence: Φ(0.98)</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="dashboard.html">System Health</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="pricing.html">Pricing</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-surface-container-low border-none text-sm px-10 py-2 rounded-lg focus:ring-1 focus:ring-primary w-64" placeholder="Search docs..." type="text" oninput="filterDocs(this.value)"/>
+</div>
+<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+<button class="material-symbols-outlined text-[#94a3b8] hover:text-[#adc6ff] transition-colors">settings</button>
+</div>
+</header>
+<div class="flex pt-16 h-screen overflow-hidden">
+<!-- SideNavBar Implementation -->
+<aside class="bg-[#131b2e] flex flex-col h-full py-4 w-64 hidden lg:flex shrink-0">
+<div class="px-6 mb-8">
+<a href="index.html" class="group block"><h2 class="text-lg font-['Space_Grotesk'] text-[#dae2fd] group-hover:text-[#adc6ff] transition-colors">Invariant Engine</h2></a>
+<p class="text-[10px] uppercase tracking-widest text-outline mt-1">v2.4.0-stable</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="dashboard.html">
+<span class="material-symbols-outlined text-sm">public</span>
+<span class="font-['Inter'] text-sm">World State</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="audit.html">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span class="font-['Inter'] text-sm">Actions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="constraints.html">
+<span class="material-symbols-outlined text-sm">gavel</span>
+<span class="font-['Inter'] text-sm">Constraints</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6]" href="docs.html">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="font-['Inter'] text-sm">Documentation</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/10">
+                    Deploy Agent
+                </button>
+<div class="pt-4 space-y-1 border-t border-outline-variant/20">
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-on-surface text-sm transition-colors cursor-pointer" onclick="toggleTerminal()">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-on-surface text-sm transition-colors" href="audit.html">
+<span class="material-symbols-outlined text-sm">list_alt</span>
+<span>Logs</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Documentation Content -->
+<main class="flex-1 flex overflow-hidden bg-surface">
+<!-- Left Column: Content -->
+<div class="flex-1 overflow-y-auto px-8 lg:px-16 py-12 custom-scrollbar">
+<div class="max-w-3xl">
+<header class="mb-12">
+<div class="flex items-center gap-2 mb-4">
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary text-[10px] font-mono rounded-sm border border-tertiary/20">STABLE</span>
+<span class="text-outline text-xs font-mono">SDK REFERENCE</span>
+</div>
+<h1 class="text-5xl font-bold font-headline tracking-tighter text-on-surface mb-4">Invariant SDK</h1>
+<p class="text-lg text-on-surface-variant leading-relaxed">
+                            Integrate formal constraint checking into your deployment pipelines. The Invariant SDK allows you to define, verify, and enforce system invariants in real-time.
+                        </p>
+</header>
+<!-- Section: Getting Started -->
+<section class="mb-20" id="getting-started">
+<h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary text-sm">01</span>
+                            Getting Started
+                        </h2>
+<p class="text-on-surface-variant mb-6">
+                            Install the Invariant Node.js client to begin asserting claims and validating actions. The SDK wraps the full REST API and is optimized for high-concurrency agent environments.
+                        </p>
+<div class="bg-surface-container-lowest p-4 rounded-xl border-b-2 border-primary/20 relative group mb-8">
+<code class="text-primary-fixed text-sm">npm install @invariant/sdk-node</code>
+<button onclick="navigator.clipboard.writeText('npm install @invariant/sdk-node')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" title="Copy to clipboard">
+<span class="material-symbols-outlined text-base">content_copy</span>
+</button>
+</div>
+<h3 class="text-sm font-bold font-headline mb-4 text-on-surface" id="api-reference">Core API Endpoints</h3>
+<div class="space-y-3">
+<div class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<span class="font-mono text-xs text-tertiary bg-tertiary/10 px-2 py-0.5 rounded shrink-0 mt-0.5">POST</span>
+<div><code class="text-sm text-on-surface font-mono">/observations</code><p class="text-xs text-on-surface-variant mt-0.5">Ingest raw observations from agents, tools, or sensors into the world state graph.</p></div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<span class="font-mono text-xs text-tertiary bg-tertiary/10 px-2 py-0.5 rounded shrink-0 mt-0.5">POST</span>
+<div><code class="text-sm text-on-surface font-mono">/claims</code><p class="text-xs text-on-surface-variant mt-0.5">Assert a typed predicate about an entity. Claims are validated against active constraints before commit.</p></div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<span class="font-mono text-xs text-secondary bg-secondary/10 px-2 py-0.5 rounded shrink-0 mt-0.5">POST</span>
+<div><code class="text-sm text-on-surface font-mono">/actions/validate</code><p class="text-xs text-on-surface-variant mt-0.5">Validate a proposed agent action. Returns admissibility (VALID / RISKY / BLOCKED), ΔΦ, Ψ score, and constraint trace.</p></div>
+</div>
+<div class="flex items-start gap-3 p-3 bg-surface-container-low rounded-lg border border-outline-variant/10">
+<span class="font-mono text-xs text-primary bg-primary/10 px-2 py-0.5 rounded shrink-0 mt-0.5">GET</span>
+<div><code class="text-sm text-on-surface font-mono">/world/coherence</code><p class="text-xs text-on-surface-variant mt-0.5">Returns the current global coherence score Φ(G) and per-dimension breakdown (consistency, knowledge, drift, utility, boundary).</p></div>
+</div>
+</div>
+</section>
+<!-- Section: Posting Claims -->
+<section class="mb-20" id="posting-claims">
+<h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary text-sm">02</span>
+                            Posting Claims
+                        </h2>
+<p class="text-on-surface-variant mb-6">
+                            Claims represent atomic units of truth about your infrastructure. Use the <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm">POST /claims</code> endpoint to update the global registry.
+                        </p>
+<div class="space-y-4">
+<div class="flex items-start gap-4 p-4 rounded-lg bg-surface-container-low">
+<div class="bg-primary/20 text-primary p-2 rounded">
+<span class="material-symbols-outlined">send</span>
+</div>
+<div>
+<h4 class="font-bold text-sm mb-1">Synchronous Validation</h4>
+<p class="text-xs text-on-surface-variant">Claims are validated against existing constraints before being committed to the World State Graph.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Defining Constraints -->
+<section class="mb-20" id="defining-constraints">
+<h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary text-sm">03</span>
+                            Defining Constraints
+                        </h2>
+<p class="text-on-surface-variant mb-6">
+                            Constraints are the guardrails of your system. They are evaluated whenever a new claim is proposed. A <code class="text-secondary">STATUS_DEPENDENCY</code> ensures that sensitive actions are blocked if health checks fail.
+                        </p>
+<div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10">
+<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">Configuration Parameters</h4>
+<ul class="space-y-4 text-sm">
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">enforcement_level</span>
+<span class="text-on-surface-variant">CRITICAL | WARNING | ADVISORY</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">target_node</span>
+<span class="text-on-surface-variant">UUID String</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">dependency_type</span>
+<span class="text-on-surface-variant">NODE_STATE | TRAFFIC_LOAD</span>
+</li>
+</ul>
+</div>
+</section>
+</div>
+</div>
+<!-- Right Column: Interactive Code Terminal -->
+<div class="hidden xl:flex w-[500px] flex-col bg-surface-container-lowest border-l border-outline-variant/10">
+<!-- Terminal Header -->
+<div class="h-12 flex items-center justify-between px-4 bg-surface-container-low">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-error/40"></div>
+<div class="w-3 h-3 rounded-full bg-secondary/40"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary/40"></div>
+<span class="ml-4 text-[10px] font-mono text-outline uppercase tracking-widest">example_constraint.js</span>
+</div>
+<span class="text-[10px] font-mono text-primary/60">NODE.JS v20.x</span>
+</div>
+<!-- Code Content -->
+<div class="flex-1 overflow-auto p-6 bg-[#060e20]">
+<pre class="text-sm leading-relaxed"><code class="block"><span class="syntax-keyword">const</span> { InvariantClient } = <span class="syntax-function">require</span>(<span class="syntax-string">'@invariant/sdk-node'</span>);
+
+<span class="syntax-comment">// Initialize the engine orchestrator</span>
+<span class="syntax-keyword">const</span> client = <span class="syntax-keyword">new</span> <span class="syntax-function">InvariantClient</span>({
+  apiKey: process.env.INVARIANT_KEY,
+  region: <span class="syntax-string">'us-east-1'</span>
+});
+
+<span class="syntax-comment">// Define a STATUS_DEPENDENCY constraint</span>
+<span class="syntax-keyword">async function</span> <span class="syntax-function">enforceSystemSafety</span>() {
+  <span class="syntax-keyword">await</span> client.<span class="syntax-function">postConstraint</span>({
+    id: <span class="syntax-string">'safety-check-01'</span>,
+    type: <span class="syntax-constant">'STATUS_DEPENDENCY'</span>,
+    selector: {
+      tags: [<span class="syntax-string">'production'</span>, <span class="syntax-string">'critical'</span>]
+    },
+    logic: {
+      <span class="syntax-comment">// Ensures no deployment happens with critical violations</span>
+      condition: <span class="syntax-string">'system.health_score &gt; 0.95'</span>,
+      on_violation: <span class="syntax-string">'BLOCK_DEPLOYMENT'</span>,
+      severity: <span class="syntax-constant">'CRITICAL'</span>
+    }
+  });
+
+  console.<span class="syntax-function">log</span>(<span class="syntax-string">'Constraint active: Verification logic deployed.'</span>);
+}
+
+<span class="syntax-function">enforceSystemSafety</span>();</code></pre>
+</div>
+<!-- Terminal Footer / Success Gauge -->
+<div class="p-6 bg-surface-container-low/30">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-mono text-outline">VERIFICATION SUCCESS RATE</span>
+<span class="text-[10px] font-mono text-tertiary">99.8%</span>
+</div>
+<div class="flex gap-1">
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
+<div class="h-1.5 flex-1 bg-tertiary/20 rounded-sm"></div>
+</div>
+<p class="mt-4 text-[11px] text-on-surface-variant font-mono leading-tight">
+<span class="text-tertiary">✔</span> System state validated against 14 active constraints. <br/>
+<span class="text-primary">ℹ</span> Latency: 12ms
+                    </p>
+</div>
+</div>
+</main>
+</div>
+<!-- Terminal Panel -->
+<div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal — SDK Session</span>
+<button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
+</div>
+<div class="space-y-1">
+<p><span class="text-outline">$</span> npm install @invariant/sdk-node</p>
+<p><span class="text-outline">→</span> added 42 packages in 3.2s</p>
+<p><span class="text-outline">$</span> node -e "require('@invariant/sdk-node')"</p>
+<p><span class="text-outline">→</span> [INFO] InvariantClient initialized — region: us-east-1</p>
+<p><span class="text-outline">→</span> [INFO] 14 constraints loaded — verification rate: 99.8%</p>
+<p><span class="text-[#adc6ff]">▸</span> _</p>
+</div>
+</div>
+
+<script>
+function toggleTerminal() {
+  document.getElementById('terminal-panel').classList.toggle('hidden');
+}
+
+function filterDocs(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('section[id]').forEach(section => {
+    const text = section.textContent.toLowerCase();
+    section.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+</script>
+
+<!-- Footer -->
+<div class="hidden lg:block border-t border-outline-variant/10 bg-surface-container-lowest px-16 py-4">
+<div class="max-w-3xl flex items-center justify-between">
+<span class="text-[10px] font-mono text-outline">© 2026 Invariant</span>
+<div class="flex gap-6">
+<a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="docs.html">Docs</a>
+<a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank">GitHub</a>
+<a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="docs.html#api-reference">API Reference</a>
+</div>
+</div>
+</div>
+
+<!-- Mobile Bottom Nav (Suppressed for deep content pages as per hierarchy rules, but keeping a minimized version for navigation fallback if needed) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant/10 flex justify-around items-center h-16 px-4 z-50">
+<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
+<span class="material-symbols-outlined text-xl">public</span>
+<span class="text-[10px]">World</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
+<span class="material-symbols-outlined text-xl">bolt</span>
+<span class="text-[10px]">Actions</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#adc6ff]">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="text-[10px] font-bold">Docs</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
+<span class="material-symbols-outlined text-xl">terminal</span>
+<span class="text-[10px]">Terminal</span>
+</button>
+</div>
+</body></html>

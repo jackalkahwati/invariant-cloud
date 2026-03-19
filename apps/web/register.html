@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Create account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff",
+          "on-secondary": "#472a00",
+          "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe",
+          "on-error": "#690005",
+          "surface-container": "#171f33",
+          "secondary-container": "#ee9800",
+          "on-secondary-fixed": "#2a1700",
+          "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#d8e2ff",
+          "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-surface-variant": "#c2c6d6",
+          "secondary": "#ffb95f",
+          "on-surface": "#dae2fd",
+          "surface-bright": "#31394d",
+          "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd",
+          "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449",
+          "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572",
+          "surface-variant": "#2d3449",
+          "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800",
+          "outline": "#8c909f",
+          "surface": "#0b1326",
+          "on-primary-container": "#00285d",
+          "primary-container": "#4d8eff",
+          "on-tertiary": "#003824",
+          "error-container": "#93000a",
+          "outline-variant": "#424754",
+          "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42",
+          "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-container-low": "#131b2e",
+          "tertiary": "#4edea3",
+          "error": "#ffb4ab",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8",
+          "surface-container-high": "#222a3d",
+          "surface-tint": "#adc6ff",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: {
+          "headline": ["Space Grotesk"],
+          "body": ["Inter"],
+          "label": ["Inter"],
+          "mono": ["JetBrains Mono"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .cta-primary {
+    background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+  }
+  .node-link-bg {
+    background-image: radial-gradient(#424754 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Top nav -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] border-b border-outline-variant/10">
+  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk'] hover:text-primary transition-colors">Invariant</a>
+  <div class="flex items-center gap-3">
+    <a href="login.html" class="text-sm text-outline hover:text-primary transition-colors">Sign in</a>
+    <a href="register.html" class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-xs px-3 py-1.5 rounded font-bold">Sign up</a>
+  </div>
+</nav>
+
+<!-- Background -->
+<div class="absolute inset-0 node-link-bg opacity-10 pointer-events-none"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/6 blur-[100px] rounded-full pointer-events-none"></div>
+
+<!-- Main centered card -->
+<main class="relative z-10 flex-1 flex items-center justify-center px-4 pt-16">
+  <div class="w-full max-w-md">
+    <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 shadow-2xl">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="font-['Space_Grotesk'] text-2xl font-bold text-on-surface tracking-tight mb-1">Create your workspace</h1>
+        <p class="text-sm text-outline">Free forever. No credit card required.</p>
+      </div>
+
+      <!-- Error message -->
+      <div id="error-msg" class="hidden mb-4 px-4 py-3 bg-error-container/20 border border-error/30 rounded-lg text-error text-sm"></div>
+
+      <!-- Form -->
+      <form id="register-form" class="space-y-4" onsubmit="handleRegister(event)">
+        <div>
+          <label class="block text-xs font-mono text-outline uppercase tracking-wider mb-1.5" for="name">Name <span class="text-outline/50">(optional)</span></label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            placeholder="Ada Lovelace"
+            class="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-outline uppercase tracking-wider mb-1.5" for="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            placeholder="ada@lab.ai"
+            class="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-outline uppercase tracking-wider mb-1.5" for="password">Password <span class="text-outline/50">(min 8 chars)</span></label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            required
+            minlength="8"
+            placeholder="••••••••"
+            class="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-outline uppercase tracking-wider mb-1.5" for="workspace">Workspace name <span class="text-outline/50">(optional)</span></label>
+          <input
+            id="workspace"
+            name="workspace"
+            type="text"
+            placeholder="My Workspace"
+            class="w-full bg-surface-container border border-outline-variant/30 rounded-lg px-4 py-2.5 text-sm text-on-surface placeholder:text-outline/40 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all"
+          />
+        </div>
+
+        <button
+          id="submit-btn"
+          type="submit"
+          class="w-full mt-2 py-2.5 px-4 cta-primary text-on-primary font-bold text-sm rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+        >
+          <span id="submit-text">Create account →</span>
+          <span id="submit-spinner" class="hidden material-symbols-outlined text-sm animate-spin">refresh</span>
+        </button>
+      </form>
+
+      <!-- Footer links -->
+      <div class="mt-6 pt-6 border-t border-outline-variant/15 text-center space-y-2">
+        <p class="text-sm text-outline">
+          Already have an account?
+          <a href="login.html" class="text-primary hover:underline font-medium">Sign in</a>
+        </p>
+        <p class="text-xs text-outline/50">By signing up you agree to our Terms of Service</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- API Key reveal modal -->
+<div id="apikey-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+  <div class="w-full max-w-lg bg-surface-container-low rounded-xl p-8 border border-primary/30 shadow-2xl">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="material-symbols-outlined text-tertiary text-2xl">key</span>
+      <h2 class="font-['Space_Grotesk'] text-xl font-bold text-on-surface">Your API Key</h2>
+    </div>
+    <div class="bg-surface-container-lowest rounded-lg p-4 mb-4 border border-outline-variant/20">
+      <p class="text-xs font-mono text-outline uppercase tracking-wider mb-2">Save this — it won't be shown again</p>
+      <code id="apikey-display" class="font-mono text-sm text-primary break-all block"></code>
+    </div>
+    <button
+      onclick="copyApiKey()"
+      id="copy-btn"
+      class="w-full mb-4 py-2.5 px-4 bg-surface-container-high border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2"
+    >
+      <span class="material-symbols-outlined text-sm">content_copy</span>
+      <span id="copy-text">Copy API Key</span>
+    </button>
+    <button
+      onclick="dismissModal()"
+      class="w-full py-2.5 px-4 cta-primary text-on-primary font-bold text-sm rounded-lg hover:opacity-90 transition-opacity"
+    >
+      Continue to account →
+    </button>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:3000';
+let pendingApiKey = '';
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('submit-text');
+  const spinner = document.getElementById('submit-spinner');
+  const errMsg = document.getElementById('error-msg');
+
+  btn.disabled = true;
+  btnText.textContent = 'Creating account…';
+  spinner.classList.remove('hidden');
+  errMsg.classList.add('hidden');
+
+  const body = {
+    email: document.getElementById('email').value,
+    password: document.getElementById('password').value,
+  };
+  const name = document.getElementById('name').value.trim();
+  const workspace = document.getElementById('workspace').value.trim();
+  if (name) body.name = name;
+  if (workspace) body.workspaceName = workspace;
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errMsg.textContent = data.error || 'Registration failed. Please try again.';
+      errMsg.classList.remove('hidden');
+      btn.disabled = false;
+      btnText.textContent = 'Create account →';
+      spinner.classList.add('hidden');
+      return;
+    }
+
+    // Store JWT
+    localStorage.setItem('inv_token', data.token);
+    // Store workspace info
+    if (data.workspace) {
+      localStorage.setItem('inv_workspace', JSON.stringify(data.workspace));
+    }
+
+    // Show API key modal
+    pendingApiKey = data.apiKey;
+    document.getElementById('apikey-display').textContent = data.apiKey;
+    document.getElementById('apikey-modal').classList.remove('hidden');
+
+  } catch (err) {
+    errMsg.textContent = 'Could not reach the API. Make sure the server is running on localhost:3000.';
+    errMsg.classList.remove('hidden');
+    btn.disabled = false;
+    btnText.textContent = 'Create account →';
+    spinner.classList.add('hidden');
+  }
+}
+
+async function copyApiKey() {
+  try {
+    await navigator.clipboard.writeText(pendingApiKey);
+    const copyText = document.getElementById('copy-text');
+    copyText.textContent = 'Copied!';
+    setTimeout(() => { copyText.textContent = 'Copy API Key'; }, 2000);
+  } catch {
+    // fallback
+    const el = document.getElementById('apikey-display');
+    el.select && el.select();
+  }
+}
+
+function dismissModal() {
+  document.getElementById('apikey-modal').classList.add('hidden');
+  window.location.href = 'account.html';
+}
+</script>
+</body>
+</html>

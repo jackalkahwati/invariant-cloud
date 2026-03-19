@@ -23,6 +23,9 @@ import { worldRoutes } from './interfaces/http/routes/world.js';
 import { policyRoutes } from './interfaces/http/routes/policy.js';
 import { traceRoutes } from './interfaces/http/routes/trace.js';
 import { planRoutes } from './interfaces/http/routes/plans.js';
+import { checkoutRoutes } from './interfaces/http/routes/checkout.js';
+import { authRoutes } from './interfaces/http/routes/auth.js';
+import { workspaceRoutes } from './interfaces/http/routes/workspace.js';
 
 const app = Fastify({
   logger: {
@@ -68,6 +71,8 @@ await app.register(swagger, {
       { name: 'Policy', description: 'Governance rules, approvals, and escalation' },
       { name: 'Trace', description: 'Timeline recording, replay, and session debugging' },
       { name: 'Plans', description: 'Task decomposition and coherence-aware orchestration' },
+      { name: 'Auth', description: 'User registration, login, and JWT auth' },
+      { name: 'Workspace', description: 'Workspace management, API keys, and usage' },
     ],
   },
 });
@@ -79,8 +84,8 @@ await app.register(swaggerUi, {
 
 // API Key authentication hook
 app.addHook('preHandler', async (req, reply) => {
-  // Skip auth for docs and health
-  if (req.url.startsWith('/docs') || req.url === '/health') return;
+  // Skip auth for docs, health, public checkout, and auth endpoints
+  if (req.url.startsWith('/docs') || req.url === '/health' || req.url.startsWith('/checkout') || req.url.startsWith('/auth/')) return;
 
   const key = req.headers['x-api-key'];
   if (key !== serverConfig.apiKey) {
@@ -109,6 +114,20 @@ await app.register(policyRoutes);
 await app.register(traceRoutes);
 // Layer 4: Plans
 await app.register(planRoutes);
+// Auth and Workspace (registered before API key hook would block them — /auth/ is skipped in preHandler)
+await app.register(authRoutes);
+await app.register(workspaceRoutes);
+// Billing
+app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
+  // Store raw buffer for Stripe webhook signature verification
+  (req as unknown as Record<string, unknown>).rawBody = body;
+  try {
+    done(null, JSON.parse(body.toString()));
+  } catch (e) {
+    done(e as Error, undefined);
+  }
+});
+await app.register(checkoutRoutes);
 
 // Global error handler
 app.setErrorHandler((err, req, reply) => {

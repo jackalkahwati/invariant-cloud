@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Checkout Cancelled</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#adc6ff",
+        "primary-container": "#4d8eff",
+        "on-primary": "#002e6a",
+        "on-primary-container": "#00285d",
+        "secondary": "#ffb95f",
+        "tertiary": "#4edea3",
+        "on-surface": "#dae2fd",
+        "on-surface-variant": "#c2c6d6",
+        "surface": "#0b1326",
+        "surface-container-lowest": "#060e20",
+        "surface-container-low": "#131b2e",
+        "surface-container": "#171f33",
+        "surface-container-high": "#222a3d",
+        "surface-container-highest": "#2d3449",
+        "outline": "#8c909f",
+        "outline-variant": "#424754",
+      },
+      fontFamily: {
+        headline: ["Space Grotesk", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+    },
+  },
+};
+</script>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col items-center justify-center px-6">
+
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326]">
+  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-headline">Invariant</a>
+  <div class="flex items-center gap-3">
+    <a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+  </div>
+</nav>
+
+<main class="max-w-lg w-full text-center pt-16">
+  <div class="w-20 h-20 rounded-full bg-outline/10 flex items-center justify-center mx-auto mb-8">
+    <span class="material-symbols-outlined text-outline" style="font-size:40px;">close</span>
+  </div>
+
+  <div class="font-mono text-[10px] text-outline uppercase tracking-widest mb-4">Checkout Cancelled</div>
+  <h1 class="font-headline text-4xl font-bold tracking-tight mb-4">No problem.</h1>
+  <p class="text-on-surface-variant text-lg leading-relaxed mb-10">
+    You weren't charged. The engine is still free to self-host — grab the source and run it yourself, or come back when you're ready for Cloud.
+  </p>
+
+  <div class="flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="pricing.html" class="px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 text-sm">
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      Back to Pricing
+    </a>
+    <a href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank" class="px-6 py-3 bg-surface-container-high text-on-surface font-bold rounded-lg hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2 text-sm">
+      <span class="material-symbols-outlined text-sm">code</span>
+      Self-host for free
+    </a>
+  </div>
+</main>
+
+<footer class="mt-auto py-8 text-xs font-mono text-outline">© 2026 Invariant</footer>
+
+</body></html>

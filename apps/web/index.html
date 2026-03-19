@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#adc6ff",
+                        "on-secondary": "#472a00",
+                        "on-tertiary-container": "#00311f",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error": "#690005",
+                        "surface-container": "#171f33",
+                        "secondary-container": "#ee9800",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-tertiary-fixed": "#002113",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#283044",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#c2c6d6",
+                        "secondary": "#ffb95f",
+                        "on-surface": "#dae2fd",
+                        "surface-bright": "#31394d",
+                        "on-primary": "#002e6a",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#2d3449",
+                        "inverse-primary": "#005ac2",
+                        "tertiary-container": "#00a572",
+                        "surface-variant": "#2d3449",
+                        "on-background": "#dae2fd",
+                        "on-secondary-container": "#5b3800",
+                        "outline": "#8c909f",
+                        "surface": "#0b1326",
+                        "on-primary-container": "#00285d",
+                        "primary-container": "#4d8eff",
+                        "on-tertiary": "#003824",
+                        "error-container": "#93000a",
+                        "outline-variant": "#424754",
+                        "surface-dim": "#0b1326",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-low": "#131b2e",
+                        "tertiary": "#4edea3",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed": "#ffddb8",
+                        "surface-container-high": "#222a3d",
+                        "surface-tint": "#adc6ff",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(34, 42, 61, 0.8);
+            backdrop-filter: blur(16px);
+        }
+        .math-gradient {
+            background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .node-link-bg {
+            background-image: radial-gradient(#424754 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#dae2fd] tracking-tighter">Invariant</span>
+<div class="hidden md:flex gap-6">
+<a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] h-16 flex items-center" href="index.html">Coherence: Φ(0.98)</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="dashboard.html">System Health</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="pricing.html">Pricing</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex bg-[#131b2e] px-3 py-1.5 rounded items-center gap-2">
+<span class="material-symbols-outlined text-sm text-[#94a3b8]">search</span>
+<span class="text-xs text-[#94a3b8]">Cmd + K</span>
+</div>
+<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+</div>
+</nav>
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex flex-col items-center justify-center px-6 overflow-hidden">
+<!-- Background Decoration -->
+<div class="absolute inset-0 node-link-bg opacity-10 pointer-events-none"></div>
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="relative z-10 max-w-5xl w-full text-center">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded border border-outline-variant/20 mb-8">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono text-[10px] uppercase tracking-widest text-tertiary">Engine Status: Stable</span>
+</div>
+<h1 class="font-headline text-5xl md:text-8xl font-bold tracking-tighter mb-6 leading-[0.9]">
+                    The coherence layer<br/>
+<span class="text-primary-container">for AI agents.</span>
+</h1>
+<p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Invariant sits beneath your agents and humans. It ingests observations, claims, and tool outputs — reconciles them into a persistent state graph, detects contradictions, preserves conflicting branches, and blocks unsafe actions before they execute.
+                </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+<a href="dashboard.html" class="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded-lg hover:opacity-90 transition-opacity">
+                        Get Started
+                    </a>
+<div class="group flex items-center gap-3 px-4 py-3 bg-surface-container-lowest rounded-lg border border-outline-variant/10 hover:border-primary/30 transition-all cursor-pointer">
+<code class="font-mono text-sm text-primary">npm install @invariant/sdk-node</code>
+<span class="material-symbols-outlined text-sm text-outline group-hover:text-primary cursor-pointer" onclick="navigator.clipboard.writeText('npm install @invariant/sdk-node')">content_copy</span>
+</div>
+</div>
+<!-- Math Formula Display -->
+<div class="glass-panel p-8 md:p-12 rounded-xl border border-outline-variant/10 max-w-4xl mx-auto shadow-2xl">
+<div class="flex flex-col items-center">
+<span class="font-mono text-[10px] uppercase tracking-[0.3em] text-outline mb-6">Global Coherence Metric</span>
+<div class="font-mono text-2xl md:text-4xl lg:text-5xl tracking-tighter math-gradient font-bold overflow-x-auto whitespace-nowrap w-full text-center py-2">
+                            Φ(G) = λ<sub>c</sub>·V<sub>c</sub> + λ<sub>k</sub>·V<sub>k</sub> + λ<sub>d</sub>·V<sub>d</sub> + λ<sub>u</sub>·V<sub>u</sub> + λ<sub>b</sub>·V<sub>b</sub>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-10 w-full">
+<div class="text-center">
+<div class="text-xs font-mono text-outline mb-1">Consistency</div>
+<div class="text-lg font-headline font-bold text-on-surface">0.994</div>
+</div>
+<div class="text-center">
+<div class="text-xs font-mono text-outline mb-1">Knowledge</div>
+<div class="text-lg font-headline font-bold text-on-surface">0.982</div>
+</div>
+<div class="text-center">
+<div class="text-xs font-mono text-outline mb-1">Drift</div>
+<div class="text-lg font-headline font-bold text-tertiary">0.002</div>
+</div>
+<div class="text-center">
+<div class="text-xs font-mono text-outline mb-1">Utility</div>
+<div class="text-lg font-headline font-bold text-on-surface">0.876</div>
+</div>
+<div class="text-center">
+<div class="text-xs font-mono text-outline mb-1">Boundary</div>
+<div class="text-lg font-headline font-bold text-on-surface">1.000</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Open Source Banner -->
+<div class="w-full bg-surface-container-low border-y border-outline-variant/10 py-3 px-6">
+<div class="max-w-6xl mx-auto flex items-center justify-center gap-3 flex-wrap">
+<span class="material-symbols-outlined text-tertiary text-sm">code</span>
+<span class="font-mono text-[11px] text-tertiary uppercase tracking-wider">Open source engine, Apache 2.0</span>
+<span class="text-outline text-sm">·</span>
+<a href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank" class="font-mono text-[11px] text-outline hover:text-primary transition-colors uppercase tracking-wider flex items-center gap-1">Star us on GitHub <span class="material-symbols-outlined text-xs">arrow_forward</span></a>
+</div>
+</div>
+
+<!-- The Step 47 Problem -->
+<section class="py-24 px-6 bg-surface-container-low">
+<div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-8">
+                        The Step 47 Problem
+                    </h2>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-6">
+                        Agentic workflows fail silently. An agent makes a small assumption at Step 4, forgets a constraint at Step 22, and by Step 47, it's executing code that contradicts your core business logic.
+                    </p>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-8">
+                        Most tools try to fix this with better prompts. <span class="text-secondary font-bold">Invariant fixes it with math.</span>
+</p>
+<div class="space-y-4">
+<div class="flex gap-4 items-start">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded bg-error/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm">close</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Silent Degradation</h4>
+<p class="text-sm text-on-surface-variant">Hallucinations compound across long-running autonomous sessions.</p>
+</div>
+</div>
+<div class="flex gap-4 items-start">
+<div class="mt-1 flex-shrink-0 w-6 h-6 rounded bg-error/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-sm">close</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface">Constraint Blindness</h4>
+<p class="text-sm text-on-surface-variant">Context windows lose track of system invariants during complex reasoning.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/5 rounded-xl blur-2xl"></div>
+<div class="relative bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/10 shadow-xl overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<span class="font-mono text-[10px] text-outline uppercase tracking-wider">Agent Execution Trace</span>
+<span class="text-[10px] font-mono bg-error/10 text-error px-2 py-0.5 rounded">INVARIANT BREACH AT T+47ms</span>
+</div>
+<div class="space-y-3">
+<div class="h-2 bg-surface-container-high rounded w-3/4"></div>
+<div class="h-2 bg-surface-container-high rounded w-1/2"></div>
+<div class="h-2 bg-error/30 rounded w-full flex items-center">
+<div class="h-full bg-error w-1/3 rounded"></div>
+</div>
+<div class="h-2 bg-surface-container-high rounded w-2/3"></div>
+<div class="p-3 bg-error/5 border-l-2 border-error mt-4">
+<div class="font-mono text-[10px] text-error mb-1">CONFLICT DETECTED</div>
+<div class="font-mono text-[11px] text-on-surface-variant">Claim: "User account is verified."</div>
+<div class="font-mono text-[11px] text-on-surface-variant">World State: "verification_token = null"</div>
+</div>
+<div class="h-2 bg-surface-container-high rounded w-5/6"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- What Invariant Does: Bento Grid -->
+<section class="py-24 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-4">What Invariant Does</h2>
+<p class="text-on-surface-variant">The first real-time formal verification engine for LLM agents.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Feature 1 -->
+<div class="md:col-span-8 bg-surface-container-low rounded-xl p-8 border border-outline-variant/10 relative overflow-hidden group">
+<div class="relative z-10 h-full flex flex-col justify-between">
+<div>
+<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Continuous World State Monitoring</h3>
+<p class="text-on-surface-variant max-w-md">Invariant maintains a high-fidelity graph of every fact, variable, and claim made during an agent's execution lifecycle. If a new action contradicts a previous fact, the engine flags it in microseconds.</p>
+</div>
+<div class="mt-12 flex gap-4 overflow-hidden opacity-50">
+<div class="flex-shrink-0 w-32 h-20 border border-outline-variant/20 rounded flex items-center justify-center font-mono text-[10px]">NODE_A</div>
+<div class="flex-shrink-0 w-32 h-20 border border-outline-variant/20 rounded flex items-center justify-center font-mono text-[10px]">NODE_B</div>
+<div class="flex-shrink-0 w-32 h-20 border border-outline-variant/20 rounded flex items-center justify-center font-mono text-[10px]">NODE_C</div>
+</div>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="md:col-span-4 bg-surface-container-high rounded-xl p-8 border border-outline-variant/10">
+<div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center mb-6 text-secondary">
+<span class="material-symbols-outlined">gavel</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Invariant Policy Enforcement</h3>
+<p class="text-on-surface-variant text-sm">Define "Unbreakable Laws" for your agents using standard TypeScript or Python. If an agent tries to delete a production DB or bypass MFA, Invariant kills the process before the packet leaves the network.</p>
+</div>
+<!-- Feature 3 -->
+<div class="md:col-span-4 bg-surface-container-high rounded-xl p-8 border border-outline-variant/10">
+<div class="w-10 h-10 bg-tertiary/10 rounded-lg flex items-center justify-center mb-6 text-tertiary">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Sub-millisecond Latency</h3>
+<p class="text-on-surface-variant text-sm">Built in Rust and deployed as a sidecar, Invariant adds less than 2ms of overhead to your agentic calls. It's security that doesn't feel like a speed bump.</p>
+</div>
+<!-- World State Graph Mockup -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl border border-outline-variant/10 relative overflow-visible min-h-[480px]">
+<div class="p-8 flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-xl font-headline font-bold mb-1">World State Graph</h3>
+<p class="text-xs text-outline font-mono">Live Session ID: px-992-alpha</p>
+</div>
+<div class="flex gap-2">
+<div class="px-2 py-1 bg-primary/10 rounded text-[10px] font-mono text-primary">124 Nodes</div>
+<div class="px-2 py-1 bg-tertiary/10 rounded text-[10px] font-mono text-tertiary">99.8% Coherence</div>
+</div>
+</div>
+<div class="relative mt-4" style="height: 360px;">
+<!-- Mock Graph Visualization -->
+<svg class="w-full h-full opacity-50" viewBox="0 0 500 320" preserveAspectRatio="xMidYMid meet">
+  <!-- Edges -->
+  <path stroke="#424754" d="M60 160 L160 80" stroke-width="1.5" fill="none"></path>
+  <path stroke="#424754" d="M60 160 L160 240" stroke-width="1.5" fill="none"></path>
+  <path stroke="#424754" d="M160 80 L280 160" stroke-width="1.5" fill="none"></path>
+  <path stroke="#424754" d="M160 240 L280 160" stroke-width="1.5" fill="none"></path>
+  <path stroke="#424754" d="M280 160 L390 100" stroke-width="1.5" stroke-dasharray="5 3" fill="none"></path>
+  <path stroke="#424754" d="M280 160 L390 240" stroke-width="1.5" fill="none"></path>
+  <!-- Nodes -->
+  <circle cx="60" cy="160" r="6" fill="#adc6ff"></circle>
+  <circle cx="160" cy="80" r="6" fill="#adc6ff"></circle>
+  <circle cx="160" cy="240" r="6" fill="#adc6ff"></circle>
+  <circle cx="280" cy="160" r="8" fill="#adc6ff"></circle>
+  <circle cx="390" cy="100" r="6" fill="#ffb95f"></circle>
+  <circle cx="390" cy="240" r="6" fill="#4edea3"></circle>
+  <!-- Pulse ring on hot node -->
+  <circle cx="390" cy="100" r="14" fill="none" stroke="#ffb95f" stroke-width="1" opacity="0.5">
+    <animate attributeName="r" dur="2s" repeatCount="indefinite" values="10;20;10"></animate>
+    <animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="0.6;0;0.6"></animate>
+  </circle>
+  <!-- Node labels -->
+  <text x="60" y="178" text-anchor="middle" fill="#8c909f" font-size="9" font-family="monospace">ENTITY_A</text>
+  <text x="160" y="98" text-anchor="middle" fill="#8c909f" font-size="9" font-family="monospace">ENTITY_B</text>
+  <text x="160" y="258" text-anchor="middle" fill="#8c909f" font-size="9" font-family="monospace">ENTITY_C</text>
+  <text x="280" y="178" text-anchor="middle" fill="#8c909f" font-size="9" font-family="monospace">ENTITY_D</text>
+  <text x="390" y="118" text-anchor="middle" fill="#ffb95f" font-size="9" font-family="monospace">DRIFT</text>
+  <text x="390" y="258" text-anchor="middle" fill="#4edea3" font-size="9" font-family="monospace">VALID</text>
+</svg>
+<!-- Callout -->
+<div class="absolute top-4 right-4 glass-panel p-3 rounded border border-secondary/30" style="min-width:180px">
+  <div class="text-[10px] font-mono text-secondary mb-1">DRIFT DETECTED</div>
+  <div class="text-[9px] text-on-surface-variant leading-relaxed">Branch #409 proposes state mutation prohibited by parent context.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- How It Works Section -->
+<section class="py-24 px-6 bg-surface-container-low">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-4">How It Works</h2>
+<p class="text-on-surface-variant">Three operations. One coherent world state.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+<div class="hidden md:block absolute top-12 left-1/3 w-1/3 h-px bg-gradient-to-r from-primary/30 via-primary/60 to-primary/30 pointer-events-none"></div>
+<!-- Step 1: Ingest -->
+<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 relative">
+<div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mb-6 text-primary">
+<span class="material-symbols-outlined">input</span>
+</div>
+<div class="flex items-center gap-3 mb-3">
+<span class="font-mono text-xs text-outline">01</span>
+<h3 class="text-xl font-headline font-bold">Ingest</h3>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">Push observations, tool outputs, and claims from any source via REST or SDK. Invariant extracts assertions and builds the world state graph in real time.</p>
+<div class="mt-6 p-3 bg-surface-container-high rounded border border-outline-variant/10 font-mono text-xs text-primary">POST /observations<br/>POST /claims</div>
+</div>
+<!-- Step 2: Reconcile -->
+<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 relative">
+<div class="w-10 h-10 bg-tertiary/10 rounded-lg flex items-center justify-center mb-6 text-tertiary">
+<span class="material-symbols-outlined">sync</span>
+</div>
+<div class="flex items-center gap-3 mb-3">
+<span class="font-mono text-xs text-outline">02</span>
+<h3 class="text-xl font-headline font-bold">Reconcile</h3>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">The settling loop runs: detect contradictions → branch conflicting state → propagate dependencies → evaluate constraints → recompute confidence. Repeat until fixed point.</p>
+<div class="mt-6 p-3 bg-surface-container-high rounded border border-outline-variant/10 font-mono text-xs text-tertiary">GET /world/coherence<br/>Φ(G) → fixed point</div>
+</div>
+<!-- Step 3: Validate -->
+<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10 relative">
+<div class="w-10 h-10 bg-secondary/10 rounded-lg flex items-center justify-center mb-6 text-secondary">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div class="flex items-center gap-3 mb-3">
+<span class="font-mono text-xs text-outline">03</span>
+<h3 class="text-xl font-headline font-bold">Validate</h3>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">Before any agent executes an action, call <code class="text-primary">/actions/validate</code>. Get back admissibility (VALID / RISKY / BLOCKED), ΔΦ, Ψ score, and exact reasons.</p>
+<div class="mt-6 p-3 bg-surface-container-high rounded border border-outline-variant/10 font-mono text-xs text-secondary">POST /actions/validate<br/>→ VALID | RISKY | BLOCKED</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- SDK Code Snippet Section -->
+<section class="py-24 px-6">
+<div class="max-w-6xl mx-auto">
+<div class="grid md:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-6">Ship in minutes,<br/><span class="text-primary-container">not months.</span></h2>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-8">Five lines of initialization. Then assert claims and validate actions anywhere in your agent stack. The SDK handles serialization, retries, and streaming — you handle logic.</p>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded bg-tertiary/10 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-tertiary text-sm">check</span></div>
+<span class="text-sm text-on-surface-variant">TypeScript-first with full type inference</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded bg-tertiary/10 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-tertiary text-sm">check</span></div>
+<span class="text-sm text-on-surface-variant">Works alongside any LLM or agent framework</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded bg-tertiary/10 flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-tertiary text-sm">check</span></div>
+<span class="text-sm text-on-surface-variant">Sub-2ms validation overhead via local sidecar</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden shadow-2xl">
+<div class="flex items-center gap-2 px-4 py-3 bg-surface-container-low border-b border-outline-variant/10">
+<div class="w-3 h-3 rounded-full bg-error/40"></div>
+<div class="w-3 h-3 rounded-full bg-secondary/40"></div>
+<div class="w-3 h-3 rounded-full bg-tertiary/40"></div>
+<span class="ml-3 font-mono text-[10px] text-outline uppercase tracking-widest">agent-example.js</span>
+</div>
+<div class="p-6 overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span style="color:#adc6ff">import</span> { <span style="color:#ffb95f">InvariantClient</span> } <span style="color:#adc6ff">from</span> <span style="color:#4edea3">'@invariant/sdk-node'</span>;
+
+<span style="color:#adc6ff">const</span> client = <span style="color:#adc6ff">new</span> <span style="color:#ffb95f">InvariantClient</span>({ baseUrl: <span style="color:#4edea3">'http://localhost:3000'</span> });
+
+<span style="color:#8c909f">// Assert a claim from a sensor or tool output</span>
+<span style="color:#adc6ff">await</span> client.claims.<span style="color:#ffb95f">create</span>({
+  entityId: <span style="color:#4edea3">'battery-bp1'</span>,
+  predicate: <span style="color:#4edea3">'temperature'</span>,
+  value: <span style="color:#4d8eff">95</span>,
+  sourceId: <span style="color:#4edea3">'sensor-array-3'</span>
+});
+
+<span style="color:#8c909f">// Validate an action before executing</span>
+<span style="color:#adc6ff">const</span> result = <span style="color:#adc6ff">await</span> client.actions.<span style="color:#ffb95f">validate</span>({
+  agentId: <span style="color:#4edea3">'planner-1'</span>,
+  actionType: <span style="color:#4edea3">'proceed_to_launch'</span>,
+  impactedEntityIds: [<span style="color:#4edea3">'launch-review-lr1'</span>]
+});
+
+<span style="color:#adc6ff">if</span> (result.admissibility === <span style="color:#4edea3">'BLOCKED'</span>) {
+  console.<span style="color:#ffb95f">log</span>(<span style="color:#4edea3">'Action blocked:'</span>, result.reasons);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Use Cases Section -->
+<section class="py-24 px-6 bg-surface-container-low">
+<div class="max-w-6xl mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-4">Built for production AI</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto">Invariant is infrastructure — not a feature. It belongs wherever autonomous systems make decisions that matter.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: Multi-Agent Orchestration -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">Multi-Agent Orchestration</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">When multiple agents act in parallel, their world views diverge. Invariant maintains a shared state graph that all agents read and write to — detecting conflicts the moment they arise, before a downstream agent acts on stale truth.</p>
+</div>
+<!-- Card 2: LLM Tool-Use Safety -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">security</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">LLM Tool-Use Safety</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Wrap any LLM with tool access and route every proposed tool call through Invariant first. High-risk calls — deleting data, writing production configs, calling external APIs — are blocked if current world state makes them inadmissible.</p>
+</div>
+<!-- Card 3: Autonomous Systems -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">Autonomous Systems</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Pre-flight validation for robots, drones, and autonomous vehicles. Assert sensor readings and system health claims, then let Invariant gate each actuation command against the live constraint set before the packet reaches the motor controller.</p>
+</div>
+<!-- Card 4: Mission-Critical Decision Support -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">rocket_launch</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">Mission-Critical Decision Support</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Go/no-go decisions in aerospace, defense, and surgical systems require proof, not probability. Invariant produces a formal admissibility verdict with a complete dependency trace — every constraint evaluated, every claim cited.</p>
+</div>
+<!-- Card 5: Distributed Knowledge Management -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">Distributed Knowledge Management</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Track claims from sensors, APIs, models, and human operators simultaneously. When sources conflict, Invariant preserves both views as independent branches rather than overwriting — giving downstream consumers full visibility into what is known, disputed, or uncertain.</p>
+</div>
+<!-- Card 6: Compliance & Audit Trails -->
+<div class="bg-[#131b2e] rounded-xl p-7 border border-outline-variant/10 hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 bg-[#4edea3]/10 rounded-lg flex items-center justify-center mb-5 text-[#4edea3]">
+<span class="material-symbols-outlined">policy</span>
+</div>
+<h3 class="font-headline font-bold text-lg mb-3">Compliance &amp; Audit Trails</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Every action validated by Invariant is logged with its full provenance chain: which claims were evaluated, which constraints fired, what the Ψ score was, and why the decision was VALID, RISKY, or BLOCKED. Export-ready for regulators, auditors, and incident reviews.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- Trust Signals Strip -->
+<div class="w-full border-y border-outline-variant/10 bg-surface-container-low py-5 px-6">
+<div class="max-w-6xl mx-auto flex items-center justify-center gap-4 flex-wrap">
+<span class="font-mono text-[10px] uppercase tracking-widest text-outline px-3 py-1.5 bg-surface-container rounded border border-outline-variant/20">Open Source</span>
+<span class="text-outline/40 text-xs">·</span>
+<span class="font-mono text-[10px] uppercase tracking-widest text-outline px-3 py-1.5 bg-surface-container rounded border border-outline-variant/20">Apache 2.0</span>
+<span class="text-outline/40 text-xs">·</span>
+<span class="font-mono text-[10px] uppercase tracking-widest text-outline px-3 py-1.5 bg-surface-container rounded border border-outline-variant/20">Self-Hostable</span>
+<span class="text-outline/40 text-xs">·</span>
+<span class="font-mono text-[10px] uppercase tracking-widest text-outline px-3 py-1.5 bg-surface-container rounded border border-outline-variant/20">SOC 2 Ready</span>
+</div>
+</div>
+
+<!-- CTA Section -->
+<section class="py-32 px-6 relative overflow-hidden">
+<div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<div class="max-w-4xl mx-auto text-center relative z-10">
+<h2 class="font-headline text-4xl md:text-6xl font-bold tracking-tighter mb-8 italic">Secure your agentic future.</h2>
+<div class="inline-flex flex-col items-center gap-6">
+<div class="group flex items-center gap-4 px-6 py-4 bg-surface-container-high rounded-xl border border-outline-variant/20 hover:border-primary transition-all">
+<span class="text-outline font-mono">$</span>
+<code class="font-mono text-xl text-on-surface">npm install @invariant/sdk-node</code>
+<span class="material-symbols-outlined text-outline group-hover:text-primary cursor-pointer" onclick="navigator.clipboard.writeText('npm install @invariant/sdk-node')">content_copy</span>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<a href="#" class="px-8 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+Start free on Cloud
+</a>
+<a href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank" class="px-8 py-3 bg-surface-container-highest text-on-surface font-bold rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">code</span>
+Self-host for free
+</a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="py-12 px-6 border-t border-outline-variant/5 bg-surface-container-lowest">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<span class="text-lg font-bold text-[#dae2fd] tracking-tighter">Invariant Engine</span>
+<span class="text-[10px] font-mono text-outline">v2.4.0-stable</span>
+</div>
+<div class="flex gap-8">
+<a class="text-sm text-outline hover:text-primary transition-colors" href="docs.html">Docs</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="https://github.com/jackalkahwati/Coherence-engine-" target="_blank">GitHub</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="pricing.html">Pricing</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="mailto:hello@invariant.dev">Enterprise</a>
+</div>
+<div class="text-sm text-outline font-mono">
+                © 2026 Invariant
+            </div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Action Validation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(34, 42, 61, 0.8);
+            backdrop-filter: blur(16px);
+        }
+        .gradient-cta {
+            background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%);
+        }
+        .status-blocked {
+            color: #F59E0B;
+        }
+        .bg-blocked-soft {
+            background: rgba(245, 158, 11, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#adc6ff",
+                        "on-secondary": "#472a00",
+                        "on-tertiary-container": "#00311f",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-error": "#690005",
+                        "surface-container": "#171f33",
+                        "secondary-container": "#ee9800",
+                        "on-secondary-fixed": "#2a1700",
+                        "on-tertiary-fixed": "#002113",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#283044",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface-variant": "#c2c6d6",
+                        "secondary": "#ffb95f",
+                        "on-surface": "#dae2fd",
+                        "surface-bright": "#31394d",
+                        "on-primary": "#002e6a",
+                        "inverse-surface": "#dae2fd",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#2d3449",
+                        "inverse-primary": "#005ac2",
+                        "tertiary-container": "#00a572",
+                        "surface-variant": "#2d3449",
+                        "on-background": "#dae2fd",
+                        "on-secondary-container": "#5b3800",
+                        "outline": "#8c909f",
+                        "surface": "#0b1326",
+                        "on-primary-container": "#00285d",
+                        "primary-container": "#4d8eff",
+                        "on-tertiary": "#003824",
+                        "error-container": "#93000a",
+                        "outline-variant": "#424754",
+                        "surface-dim": "#0b1326",
+                        "on-primary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-low": "#131b2e",
+                        "tertiary": "#4edea3",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-container-lowest": "#060e20",
+                        "secondary-fixed": "#ffddb8",
+                        "surface-container-high": "#222a3d",
+                        "surface-tint": "#adc6ff",
+                        "background": "#0b1326",
+                        "primary-fixed-dim": "#adc6ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/30">
+<div class="flex h-screen overflow-hidden">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full py-4 bg-[#131b2e] dark:bg-[#131b2e] w-64 shrink-0 font-['Inter'] text-sm">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-[#3B82F6]" style="font-variation-settings: 'FILL' 1;">security</span>
+<a href="index.html" class="hover:text-primary transition-colors"><span class="text-lg font-['Space_Grotesk'] text-[#dae2fd] hover:text-primary">Invariant Engine</span></a>
+</div>
+<div class="text-[10px] text-outline font-mono uppercase tracking-widest">v2.4.0-stable</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="dashboard.html">
+<span class="material-symbols-outlined text-lg">public</span>
+<span>World State</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6] transition-all duration-200 ease-in-out" href="audit.html">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>Actions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="constraints.html">
+<span class="material-symbols-outlined text-lg">gavel</span>
+<span>Constraints</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="docs.html">
+<span class="material-symbols-outlined text-lg">description</span>
+<span>Documentation</span>
+</a>
+</nav>
+<div class="px-4 mt-6">
+<button class="w-full py-2.5 gradient-cta text-on-primary-container font-bold rounded shadow-lg shadow-primary/10 flex items-center justify-center gap-2 active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+                    Deploy Agent
+                </button>
+</div>
+<div class="mt-auto px-3 space-y-1 border-t border-outline-variant/10 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 cursor-pointer" onclick="toggleTerminal()">
+<span class="material-symbols-outlined text-lg">terminal</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50" href="audit.html">
+<span class="material-symbols-outlined text-lg">list_alt</span>
+<span>Logs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface overflow-y-auto">
+<!-- TopNavBar -->
+<header class="flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] dark:bg-[#0b1326] shrink-0 font-['Space_Grotesk'] tracking-tight">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold text-[#dae2fd] tracking-tighter">Invariant</div>
+<nav class="hidden lg:flex gap-6 text-sm">
+<a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] pb-1" href="index.html">Coherence: Φ(0.98)</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors pb-1" href="dashboard.html">System Health</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors pb-1" href="pricing.html">Pricing</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-48 text-on-surface" placeholder="Search trace ID..." type="text" oninput="filterAudit(this.value)"/>
+</div>
+<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+<button class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<!-- Audit View Canvas -->
+<div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+<!-- Hero Section: Blocked Action -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<div class="lg:col-span-8 bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
+<!-- Background Accents -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary/5 blur-[100px] rounded-full -mr-20 -mt-20"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-4 mb-6">
+<div class="w-12 h-12 flex items-center justify-center rounded bg-blocked-soft border border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-3xl">block</span>
+</div>
+<div>
+<div class="text-[10px] font-mono text-secondary tracking-widest uppercase mb-1">Validation State: Failure</div>
+<h1 class="text-3xl font-headline font-bold text-on-surface tracking-tight">POST /actions/deploy</h1>
+</div>
+<div class="ml-auto flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(255,185,95,0.6)]"></span>
+<span class="font-mono text-xs font-bold text-on-surface">production</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
+<div class="space-y-4">
+<h3 class="text-xs font-mono text-outline uppercase tracking-wider">Constraint Violation</h3>
+<div class="bg-surface-container-highest p-4 rounded border-l-4 border-secondary">
+<div class="text-on-surface font-mono text-sm mb-1">no-deploy-with-open-critical-violations</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">System logic prevents production deployment while higher-order invariants are in a state of drift or violation.</p>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-xs font-mono text-outline uppercase tracking-wider">Contradiction Detected</h3>
+<div class="bg-surface-container-highest p-4 rounded border-l-4 border-error">
+<div class="flex items-center gap-2 text-on-surface font-mono text-sm mb-2">
+<span class="text-secondary">Claim #104</span>
+<span class="material-symbols-outlined text-xs">compare_arrows</span>
+<span class="text-error">Claim #152</span>
+</div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+<span class="text-primary">#104:</span> "Unit tests pass on 100% of modules"<br/>
+<span class="text-error">#152:</span> "Critical file '/src/auth.core' was deleted in current buffer"
+                                        </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Risk Gauge Panel -->
+<div class="lg:col-span-4 bg-surface-container-low p-8 rounded-xl h-full flex flex-col justify-center items-center text-center">
+<h3 class="text-xs font-mono text-outline uppercase tracking-wider mb-8">Action Inconsistency Score Ψ(a,G)</h3>
+<div class="relative w-48 h-48 mb-8">
+<!-- SVG Gauge -->
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-secondary transition-all duration-1000" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="375.98" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<div class="text-5xl font-headline font-bold text-secondary tracking-tighter">0.32</div>
+<div class="text-[10px] font-mono text-outline uppercase">Critical Risk</div>
+</div>
+</div>
+<div class="w-full grid grid-cols-5 gap-1 mb-4">
+<div class="h-1.5 bg-secondary rounded-sm"></div>
+<div class="h-1.5 bg-secondary rounded-sm"></div>
+<div class="h-1.5 bg-surface-container-highest rounded-sm"></div>
+<div class="h-1.5 bg-surface-container-highest rounded-sm"></div>
+<div class="h-1.5 bg-surface-container-highest rounded-sm"></div>
+</div>
+<p class="text-xs text-on-surface-variant italic">Required threshold: 0.85 for production target.</p>
+</div>
+</section>
+<!-- Audit Trail: Timeline -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+<h2 class="text-xl font-headline font-semibold">Forensic Audit Trail</h2>
+</div>
+<div class="flex gap-2">
+<button onclick="exportJSON()" class="px-3 py-1.5 bg-surface-container-high text-xs font-mono text-on-surface-variant hover:text-on-surface transition-colors rounded">EXPORT_JSON</button>
+<button onclick="exportRawLogs()" class="px-3 py-1.5 bg-surface-container-high text-xs font-mono text-on-surface-variant hover:text-on-surface transition-colors rounded">RAW_LOGS</button>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant/5 flex justify-between items-center text-[10px] font-mono text-outline uppercase tracking-widest">
+<span>Claim Sequence</span>
+<span>Event Node Identifier</span>
+<span>System Confidence</span>
+</div>
+<div id="audit-trail" class="divide-y divide-outline-variant/5">
+<!-- Item 1 -->
+<div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors">
+<div class="w-8 shrink-0 flex flex-col items-center">
+<div class="text-xs font-mono text-primary">104</div>
+<div class="w-px h-12 bg-outline-variant/30 my-2"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-mono text-tertiary">PROVEN</span>
+<span class="text-on-surface font-semibold text-sm">Unit testing suite executed via CI/CD node-042</span>
+</div>
+<div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Verified all 1,402 test cases in the core package passed. Coverage at 94.2%. Result committed to state-graph.</div>
+<div class="flex gap-2">
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">SHA:8f2d11</span>
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">ENV:STAGING</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xs font-mono text-on-surface">99.8%</div>
+<div class="text-[9px] text-outline uppercase">Stable</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors bg-surface-container-highest/20">
+<div class="w-8 shrink-0 flex flex-col items-center">
+<div class="text-xs font-mono text-secondary">152</div>
+<div class="w-px h-12 bg-outline-variant/30 my-2"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-mono text-secondary">CONFLICT</span>
+<span class="text-on-surface font-semibold text-sm">File System Mutation Detected: /src/auth.core</span>
+</div>
+<div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Asynchronous process agent-alpha-09 initiated a delete operation on a core dependency file. State divergence detected between disk and claim-graph.</div>
+<div class="flex gap-2">
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-secondary rounded">MUTATION:DELETE</span>
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">PID:19283</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xs font-mono text-secondary">42.1%</div>
+<div class="text-[9px] text-secondary uppercase">Divergent</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors">
+<div class="w-8 shrink-0 flex flex-col items-center">
+<div class="text-xs font-mono text-outline">153</div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-mono text-outline">BLOCKED</span>
+<span class="text-on-surface font-semibold text-sm">Action Validation Request: POST /actions/deploy</span>
+</div>
+<div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Request received for production deployment. Validator initiated Invariant engine sweep. Discrepancy between file state and CI results triggered immediate halt.</div>
+<div class="flex gap-2">
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">TARGET:PROD</span>
+<span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-secondary rounded">REASON:FS_CONTRADICTION</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xs font-mono text-error">0.0%</div>
+<div class="text-[9px] text-error uppercase">Terminal</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Visualizations -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-low p-6 rounded-xl border-t-2 border-primary/20">
+<h4 class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Logical Drift</h4>
+<div class="flex items-end gap-1 h-24 mb-4">
+<div class="flex-1 bg-surface-container-highest h-1/4 rounded-t-sm"></div>
+<div class="flex-1 bg-surface-container-highest h-1/3 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-1/2 rounded-t-sm"></div>
+<div class="flex-1 bg-primary h-3/4 rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-full rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-5/6 rounded-t-sm"></div>
+<div class="flex-1 bg-secondary h-4/5 rounded-t-sm shadow-[0_-4px_10px_rgba(255,185,95,0.2)]"></div>
+</div>
+<div class="flex justify-between text-[10px] font-mono text-outline">
+<span>T-12h</span>
+<span>T-0</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border-t-2 border-primary/20">
+<h4 class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Agent Cognition Load</h4>
+<div class="space-y-4">
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono">
+<span class="text-on-surface-variant">Inference Depth</span>
+<span class="text-on-surface">14 levels</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[70%]"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-[10px] font-mono">
+<span class="text-on-surface-variant">Constraint Density</span>
+<span class="text-on-surface">842 rules/sec</span>
+</div>
+<div class="h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[45%]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl border-t-2 border-primary/20">
+<h4 class="text-xs font-mono text-outline uppercase tracking-wider mb-4">World State Graph</h4>
+<div class="relative h-24 flex items-center justify-center">
+<!-- Abstract SVG Graph -->
+<svg class="w-full h-full text-outline/20" viewbox="0 0 100 40">
+<circle cx="20" cy="20" fill="currentColor" r="2"></circle>
+<circle cx="50" cy="10" fill="currentColor" r="2"></circle>
+<circle cx="50" cy="30" fill="currentColor" r="2"></circle>
+<circle cx="80" cy="20" fill="currentColor" r="2"></circle>
+<path d="M20 20 L50 10 L80 20 L50 30 Z" fill="none" stroke="currentColor" stroke-width="0.5"></path>
+<path d="M50 10 L50 30" stroke="#ffb95f" stroke-dasharray="2 1" stroke-width="1"></path>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="px-2 py-1 glass-panel border border-secondary/30 rounded text-[9px] font-mono text-secondary">CONFLICTED_NODE</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Contextual Footer Actions -->
+<footer class="mt-auto border-t border-outline-variant/10 bg-surface-container-low px-8 py-4 flex justify-between items-center" aria-label="page footer">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm">fingerprint</span>
+<span class="text-[10px] font-mono text-outline">TRACE_ID: inv_9921_xaa_882</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-sm">schedule</span>
+<span class="text-[10px] font-mono text-outline">TIMESTAMP: 2023-10-24 14:02:11 UTC</span>
+</div>
+<span class="text-[10px] font-mono text-outline hidden lg:inline">© 2026 Invariant</span>
+</div>
+<div class="flex gap-3">
+<button onclick="showOverrideModal()" class="px-6 py-2 border border-outline-variant/30 text-on-surface text-sm font-bold rounded hover:bg-surface-container-high transition-colors">Request Manual Override</button>
+<button id="rerun-btn" onclick="rerunValidation()" class="px-6 py-2 bg-surface-container-highest text-on-surface text-sm font-bold rounded hover:bg-surface-container-high transition-colors">Re-run Validation</button>
+</div>
+</footer>
+</main>
+</div>
+
+<!-- Terminal Panel -->
+<div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal — Trace inv_9921_xaa_882</span>
+<button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
+</div>
+<div class="space-y-1">
+<p><span class="text-outline">14:02:09</span> [INFO] Validation sweep initiated for POST /actions/deploy</p>
+<p><span class="text-outline">14:02:10</span> [INFO] Claim #104 verified — coverage 94.2% — COMMITTED</p>
+<p><span class="text-outline">14:02:11</span> [ERROR] Claim #152 CONFLICT — /src/auth.core deleted by agent-alpha-09</p>
+<p><span class="text-outline">14:02:11</span> [BLOCK] Action #153 halted — reason: FS_CONTRADICTION</p>
+<p><span class="text-outline">14:02:12</span> [INFO] Admissibility score Ψ = 0.32 — below threshold 0.85</p>
+<p><span class="text-[#adc6ff]">▸</span> _</p>
+</div>
+</div>
+
+<!-- Override Modal -->
+<div id="override-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+<div class="bg-[#222a3d]/80 backdrop-blur border border-outline-variant/30 rounded-xl p-8 w-full max-w-md shadow-2xl">
+<h3 class="text-lg font-headline font-bold text-on-surface mb-2">Request Manual Override</h3>
+<p class="text-xs text-on-surface-variant mb-4">Provide a documented reason for the override. This request will be logged and audited.</p>
+<textarea id="override-reason" class="w-full bg-[#131b2e] border border-outline-variant/20 rounded-lg text-sm text-on-surface p-3 h-28 resize-none focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-outline/40" placeholder="Reason for override..."></textarea>
+<div class="flex gap-3 mt-4 justify-end">
+<button onclick="closeOverrideModal()" class="px-5 py-2 border border-outline-variant/30 text-on-surface text-sm font-bold rounded hover:bg-surface-container-high transition-colors">Cancel</button>
+<button onclick="submitOverride()" class="px-5 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-sm font-bold rounded hover:opacity-90 transition-opacity">Submit Request</button>
+</div>
+</div>
+</div>
+
+<script>
+function toggleTerminal() {
+  document.getElementById('terminal-panel').classList.toggle('hidden');
+}
+
+function exportJSON() {
+  const data = {
+    traceId: "inv_9921_xaa_882",
+    timestamp: "2023-10-24T14:02:11Z",
+    action: "POST /actions/deploy",
+    admissibilityScore: 0.32,
+    claims: [
+      { id: 104, status: "PROVEN", description: "Unit testing suite executed via CI/CD node-042", confidence: 0.998 },
+      { id: 152, status: "CONFLICT", description: "File System Mutation Detected: /src/auth.core", confidence: 0.421 },
+      { id: 153, status: "BLOCKED", description: "Action Validation Request: POST /actions/deploy", confidence: 0.0 }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'audit_inv_9921_xaa_882.json'; a.click();
+}
+
+function exportRawLogs() {
+  const logs = `[2023-10-24 14:02:09 UTC] [INFO] Validation sweep initiated for POST /actions/deploy
+[2023-10-24 14:02:10 UTC] [INFO] Claim #104 PROVEN — CI/CD node-042 — conf=0.998
+[2023-10-24 14:02:11 UTC] [ERROR] Claim #152 CONFLICT — /src/auth.core deleted by agent-alpha-09 — conf=0.421
+[2023-10-24 14:02:11 UTC] [BLOCK] Action #153 halted — reason: FS_CONTRADICTION — conf=0.000
+[2023-10-24 14:02:12 UTC] [INFO] Admissibility score Ψ(a, G) = 0.32 — threshold not met (required: 0.85)
+`;
+  const blob = new Blob([logs], { type: 'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'raw_logs_inv_9921.txt'; a.click();
+}
+
+function showOverrideModal() {
+  document.getElementById('override-modal').classList.remove('hidden');
+}
+
+function closeOverrideModal() {
+  document.getElementById('override-modal').classList.add('hidden');
+}
+
+function submitOverride() {
+  const reason = document.getElementById('override-reason').value.trim();
+  if (!reason) { alert('Please provide a reason.'); return; }
+  alert('Override request submitted. Awaiting approval from System Administrator.');
+  closeOverrideModal();
+}
+
+function rerunValidation() {
+  const btn = document.getElementById('rerun-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin inline-block">refresh</span> Validating…';
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = 'Re-run Validation';
+  }, 1500);
+}
+
+function filterAudit(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.audit-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+</body></html>

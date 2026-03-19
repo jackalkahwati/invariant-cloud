@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Constraints</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-headline { font-family: 'Space Grotesk', sans-serif; }
+  .font-mono { font-family: 'Fira Code', monospace; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .glass-panel {
+    background: rgba(34, 42, 61, 0.8);
+    backdrop-filter: blur(16px);
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0b1326; }
+  ::-webkit-scrollbar-thumb { background: #2d3449; border-radius: 10px; }
+</style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff",
+          "on-secondary": "#472a00",
+          "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe",
+          "on-error": "#690005",
+          "surface-container": "#171f33",
+          "secondary-container": "#ee9800",
+          "on-secondary-fixed": "#2a1700",
+          "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#d8e2ff",
+          "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-surface-variant": "#c2c6d6",
+          "secondary": "#ffb95f",
+          "on-surface": "#dae2fd",
+          "surface-bright": "#31394d",
+          "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd",
+          "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449",
+          "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572",
+          "surface-variant": "#2d3449",
+          "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800",
+          "outline": "#8c909f",
+          "surface": "#0b1326",
+          "on-primary-container": "#00285d",
+          "primary-container": "#4d8eff",
+          "on-tertiary": "#003824",
+          "error-container": "#93000a",
+          "outline-variant": "#424754",
+          "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42",
+          "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-container-low": "#131b2e",
+          "tertiary": "#4edea3",
+          "error": "#ffb4ab",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8",
+          "surface-container-high": "#222a3d",
+          "surface-tint": "#adc6ff",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: {
+          "headline": ["Space Grotesk"],
+          "body": ["Inter"],
+          "label": ["Inter"],
+          "mono": ["Fira Code"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30 selection:text-primary overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-[#131b2e] py-4 shrink-0 z-50">
+  <div class="px-6 mb-8">
+    <a href="index.html" class="group block"><h1 class="text-lg font-headline text-[#dae2fd] tracking-tight group-hover:text-[#adc6ff] transition-colors">Invariant Engine</h1></a>
+    <p class="text-[10px] font-mono text-outline uppercase tracking-widest">v2.4.0-stable</p>
+  </div>
+  <nav class="flex-1 px-3 space-y-1">
+    <!-- World State -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="dashboard.html">
+      <span class="material-symbols-outlined text-[20px]">public</span>
+      <span class="text-sm">World State</span>
+    </a>
+    <!-- Actions -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="audit.html">
+      <span class="material-symbols-outlined text-[20px]">bolt</span>
+      <span class="text-sm">Actions</span>
+    </a>
+    <!-- Constraints (Active) -->
+    <a class="flex items-center gap-3 px-3 py-2.5 bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6] font-medium transition-all duration-200" href="constraints.html">
+      <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">gavel</span>
+      <span class="text-sm">Constraints</span>
+    </a>
+    <!-- Documentation -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="docs.html">
+      <span class="material-symbols-outlined text-[20px]">description</span>
+      <span class="text-sm">Documentation</span>
+    </a>
+  </nav>
+  <div class="px-3 mt-auto space-y-1 border-t border-outline-variant/10 pt-4">
+    <button class="w-full mb-4 py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary-container font-bold rounded shadow-lg shadow-primary/10 hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined text-sm">rocket_launch</span>
+      Deploy Agent
+    </button>
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all cursor-pointer" onclick="toggleTerminal()">
+      <span class="material-symbols-outlined text-[18px]">terminal</span>
+      <span class="text-xs font-mono">Terminal</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all" href="audit.html">
+      <span class="material-symbols-outlined text-[18px]">list_alt</span>
+      <span class="text-xs font-mono">Logs</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface relative overflow-hidden">
+
+  <!-- TopNavBar -->
+  <header class="flex justify-between items-center w-full px-6 h-16 shrink-0 bg-[#0b1326] z-40">
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-headline">Invariant</span>
+      <nav class="hidden lg:flex items-center gap-6">
+        <a class="text-sm text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] py-1" href="index.html">Coherence: Φ(0.98)</a>
+        <a class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="dashboard.html">System Health</a>
+        <a class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="pricing.html">Pricing</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+        <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+        <button class="p-2 text-[#94a3b8] hover:text-[#adc6ff] transition-colors">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="flex-1 overflow-auto p-6 flex flex-col gap-6">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl font-headline font-bold text-[#dae2fd] tracking-tight">Constraint Layer</h2>
+        <p class="text-xs font-mono text-outline uppercase tracking-widest mt-1">Formal invariant definitions &amp; violation state</p>
+      </div>
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded border border-outline-variant/20">
+        <span class="w-2 h-2 rounded-full bg-error shadow-[0_0_8px_rgba(255,180,171,0.6)]"></span>
+        <span class="font-mono text-xs text-on-surface">1 Active Violation</span>
+      </div>
+    </div>
+
+    <!-- Section 1: Stat Cards -->
+    <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Total Constraints -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[18px]">rule</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Total Constraints</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-on-surface">4</div>
+        <div class="text-xs text-on-surface-variant">Across all subsystems</div>
+      </div>
+      <!-- Active Violations -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-error text-[18px]">error</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Active Violations</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-error">1</div>
+        <div class="text-xs text-on-surface-variant">Requires immediate attention</div>
+      </div>
+      <!-- Satisfied -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Satisfied</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-tertiary">3</div>
+        <div class="text-xs text-on-surface-variant">All conditions met</div>
+      </div>
+      <!-- Avg Severity -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-[18px]">bar_chart</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Avg Severity</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-secondary">0.72</div>
+        <div class="text-xs text-on-surface-variant">Weighted across all constraints</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Constraint List -->
+    <div class="bg-[#131b2e] rounded-xl overflow-hidden flex-1">
+      <!-- Table Header -->
+      <div class="px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between">
+        <h3 class="text-xs font-mono text-outline uppercase tracking-widest">Constraint Registry</h3>
+        <span class="text-[10px] font-mono text-outline">4 entries</span>
+      </div>
+      <div class="divide-y divide-outline-variant/5">
+
+        <!-- Row 1: Temperature Limit — VIOLATED -->
+        <div class="px-6 py-4 flex items-center gap-4 hover:bg-[#222a3d]/40 transition-colors">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1.5">
+              <span class="text-sm font-bold text-on-surface">Temperature Limit</span>
+              <span class="px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-mono rounded tracking-wider">NUMERIC_RANGE</span>
+            </div>
+            <p class="text-xs font-mono text-on-surface-variant">battery_temp &lt; 80°C</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-error shadow-[0_0_6px_rgba(255,180,171,0.7)]"></span>
+            <span class="text-xs font-mono text-error font-bold">VIOLATED</span>
+          </div>
+          <div class="w-32 shrink-0">
+            <div class="flex justify-between text-[9px] font-mono mb-1">
+              <span class="text-outline">Severity</span>
+              <span class="text-error">0.94</span>
+            </div>
+            <div class="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+              <div class="h-full bg-error rounded-full" style="width: 94%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Launch Gate — SATISFIED -->
+        <div class="px-6 py-4 flex items-center gap-4 hover:bg-[#222a3d]/40 transition-colors">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1.5">
+              <span class="text-sm font-bold text-on-surface">Launch Gate</span>
+              <span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[9px] font-mono rounded tracking-wider">STATUS_DEPENDENCY</span>
+            </div>
+            <p class="text-xs font-mono text-on-surface-variant">status=READY requires all_tests_passed=true</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_6px_rgba(78,222,163,0.5)]"></span>
+            <span class="text-xs font-mono text-tertiary font-bold">SATISFIED</span>
+          </div>
+          <div class="w-32 shrink-0">
+            <div class="flex justify-between text-[9px] font-mono mb-1">
+              <span class="text-outline">Severity</span>
+              <span class="text-tertiary">0.00</span>
+            </div>
+            <div class="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Test Exclusion — SATISFIED -->
+        <div class="px-6 py-4 flex items-center gap-4 hover:bg-[#222a3d]/40 transition-colors">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1.5">
+              <span class="text-sm font-bold text-on-surface">Test Exclusion</span>
+              <span class="px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-mono rounded tracking-wider">MUTUAL_EXCLUSION</span>
+            </div>
+            <p class="text-xs font-mono text-on-surface-variant">test_status cannot be both PASS and FAIL</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_6px_rgba(78,222,163,0.5)]"></span>
+            <span class="text-xs font-mono text-tertiary font-bold">SATISFIED</span>
+          </div>
+          <div class="w-32 shrink-0">
+            <div class="flex justify-between text-[9px] font-mono mb-1">
+              <span class="text-outline">Severity</span>
+              <span class="text-tertiary">0.00</span>
+            </div>
+            <div class="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Power Budget — SATISFIED -->
+        <div class="px-6 py-4 flex items-center gap-4 hover:bg-[#222a3d]/40 transition-colors">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-1.5">
+              <span class="text-sm font-bold text-on-surface">Power Budget</span>
+              <span class="px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-mono rounded tracking-wider">NUMERIC_RANGE</span>
+            </div>
+            <p class="text-xs font-mono text-on-surface-variant">power_draw ≤ 120W</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_6px_rgba(78,222,163,0.5)]"></span>
+            <span class="text-xs font-mono text-tertiary font-bold">SATISFIED</span>
+          </div>
+          <div class="w-32 shrink-0">
+            <div class="flex justify-between text-[9px] font-mono mb-1">
+              <span class="text-outline">Severity</span>
+              <span class="text-tertiary">0.00</span>
+            </div>
+            <div class="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary rounded-full" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 3: Active Violations Detail -->
+    <div class="bg-[#131b2e] rounded-xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-error/20 flex items-center gap-3">
+        <span class="material-symbols-outlined text-error text-[18px]">report</span>
+        <h3 class="text-xs font-mono text-error uppercase tracking-widest">Active Violation Detail</h3>
+        <span class="ml-auto px-2 py-0.5 bg-error/10 text-error text-[9px] font-mono rounded">1 violation</span>
+      </div>
+      <div class="p-6">
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          <!-- Left: Violation metadata -->
+          <div class="space-y-5">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-10 h-10 flex items-center justify-center rounded bg-error/10 border border-error/20">
+                <span class="material-symbols-outlined text-error">thermostat</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-mono text-error uppercase tracking-widest">Temperature Limit — VIOLATED</div>
+                <h4 class="text-base font-headline font-bold text-on-surface">Battery Pack BP-1</h4>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 bg-[#222a3d] rounded-lg">
+                <p class="text-[10px] text-outline uppercase font-mono mb-1">Predicate</p>
+                <p class="text-sm font-mono text-on-surface">battery_temp</p>
+              </div>
+              <div class="p-3 bg-[#222a3d] rounded-lg">
+                <p class="text-[10px] text-outline uppercase font-mono mb-1">Current Value</p>
+                <p class="text-sm font-mono text-error font-bold">95°C</p>
+              </div>
+              <div class="p-3 bg-[#222a3d] rounded-lg">
+                <p class="text-[10px] text-outline uppercase font-mono mb-1">Max Allowed</p>
+                <p class="text-sm font-mono text-on-surface">80°C</p>
+              </div>
+              <div class="p-3 bg-[#222a3d] rounded-lg">
+                <p class="text-[10px] text-outline uppercase font-mono mb-1">Excess</p>
+                <p class="text-sm font-mono text-error font-bold">+15°C</p>
+              </div>
+            </div>
+            <div class="p-3 bg-[#222a3d] rounded-lg flex items-center justify-between">
+              <div>
+                <p class="text-[10px] text-outline uppercase font-mono mb-1">Severity Score</p>
+                <p class="text-2xl font-headline font-bold text-error">0.94</p>
+              </div>
+              <div class="w-32">
+                <div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+                  <div class="h-full bg-error rounded-full" style="width: 94%"></div>
+                </div>
+                <p class="text-[9px] text-outline font-mono mt-1 text-right">94% of critical threshold</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Downstream impact -->
+          <div class="space-y-4">
+            <div>
+              <h5 class="text-[10px] font-mono text-outline uppercase tracking-widest mb-3">Downstream Impact</h5>
+              <div class="space-y-2">
+                <div class="flex items-center gap-3 p-3 bg-[#222a3d] rounded-lg border-l-2 border-error/50">
+                  <span class="material-symbols-outlined text-error text-[16px]">launch</span>
+                  <div>
+                    <p class="text-xs font-bold text-on-surface">Launch Readiness Review</p>
+                    <p class="text-[10px] text-on-surface-variant">Blocked — thermal constraint unsatisfied</p>
+                  </div>
+                  <span class="ml-auto text-[9px] font-mono text-error px-1.5 py-0.5 bg-error/10 rounded">BLOCKED</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 bg-[#222a3d] rounded-lg border-l-2 border-secondary/50">
+                  <span class="material-symbols-outlined text-secondary text-[16px]">task</span>
+                  <div>
+                    <p class="text-xs font-bold text-on-surface">Task TK-19</p>
+                    <p class="text-[10px] text-on-surface-variant">Degraded — dependency on BP-1 state</p>
+                  </div>
+                  <span class="ml-auto text-[9px] font-mono text-secondary px-1.5 py-0.5 bg-secondary/10 rounded">DEGRADED</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-error/5 border border-error/20 rounded-lg">
+              <p class="text-[10px] font-mono text-error uppercase tracking-wider mb-2">Constraint Expression</p>
+              <code class="text-xs text-on-surface font-mono">battery_temp &lt; 80°C</code>
+              <br/>
+              <code class="text-xs text-error font-mono mt-1 inline-block">→ 95°C &lt; 80°C = FALSE</code>
+            </div>
+
+            <a href="audit.html" class="flex items-center justify-center gap-2 w-full py-2.5 border border-outline-variant/30 text-on-surface text-sm font-bold rounded hover:bg-[#222a3d] transition-colors">
+              <span class="material-symbols-outlined text-sm">history_edu</span>
+              View in Audit Trail
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Stats Bar -->
+    <div class="h-10 flex items-center justify-between px-2 text-[10px] font-mono text-outline uppercase tracking-wider shrink-0">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
+          <span>1 Constraint Violated</span>
+        </div>
+        <span>Engine: Invariant Core v2.4.0</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <span>Last Sweep: 14:20:07 UTC</span>
+        <span>© 2026 Invariant</span>
+      </div>
+    </div>
+
+  </div><!-- end page content -->
+</main>
+</div>
+
+<!-- Background Decoration -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-40">
+  <div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-error/5 blur-[120px] rounded-full"></div>
+  <div class="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] bg-primary/5 blur-[120px] rounded-full"></div>
+</div>
+
+<!-- Terminal Panel -->
+<div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal — Constraint Evaluation Engine</span>
+    <button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
+  </div>
+  <div class="space-y-1">
+    <p><span class="text-outline">14:20:05</span> [INFO] Constraint sweep initiated — 4 constraints evaluated</p>
+    <p><span class="text-outline">14:20:06</span> [OK] Launch Gate: SATISFIED — all_tests_passed=true</p>
+    <p><span class="text-outline">14:20:06</span> [OK] Test Exclusion: SATISFIED — no mutual state detected</p>
+    <p><span class="text-outline">14:20:06</span> [OK] Power Budget: SATISFIED — power_draw=98W ≤ 120W</p>
+    <p><span class="text-outline">14:20:07</span> [VIOLATION] Temperature Limit: FAILED — battery_temp=95°C, max=80°C, excess=+15°C, severity=0.94</p>
+    <p><span class="text-outline">14:20:07</span> [BLOCK] Downstream: Launch Readiness Review BLOCKED, Task TK-19 DEGRADED</p>
+    <p><span class="text-[#adc6ff]">▸</span> _</p>
+  </div>
+</div>
+
+<script>
+function toggleTerminal() {
+  document.getElementById('terminal-panel').classList.toggle('hidden');
+}
+</script>
+</body></html>

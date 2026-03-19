@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Account</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff",
+          "on-secondary": "#472a00",
+          "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe",
+          "on-error": "#690005",
+          "surface-container": "#171f33",
+          "secondary-container": "#ee9800",
+          "on-secondary-fixed": "#2a1700",
+          "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#d8e2ff",
+          "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-surface-variant": "#c2c6d6",
+          "secondary": "#ffb95f",
+          "on-surface": "#dae2fd",
+          "surface-bright": "#31394d",
+          "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd",
+          "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449",
+          "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572",
+          "surface-variant": "#2d3449",
+          "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800",
+          "outline": "#8c909f",
+          "surface": "#0b1326",
+          "on-primary-container": "#00285d",
+          "primary-container": "#4d8eff",
+          "on-tertiary": "#003824",
+          "error-container": "#93000a",
+          "outline-variant": "#424754",
+          "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42",
+          "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-container-low": "#131b2e",
+          "tertiary": "#4edea3",
+          "error": "#ffb4ab",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8",
+          "surface-container-high": "#222a3d",
+          "surface-tint": "#adc6ff",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: {
+          "headline": ["Space Grotesk"],
+          "body": ["Inter"],
+          "label": ["Inter"],
+          "mono": ["JetBrains Mono"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .cta-primary { background: linear-gradient(135deg, #adc6ff 0%, #4d8eff 100%); }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Top nav -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] border-b border-outline-variant/10">
+  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk'] hover:text-primary transition-colors">Invariant</a>
+  <div class="flex items-center gap-4">
+    <a href="login.html" class="text-sm text-outline hover:text-primary transition-colors">Sign in</a>
+    <a href="register.html" class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-xs px-3 py-1.5 rounded font-bold">Sign up</a>
+    <button id="signout-btn" onclick="signOut()" class="hidden text-sm text-outline hover:text-error transition-colors">Sign out</button>
+  </div>
+</nav>
+
+<!-- Loading state -->
+<div id="loading" class="flex items-center justify-center min-h-screen">
+  <div class="text-center">
+    <span class="material-symbols-outlined text-primary text-4xl animate-spin block mb-4">refresh</span>
+    <p class="text-outline text-sm">Loading workspace…</p>
+  </div>
+</div>
+
+<!-- Main content (hidden until loaded) -->
+<main id="main-content" class="hidden pt-16 pb-16">
+  <div class="max-w-3xl mx-auto px-6 py-12 space-y-8">
+
+    <!-- Header / workspace info -->
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <h1 id="ws-name" class="font-['Space_Grotesk'] text-2xl font-bold text-on-surface tracking-tight">Loading…</h1>
+          <span id="tier-badge" class="text-xs font-mono font-bold px-2 py-0.5 rounded border"></span>
+        </div>
+        <p id="user-email" class="text-sm text-outline"></p>
+      </div>
+      <button onclick="signOut()" class="text-sm text-outline hover:text-error border border-outline-variant/20 px-3 py-1.5 rounded-lg hover:border-error/30 transition-colors flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm">logout</span>
+        Sign out
+      </button>
+    </div>
+
+    <!-- Plan card -->
+    <div id="plan-card" class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/20">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h2 class="font-['Space_Grotesk'] text-lg font-bold text-on-surface mb-1">Current Plan</h2>
+          <div class="flex items-center gap-2 mb-3">
+            <span id="plan-tier-label" class="text-on-surface-variant text-sm"></span>
+            <span id="plan-status-chip" class="text-xs font-mono px-2 py-0.5 rounded border"></span>
+          </div>
+          <p id="trial-info" class="hidden text-xs text-outline font-mono"></p>
+        </div>
+        <div id="upgrade-section" class="hidden">
+          <button
+            id="upgrade-btn"
+            onclick="startUpgrade()"
+            class="cta-primary text-on-primary font-bold text-sm px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-sm">rocket_launch</span>
+            <span id="upgrade-btn-text">Upgrade to Team</span>
+          </button>
+          <p class="text-xs text-outline mt-2 text-right">14-day free trial</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage (only for TEAM tier) -->
+    <div id="usage-card" class="hidden bg-surface-container-low rounded-xl p-6 border border-outline-variant/20">
+      <h2 class="font-['Space_Grotesk'] text-lg font-bold text-on-surface mb-4">Usage This Month</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-on-surface-variant">Claims</span>
+          <span id="claims-label" class="text-primary font-mono text-xs"></span>
+        </div>
+        <div class="w-full bg-surface-container rounded-full h-2">
+          <div id="claims-bar" class="cta-primary h-2 rounded-full transition-all" style="width: 0%"></div>
+        </div>
+        <p class="text-xs text-outline">10,000,000 claims included per month</p>
+      </div>
+    </div>
+
+    <!-- API Keys section -->
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/20">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-['Space_Grotesk'] text-lg font-bold text-on-surface">API Keys</h2>
+        <button
+          onclick="generateKey()"
+          id="gen-key-btn"
+          class="text-sm font-bold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary/5 transition-colors flex items-center gap-1.5"
+        >
+          <span class="material-symbols-outlined text-sm">add</span>
+          Generate key
+        </button>
+      </div>
+      <div id="keys-list" class="space-y-3">
+        <p class="text-outline text-sm">Loading…</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- New API Key modal -->
+<div id="newkey-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+  <div class="w-full max-w-lg bg-surface-container-low rounded-xl p-8 border border-primary/30 shadow-2xl">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="material-symbols-outlined text-tertiary text-2xl">key</span>
+      <h2 class="font-['Space_Grotesk'] text-xl font-bold text-on-surface">New API Key Created</h2>
+    </div>
+    <div class="bg-surface-container-lowest rounded-lg p-4 mb-4 border border-outline-variant/20">
+      <p class="text-xs font-mono text-outline uppercase tracking-wider mb-2">Save this — it won't be shown again</p>
+      <code id="newkey-display" class="font-mono text-sm text-primary break-all block"></code>
+    </div>
+    <button
+      onclick="copyNewKey()"
+      id="copy-newkey-btn"
+      class="w-full mb-4 py-2.5 px-4 bg-surface-container-high border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2"
+    >
+      <span class="material-symbols-outlined text-sm">content_copy</span>
+      <span id="copy-newkey-text">Copy API Key</span>
+    </button>
+    <button
+      onclick="document.getElementById('newkey-modal').classList.add('hidden'); loadWorkspace();"
+      class="w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors"
+    >
+      Done
+    </button>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'http://localhost:3000';
+let currentWorkspace = null;
+let newKeyValue = '';
+
+function signOut() {
+  localStorage.removeItem('inv_token');
+  localStorage.removeItem('inv_workspace');
+  window.location.href = 'login.html';
+}
+
+function getToken() {
+  return localStorage.getItem('inv_token');
+}
+
+function tierBadgeClasses(tier) {
+  if (tier === 'TEAM') return 'text-tertiary border-tertiary/30 bg-tertiary/10';
+  if (tier === 'ENTERPRISE') return 'text-secondary border-secondary/30 bg-secondary/10';
+  return 'text-outline border-outline/30 bg-outline/10';
+}
+
+function statusChipClasses(status) {
+  if (status === 'ACTIVE') return 'text-tertiary border-tertiary/30';
+  if (status === 'TRIAL') return 'text-primary border-primary/30';
+  if (status === 'PAST_DUE') return 'text-error border-error/30';
+  if (status === 'CANCELLED') return 'text-outline border-outline/30';
+  return 'text-outline border-outline/30';
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+async function loadWorkspace() {
+  const token = getToken();
+  if (!token) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+
+    if (res.status === 401) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const data = await res.json();
+    const user = data.user;
+    const membership = data.workspaces?.[0];
+    const ws = membership?.workspace;
+
+    if (!ws) {
+      document.getElementById('loading').innerHTML = '<p class="text-outline text-center">No workspace found. <a href="register.html" class="text-primary">Create one</a>.</p>';
+      return;
+    }
+
+    currentWorkspace = ws;
+
+    // Update UI
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('signout-btn').classList.remove('hidden');
+
+    // Header
+    document.getElementById('ws-name').textContent = ws.name;
+    document.getElementById('user-email').textContent = user.email;
+    const tierBadge = document.getElementById('tier-badge');
+    tierBadge.textContent = ws.tier;
+    tierBadge.className = `text-xs font-mono font-bold px-2 py-0.5 rounded border ${tierBadgeClasses(ws.tier)}`;
+
+    // Plan card
+    document.getElementById('plan-tier-label').textContent = ws.tier === 'FREE' ? 'Free (Self-Hosted)' : ws.tier === 'TEAM' ? 'Team — Cloud' : 'Enterprise — Cloud';
+    const statusChip = document.getElementById('plan-status-chip');
+    statusChip.textContent = ws.status;
+    statusChip.className = `text-xs font-mono px-2 py-0.5 rounded border ${statusChipClasses(ws.status)}`;
+
+    if (ws.trialEndsAt) {
+      const trialInfo = document.getElementById('trial-info');
+      trialInfo.textContent = `Trial ends: ${formatDate(ws.trialEndsAt)}`;
+      trialInfo.classList.remove('hidden');
+    }
+
+    if (ws.tier === 'FREE') {
+      document.getElementById('upgrade-section').classList.remove('hidden');
+    }
+
+    // Usage (TEAM only)
+    if (ws.tier === 'TEAM' || ws.tier === 'ENTERPRISE') {
+      const usageCard = document.getElementById('usage-card');
+      usageCard.classList.remove('hidden');
+      const claims = ws.claimsThisMonth || 0;
+      const limit = 10000000;
+      const pct = Math.min((claims / limit) * 100, 100).toFixed(1);
+      document.getElementById('claims-label').textContent = `${claims.toLocaleString()} / ${limit.toLocaleString()}`;
+      document.getElementById('claims-bar').style.width = `${pct}%`;
+    }
+
+    // API Keys
+    renderKeys(ws.apiKeys || []);
+
+  } catch (err) {
+    document.getElementById('loading').innerHTML = '<p class="text-error text-center">Failed to load workspace. <button onclick="loadWorkspace()" class="text-primary underline">Retry</button></p>';
+  }
+}
+
+function renderKeys(keys) {
+  const container = document.getElementById('keys-list');
+  if (!keys.length) {
+    container.innerHTML = '<p class="text-outline text-sm">No active API keys.</p>';
+    return;
+  }
+  container.innerHTML = keys.map(k => `
+    <div class="flex items-center justify-between gap-4 py-3 px-4 bg-surface-container rounded-lg border border-outline-variant/15">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-0.5">
+          <span class="text-sm font-medium text-on-surface">${escHtml(k.name)}</span>
+        </div>
+        <div class="flex items-center gap-3 text-xs text-outline font-mono">
+          <span>${escHtml(k.keyPrefix)}…</span>
+          <span>Created ${formatDate(k.createdAt)}</span>
+          ${k.lastUsedAt ? `<span>Last used ${formatDate(k.lastUsedAt)}</span>` : '<span class="text-outline/50">Never used</span>'}
+        </div>
+      </div>
+      <button
+        onclick="revokeKey('${k.id}')"
+        class="text-xs text-outline hover:text-error border border-outline-variant/20 px-2.5 py-1 rounded hover:border-error/30 transition-colors whitespace-nowrap flex items-center gap-1"
+      >
+        <span class="material-symbols-outlined text-sm">delete</span>
+        Revoke
+      </button>
+    </div>
+  `).join('');
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function generateKey() {
+  const token = getToken();
+  const btn = document.getElementById('gen-key-btn');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  try {
+    const res = await fetch(`${API_BASE}/workspace/api-keys`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name: 'API Key' }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || 'Failed to generate key');
+    } else {
+      newKeyValue = data.apiKey;
+      document.getElementById('newkey-display').textContent = data.apiKey;
+      document.getElementById('newkey-modal').classList.remove('hidden');
+    }
+  } catch {
+    alert('Could not reach the API.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined text-sm">add</span> Generate key';
+  }
+}
+
+async function copyNewKey() {
+  try {
+    await navigator.clipboard.writeText(newKeyValue);
+    const t = document.getElementById('copy-newkey-text');
+    t.textContent = 'Copied!';
+    setTimeout(() => { t.textContent = 'Copy API Key'; }, 2000);
+  } catch {}
+}
+
+async function revokeKey(keyId) {
+  if (!confirm('Revoke this API key? Any code using it will stop working immediately.')) return;
+  const token = getToken();
+  try {
+    const res = await fetch(`${API_BASE}/workspace/api-keys/${keyId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (res.ok) {
+      await loadWorkspace();
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Failed to revoke key');
+    }
+  } catch {
+    alert('Could not reach the API.');
+  }
+}
+
+async function startUpgrade() {
+  const token = getToken();
+  const btn = document.getElementById('upgrade-btn');
+  const btnText = document.getElementById('upgrade-btn-text');
+  btn.disabled = true;
+  btnText.textContent = 'Redirecting…';
+
+  try {
+    const ws = JSON.parse(localStorage.getItem('inv_workspace') || '{}');
+    const userEmail = document.getElementById('user-email').textContent;
+
+    const res = await fetch(`${API_BASE}/checkout/session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        workspaceId: currentWorkspace?.id || ws.id,
+        email: userEmail,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || 'Could not start checkout');
+      btn.disabled = false;
+      btnText.textContent = 'Upgrade to Team';
+      return;
+    }
+    window.location.href = data.url;
+  } catch {
+    alert('Could not reach the API. Make sure the server is running on localhost:3000.');
+    btn.disabled = false;
+    btnText.textContent = 'Upgrade to Team';
+  }
+}
+
+// Init
+loadWorkspace();
+</script>
+</body>
+</html>
