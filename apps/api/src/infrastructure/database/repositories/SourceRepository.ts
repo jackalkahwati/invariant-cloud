@@ -4,11 +4,11 @@ import prisma from '../prisma.js';
 
 export class PrismaSourceRepository implements ISourceRepository {
   async findById(id: string): Promise<Source | null> {
-    return prisma.source.findUnique({ where: { id } }) as Promise<Source | null>;
+    return prisma.source.findUnique({ where: { id } }) as unknown as Promise<Source | null>;
   }
 
   async findAll(): Promise<Source[]> {
-    return prisma.source.findMany({ orderBy: { createdAt: 'desc' } }) as Promise<Source[]>;
+    return prisma.source.findMany({ orderBy: { createdAt: 'desc' } }) as unknown as Promise<Source[]>;
   }
 
   async create(data: Omit<Source, 'id' | 'createdAt'>): Promise<Source> {
@@ -17,13 +17,13 @@ export class PrismaSourceRepository implements ISourceRepository {
         name: data.name,
         type: data.type,
         trustScore: data.trustScore,
-        metadata: data.metadata ?? {},
+        metadata: (data.metadata ?? {}) as never,
       },
-    }) as Promise<Source>;
+    }) as unknown as Promise<Source>;
   }
 
   async update(id: string, data: Partial<Source>): Promise<Source> {
-    return prisma.source.update({ where: { id }, data }) as Promise<Source>;
+    return prisma.source.update({ where: { id }, data: data as never }) as unknown as Promise<Source>;
   }
 
   async getOrCreate(name: string, type: Source['type']): Promise<Source> {

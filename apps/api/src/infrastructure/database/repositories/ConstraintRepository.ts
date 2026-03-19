@@ -4,14 +4,14 @@ import prisma from '../prisma.js';
 
 export class PrismaConstraintRepository implements IConstraintRepository {
   async findById(id: string): Promise<Constraint | null> {
-    return prisma.constraint.findUnique({ where: { id } }) as Promise<Constraint | null>;
+    return prisma.constraint.findUnique({ where: { id } }) as unknown as Promise<Constraint | null>;
   }
 
   async findAll(active?: boolean): Promise<Constraint[]> {
     return prisma.constraint.findMany({
       where: active !== undefined ? { isActive: active } : {},
       orderBy: { createdAt: 'asc' },
-    }) as Promise<Constraint[]>;
+    }) as unknown as Promise<Constraint[]>;
   }
 
   async create(data: Omit<Constraint, 'id' | 'createdAt' | 'updatedAt'>): Promise<Constraint> {
@@ -25,7 +25,7 @@ export class PrismaConstraintRepository implements IConstraintRepository {
         weight: data.weight,
         isActive: data.isActive,
       },
-    }) as Promise<Constraint>;
+    }) as unknown as Promise<Constraint>;
   }
 
   async createViolation(
@@ -40,7 +40,7 @@ export class PrismaConstraintRepository implements IConstraintRepository {
         description: data.description,
         isActive: data.isActive,
       },
-    }) as Promise<ConstraintViolation>;
+    }) as unknown as Promise<ConstraintViolation>;
   }
 
   async deactivateViolations(constraintId: string, entityIds: string[]): Promise<void> {
@@ -58,7 +58,7 @@ export class PrismaConstraintRepository implements IConstraintRepository {
     return prisma.constraintViolation.findMany({
       where: { isActive: true },
       orderBy: { severity: 'desc' },
-    }) as Promise<ConstraintViolation[]>;
+    }) as unknown as Promise<ConstraintViolation[]>;
   }
 
   async countActiveViolations(): Promise<number> {

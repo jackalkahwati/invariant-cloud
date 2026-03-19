@@ -18,7 +18,8 @@ async function hashApiKey(raw: string): Promise<string> {
 
 /** Sign a JWT for a user */
 function signToken(userId: string): string {
-  return jwt.sign({ userId }, authConfig.jwtSecret, { expiresIn: authConfig.jwtExpiresIn as string });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (jwt.sign as any)({ userId }, authConfig.jwtSecret, { expiresIn: authConfig.jwtExpiresIn as string });
 }
 
 /** Slugify a name */

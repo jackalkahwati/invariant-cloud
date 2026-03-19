@@ -4,7 +4,7 @@ import prisma from '../prisma.js';
 
 export class PrismaEntityRepository implements IEntityRepository {
   async findById(id: string): Promise<Entity | null> {
-    return prisma.entity.findUnique({ where: { id } }) as Promise<Entity | null>;
+    return prisma.entity.findUnique({ where: { id } }) as unknown as Promise<Entity | null>;
   }
 
   async findAll(filter?: { type?: EntityType; isActive?: boolean }): Promise<Entity[]> {
@@ -14,7 +14,7 @@ export class PrismaEntityRepository implements IEntityRepository {
         ...(filter?.isActive !== undefined ? { isActive: filter.isActive } : {}),
       },
       orderBy: { createdAt: 'desc' },
-    }) as Promise<Entity[]>;
+    }) as unknown as Promise<Entity[]>;
   }
 
   async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {
@@ -23,17 +23,17 @@ export class PrismaEntityRepository implements IEntityRepository {
         name: data.name,
         type: data.type,
         description: data.description,
-        metadata: data.metadata ?? {},
+        metadata: (data.metadata ?? {}) as never,
         isActive: data.isActive,
       },
-    }) as Promise<Entity>;
+    }) as unknown as Promise<Entity>;
   }
 
   async update(id: string, data: Partial<Entity>): Promise<Entity> {
     return prisma.entity.update({
       where: { id },
-      data,
-    }) as Promise<Entity>;
+      data: data as never,
+    }) as unknown as Promise<Entity>;
   }
 
   async delete(id: string): Promise<void> {

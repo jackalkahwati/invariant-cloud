@@ -13,7 +13,7 @@ import { sendTeamActivationEmail } from '../../../application/services/EmailServ
 
 function getStripe(): Stripe | null {
   if (!stripeConfig.secretKey) return null;
-  return new Stripe(stripeConfig.secretKey, { apiVersion: '2025-02-24.acacia' });
+  return new Stripe(stripeConfig.secretKey, { apiVersion: '2026-02-25.clover' });
 }
 
 export async function checkoutRoutes(app: FastifyInstance) {
