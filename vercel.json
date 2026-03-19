@@ -4,8 +4,7 @@
   "outputDirectory": "apps/web",
   "functions": {
     "api/index.ts": {
-      "maxDuration": 30,
-      "memory": 512
+      "maxDuration": 25
     }
   },
   "rewrites": [
