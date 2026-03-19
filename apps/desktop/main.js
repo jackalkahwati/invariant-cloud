@@ -1,6 +1,9 @@
-import { app, BrowserWindow, Tray, Menu, nativeImage, shell, Notification, ipcMain } from 'electron';
+import { app, BrowserWindow, Tray, Menu, nativeImage, shell, Notification, ipcMain, dialog } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { autoUpdater } = require('electron-updater');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = process.argv.includes('--dev');
@@ -66,6 +69,15 @@ function buildTrayMenu(coherence) {
     {
       label: 'Change API endpoint…',
       click: () => openWindow('account.html'),
+    },
+    { type: 'separator' },
+    {
+      label: 'Check for Updates…',
+      click: () => checkForUpdates(true),
+    },
+    {
+      label: `Version ${app.getVersion()}`,
+      enabled: false,
     },
     { type: 'separator' },
     {
@@ -162,6 +174,77 @@ async function pollCoherence() {
   }
 }
 
+// ── Auto-updater ──────────────────────────────────────────────────────────
+
+function setupAutoUpdater() {
+  autoUpdater.autoDownload = false;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on('update-available', (info) => {
+    new Notification({
+      title: 'Invariant Update Available',
+      body: `Version ${info.version} is ready to download.`,
+    }).show();
+
+    if (tray) tray.setContextMenu(buildTrayMenuWithUpdate(info.version));
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Available',
+      message: `Invariant ${info.version} is available`,
+      detail: `You're on ${app.getVersion()}. Download and install now?`,
+      buttons: ['Download & Install', 'Later'],
+      defaultId: 0,
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.downloadUpdate();
+    });
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    new Notification({
+      title: 'Invariant — Update Ready',
+      body: 'Restart to apply the update.',
+    }).show();
+
+    dialog.showMessageBox({
+      type: 'info',
+      title: 'Update Ready',
+      message: 'Update downloaded',
+      detail: 'Restart Invariant to apply the update.',
+      buttons: ['Restart Now', 'Later'],
+      defaultId: 0,
+    }).then(({ response }) => {
+      if (response === 0) autoUpdater.quitAndInstall();
+    });
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.error('Auto-updater error:', err.message);
+  });
+}
+
+function buildTrayMenuWithUpdate(version) {
+  const items = buildTrayMenu(null).items;
+  return Menu.buildFromTemplate([
+    {
+      label: `⬆ Update to ${version} available — click to install`,
+      click: () => autoUpdater.downloadUpdate(),
+    },
+    { type: 'separator' },
+    ...items.map(i => ({ label: i.label, enabled: i.enabled, type: i.type, click: i.click, accelerator: i.accelerator })),
+  ]);
+}
+
+function checkForUpdates(manual = false) {
+  if (isDev) {
+    if (manual) dialog.showMessageBox({ type: 'info', title: 'Updates', message: 'Updates disabled in dev mode.' });
+    return;
+  }
+  autoUpdater.checkForUpdates().catch(err => {
+    if (manual) dialog.showMessageBox({ type: 'error', title: 'Update Check Failed', message: err.message });
+  });
+}
+
 // ── App lifecycle ─────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
@@ -182,6 +265,10 @@ app.whenReady().then(async () => {
   // Initial poll then every 5s
   await pollCoherence();
   pollInterval = setInterval(pollCoherence, 5000);
+
+  // Auto-updater: setup and check 5s after launch (gives app time to settle)
+  setupAutoUpdater();
+  setTimeout(() => checkForUpdates(), 5000);
 
   // IPC: navigate to page from renderer
   ipcMain.on('navigate', (_e, page) => openWindow(page));

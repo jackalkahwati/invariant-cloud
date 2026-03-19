@@ -64,6 +64,12 @@
     ],
     "extraMetadata": {
       "main": "main.js"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "jackalkahwati",
+      "repo": "invariant-cloud",
+      "releaseType": "release"
     }
   },
   "devDependencies": {
@@ -71,6 +77,7 @@
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
-    "7zip-bin": "^5.2.0"
+    "7zip-bin": "^5.2.0",
+    "electron-updater": "^6.8.3"
   }
 }
