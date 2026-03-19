@@ -430,9 +430,154 @@
 </div>
 
 <script>
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://invariant-api-450112670986.us-central1.run.app';
+const API_KEY = localStorage.getItem('inv_api_key') || 'dev-api-key';
+const HEADERS = { 'X-API-Key': API_KEY };
+
 function toggleTerminal() {
   document.getElementById('terminal-panel').classList.toggle('hidden');
 }
+
+function termLog(lines) {
+  const container = document.querySelector('#terminal-panel .space-y-1');
+  if (!container) return;
+  const now = new Date().toISOString().substring(11, 19);
+  lines.forEach(line => {
+    const p = document.createElement('p');
+    p.innerHTML = `<span class="text-outline">${now}</span> ${line}`;
+    container.insertBefore(p, container.lastElementChild);
+  });
+}
+
+const STATUS_COLORS = {
+  ACTIVE: 'tertiary', SUPERSEDED: 'outline', DISPUTED: 'secondary',
+  INVALIDATED: 'error', BRANCH_SPECIFIC: 'primary',
+  VALID: 'tertiary', RISKY: 'secondary', BLOCKED: 'error', PENDING: 'outline',
+};
+
+function renderAuditTrail(contradictions, actions) {
+  const trail = document.getElementById('audit-trail');
+  if (!trail) return;
+  const items = [];
+
+  contradictions.slice(0, 3).forEach((c, i) => {
+    const color = c.severity === 'CRITICAL' || c.severity === 'HIGH' ? 'error' : c.severity === 'MEDIUM' ? 'secondary' : 'outline';
+    const time = new Date(c.createdAt).toISOString().substring(11, 19);
+    items.push(`
+      <div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors ${i % 2 === 1 ? 'bg-surface-container-highest/20' : ''}">
+        <div class="w-8 shrink-0 flex flex-col items-center">
+          <div class="text-xs font-mono text-${color}">${(i + 1).toString().padStart(3, '0')}</div>
+          ${i < contradictions.length - 1 ? '<div class="w-px h-12 bg-outline-variant/30 my-2"></div>' : ''}
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-mono text-${color}">CONTRADICTION — ${c.severity}</span>
+            <span class="text-on-surface font-semibold text-sm truncate">${c.type || 'STATE_CONFLICT'}</span>
+          </div>
+          <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Score: ${c.score?.toFixed(3)} — Claims ${c.claimAId?.substring(0,8)} vs ${c.claimBId?.substring(0,8)} — Status: ${c.status}</div>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-${color} rounded">SCORE:${c.score?.toFixed(2)}</span>
+            <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">${time} UTC</span>
+          </div>
+        </div>
+        <div class="text-right shrink-0">
+          <div class="text-xs font-mono text-${color}">${c.severity}</div>
+          <div class="text-[9px] text-outline uppercase">${c.status}</div>
+        </div>
+      </div>`);
+  });
+
+  actions.slice(0, 4).forEach((a, i) => {
+    const val = a.validation;
+    const admiss = val?.admissibility || a.status;
+    const color = STATUS_COLORS[admiss] || 'outline';
+    const conf = val ? (100 - val.psiScore * 100).toFixed(1) : '—';
+    const time = new Date(a.createdAt).toISOString().substring(11, 19);
+    items.push(`
+      <div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors">
+        <div class="w-8 shrink-0 flex flex-col items-center">
+          <div class="text-xs font-mono text-${color}">${(i + 100).toString()}</div>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-xs font-mono text-${color}">${admiss}</span>
+            <span class="text-on-surface font-semibold text-sm">Action: ${a.operation}</span>
+          </div>
+          <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">
+            ${val ? `ΔΦ=${val.deltaPhi?.toFixed(3)} · Ψ=${val.psiScore?.toFixed(3)} · CVR=${val.constraintViolationRisk?.toFixed(2)}` : `Status: ${a.status}`}
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-${color} rounded">${admiss}</span>
+            <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">${time} UTC</span>
+          </div>
+        </div>
+        <div class="text-right shrink-0">
+          <div class="text-xs font-mono text-${color}">${conf}%</div>
+          <div class="text-[9px] text-outline uppercase">${val ? 'Validated' : 'Pending'}</div>
+        </div>
+      </div>`);
+  });
+
+  if (items.length === 0) {
+    trail.innerHTML = '<p class="text-xs font-mono text-outline text-center py-8">No audit events yet.</p>';
+  } else {
+    trail.innerHTML = items.join('');
+  }
+}
+
+function updatePsiGauge(actions) {
+  const validated = actions.filter(a => a.validation);
+  if (validated.length === 0) return;
+  const latest = validated[0];
+  const psi = latest.validation?.psiScore || 0;
+  // Update the SVG gauge in audit.html
+  const arc = document.querySelector('circle[stroke="#ffb95f"]');
+  if (arc) {
+    const circumference = 502.65;
+    const offset = circumference * (1 - psi);
+    arc.setAttribute('stroke-dashoffset', offset.toFixed(2));
+  }
+  const scoreEl = document.querySelector('text[font-size="36"]');
+  if (scoreEl) scoreEl.textContent = psi.toFixed(2);
+  const labelEl = document.querySelector('text[font-size="9"]');
+  const admiss = latest.validation?.admissibility || 'UNKNOWN';
+  if (labelEl) { labelEl.textContent = admiss; labelEl.setAttribute('fill', admiss === 'VALID' ? '#4edea3' : admiss === 'RISKY' ? '#ffb95f' : '#ffb4ab'); }
+}
+
+async function loadAudit() {
+  try {
+    const [contraRes, actRes] = await Promise.all([
+      fetch(`${API_BASE}/contradictions`, { headers: HEADERS }),
+      fetch(`${API_BASE}/actions?limit=5`, { headers: HEADERS }),
+    ]);
+
+    const contras = contraRes.ok ? (await contraRes.json()) : [];
+    const contraList = Array.isArray(contras) ? contras : (contras.contradictions || []);
+
+    const acts = actRes.ok ? (await actRes.json()) : [];
+    const actList = Array.isArray(acts) ? acts : (acts.actions || acts.proposals || []);
+
+    renderAuditTrail(contraList, actList);
+    updatePsiGauge(actList);
+
+    // Update timestamp in footer
+    const ts = document.querySelector('span.font-mono.text-outline[class*="TIMESTAMP"]') ||
+      [...document.querySelectorAll('span.font-mono.text-outline')].find(el => el.textContent.includes('TIMESTAMP'));
+    if (ts) ts.textContent = `TIMESTAMP: ${new Date().toISOString().replace('T', ' ').substring(0, 19)} UTC`;
+
+    termLog([
+      `[INFO] Loaded ${contraList.length} contradiction(s), ${actList.length} action(s)`,
+      ...contraList.slice(0,2).map(c => `[${c.severity}] Contradiction: score=${c.score?.toFixed(3)} type=${c.type}`),
+    ]);
+  } catch(e) {
+    termLog([`[ERROR] ${e.message}`]);
+  }
+}
+
+loadAudit();
+setInterval(loadAudit, 15000);
 
 function exportJSON() {
   const data = {

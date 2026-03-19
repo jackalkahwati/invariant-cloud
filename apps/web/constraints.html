@@ -457,8 +457,187 @@
 </div>
 
 <script>
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000'
+  : 'https://invariant-api-450112670986.us-central1.run.app';
+const API_KEY = localStorage.getItem('inv_api_key') || 'dev-api-key';
+const HEADERS = { 'X-API-Key': API_KEY };
+
 function toggleTerminal() {
   document.getElementById('terminal-panel').classList.toggle('hidden');
 }
+
+const TYPE_COLOR = { NUMERIC_RANGE: 'primary', STATUS_DEPENDENCY: 'secondary', MUTUAL_EXCLUSION: 'primary', VERIFICATION_REQUIRED: 'secondary', COMPLETENESS: 'tertiary', CUSTOM: 'outline' };
+
+function renderConstraintRow(c, violations) {
+  const hasViolation = violations.some(v => v.constraintId === c.id && v.isActive);
+  const color = hasViolation ? 'error' : 'tertiary';
+  const status = hasViolation ? 'VIOLATED' : 'SATISFIED';
+  const severity = hasViolation ? violations.find(v => v.constraintId === c.id)?.severity || 0 : 0;
+  const sevPct = (severity * 100).toFixed(0);
+  const typeColor = TYPE_COLOR[c.type] || 'outline';
+  const expr = typeof c.expression === 'object' ? JSON.stringify(c.expression) : String(c.expression);
+  return `
+    <div class="px-6 py-4 flex items-center gap-4 hover:bg-[#222a3d]/40 transition-colors constraint-row" data-id="${c.id}">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 mb-1.5">
+          <span class="text-sm font-bold text-on-surface">${c.name}</span>
+          <span class="px-2 py-0.5 bg-${typeColor}/10 text-${typeColor} text-[9px] font-mono rounded tracking-wider">${c.type}</span>
+        </div>
+        <p class="text-xs font-mono text-on-surface-variant truncate">${c.description || expr}</p>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="w-2 h-2 rounded-full bg-${color} ${hasViolation ? 'shadow-[0_0_6px_rgba(255,180,171,0.7)]' : 'shadow-[0_0_6px_rgba(78,222,163,0.5)]'}"></span>
+        <span class="text-xs font-mono text-${color} font-bold">${status}</span>
+      </div>
+      <div class="w-32 shrink-0">
+        <div class="flex justify-between text-[9px] font-mono mb-1">
+          <span class="text-outline">Severity</span>
+          <span class="text-${color}">${severity.toFixed(2)}</span>
+        </div>
+        <div class="h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+          <div class="h-full bg-${color} rounded-full" style="width: ${sevPct}%"></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderViolationDetail(violations, constraints) {
+  const section = document.querySelector('.bg-\\[\\#131b2e\\].rounded-xl.overflow-hidden:last-of-type .p-6');
+  if (!section) return;
+  const active = violations.filter(v => v.isActive);
+  if (active.length === 0) {
+    section.innerHTML = `<p class="text-xs font-mono text-tertiary text-center py-8">✓ No active violations — all constraints satisfied.</p>`;
+    return;
+  }
+  const v = active[0];
+  const c = constraints.find(c => c.id === v.constraintId);
+  const expr = c ? (typeof c.expression === 'object' ? JSON.stringify(c.expression, null, 2) : c.expression) : '';
+  const sevPct = ((v.severity || 0) * 100).toFixed(0);
+  section.innerHTML = `
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+      <div class="space-y-5">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-10 h-10 flex items-center justify-center rounded bg-error/10 border border-error/20">
+            <span class="material-symbols-outlined text-error">report_problem</span>
+          </div>
+          <div>
+            <div class="text-[10px] font-mono text-error uppercase tracking-widest">${c?.type || 'CONSTRAINT'} — VIOLATED</div>
+            <h4 class="text-base font-headline font-bold text-on-surface">${c?.name || v.constraintId.substring(0,8)}</h4>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="p-3 bg-[#222a3d] rounded-lg">
+            <p class="text-[10px] text-outline uppercase font-mono mb-1">Entities Affected</p>
+            <p class="text-sm font-mono text-error font-bold">${v.entityIds?.length || 0}</p>
+          </div>
+          <div class="p-3 bg-[#222a3d] rounded-lg">
+            <p class="text-[10px] text-outline uppercase font-mono mb-1">Claims Involved</p>
+            <p class="text-sm font-mono text-on-surface">${v.claimIds?.length || 0}</p>
+          </div>
+          <div class="p-3 bg-[#222a3d] col-span-2 rounded-lg flex items-center justify-between">
+            <div>
+              <p class="text-[10px] text-outline uppercase font-mono mb-1">Severity Score</p>
+              <p class="text-2xl font-headline font-bold text-error">${(v.severity||0).toFixed(2)}</p>
+            </div>
+            <div class="w-32">
+              <div class="h-2 bg-surface-container-highest rounded-full overflow-hidden">
+                <div class="h-full bg-error rounded-full" style="width: ${sevPct}%"></div>
+              </div>
+              <p class="text-[9px] text-outline font-mono mt-1 text-right">${sevPct}% severity</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 bg-error/5 border border-error/20 rounded-lg">
+          <p class="text-[10px] font-mono text-error uppercase tracking-wider mb-2">Description</p>
+          <p class="text-xs text-on-surface font-mono">${v.description || 'Constraint expression evaluated to false.'}</p>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div class="p-4 bg-error/5 border border-error/20 rounded-lg">
+          <p class="text-[10px] font-mono text-error uppercase tracking-wider mb-2">Constraint Expression</p>
+          <pre class="text-xs text-on-surface font-mono whitespace-pre-wrap overflow-auto max-h-32">${expr}</pre>
+        </div>
+        <a href="audit.html" class="flex items-center justify-center gap-2 w-full py-2.5 border border-outline-variant/30 text-on-surface text-sm font-bold rounded hover:bg-[#222a3d] transition-colors">
+          <span class="material-symbols-outlined text-sm">history_edu</span>
+          View in Audit Trail
+        </a>
+      </div>
+    </div>`;
+}
+
+function termLog(lines) {
+  const container = document.querySelector('#terminal-panel .space-y-1');
+  if (!container) return;
+  const now = new Date().toISOString().substring(11, 19);
+  lines.forEach(line => {
+    const p = document.createElement('p');
+    p.innerHTML = `<span class="text-outline">${now}</span> ${line}`;
+    container.insertBefore(p, container.lastElementChild);
+  });
+}
+
+async function loadConstraints() {
+  try {
+    const [conRes, vioRes] = await Promise.all([
+      fetch(`${API_BASE}/constraints`, { headers: HEADERS }),
+      fetch(`${API_BASE}/constraints/violations`, { headers: HEADERS }),
+    ]);
+
+    const constraints = conRes.ok ? await conRes.json() : [];
+    const allViolations = vioRes.ok ? await vioRes.json() : [];
+    const violations = Array.isArray(allViolations) ? allViolations : (allViolations.violations || []);
+    const cList = Array.isArray(constraints) ? constraints : (constraints.constraints || []);
+
+    // Update stat cards
+    const activeVios = violations.filter(v => v.isActive);
+    const satisfied = cList.length - new Set(activeVios.map(v => v.constraintId)).size;
+    const avgSev = activeVios.length > 0 ? (activeVios.reduce((a,v) => a + (v.severity||0), 0) / activeVios.length) : 0;
+
+    const statNums = document.querySelectorAll('.text-4xl.font-headline');
+    if (statNums[0]) statNums[0].textContent = cList.length;
+    if (statNums[1]) { statNums[1].textContent = activeVios.length; statNums[1].className = `text-4xl font-headline font-bold ${activeVios.length > 0 ? 'text-error' : 'text-tertiary'}`; }
+    if (statNums[2]) statNums[2].textContent = Math.max(0, satisfied);
+    if (statNums[3]) statNums[3].textContent = avgSev.toFixed(2);
+
+    // Header badge
+    const badge = document.querySelector('.flex.items-center.gap-2.px-3.py-1\\.5 span.font-mono');
+    if (badge) badge.textContent = `${activeVios.length} Active Violation${activeVios.length !== 1 ? 's' : ''}`;
+    const dot = document.querySelector('.flex.items-center.gap-2.px-3.py-1\\.5 span.rounded-full');
+    if (dot) dot.className = `w-2 h-2 rounded-full ${activeVios.length > 0 ? 'bg-error shadow-[0_0_8px_rgba(255,180,171,0.6)]' : 'bg-tertiary shadow-[0_0_8px_rgba(78,222,163,0.5)]'}`;
+
+    // Entry count label
+    const entryLabel = document.querySelector('.px-6.py-4.border-b span.font-mono.text-outline');
+    if (entryLabel) entryLabel.textContent = `${cList.length} entries`;
+
+    // Render constraint rows
+    const tableBody = document.querySelector('.divide-y.divide-outline-variant\\/5');
+    if (tableBody && cList.length > 0) {
+      tableBody.innerHTML = cList.map(c => renderConstraintRow(c, violations)).join('');
+    }
+
+    // Render violation detail
+    renderViolationDetail(violations, cList);
+
+    // Footer
+    const footerLeft = document.querySelector('.h-10 .flex.items-center.gap-6 span:nth-child(2)');
+    if (footerLeft) footerLeft.textContent = `Last Sweep: ${new Date().toISOString().substring(11, 19)} UTC`;
+    const footerVio = document.querySelector('.h-10 .flex.items-center.gap-2 span:last-child');
+    if (footerVio) footerVio.textContent = `${activeVios.length} Constraint${activeVios.length !== 1 ? 's' : ''} Violated`;
+
+    // Terminal
+    termLog(cList.map(c => {
+      const vio = activeVios.find(v => v.constraintId === c.id);
+      return vio
+        ? `[VIOLATION] ${c.name}: FAILED — severity=${vio.severity?.toFixed(2)}`
+        : `[OK] ${c.name}: SATISFIED`;
+    }));
+  } catch(e) {
+    termLog([`[ERROR] Failed to load constraints: ${e.message}`]);
+  }
+}
+
+loadConstraints();
+setInterval(loadConstraints, 15000);
 </script>
 </body></html>
