@@ -1,15 +1,17 @@
-# Coherence Engine
+# Invariant
 
-> The coherence layer for agents
+> The coherence layer for AI agents
 
-A shared world-state and truth-maintenance engine that sits underneath agents and humans. It ingests observations, claims, tool outputs, and actions, reconciles them into a persistent state graph, detects contradictions, preserves conflicting branches, propagates implications, tracks uncertainty, and validates whether proposed actions are still consistent with current state.
+A shared world-state and truth-maintenance engine that sits beneath agents and humans. It ingests observations, claims, tool outputs, and actions, reconciles them into a persistent state graph, detects contradictions, preserves conflicting branches, propagates implications, tracks uncertainty, and validates whether proposed actions are still consistent with current state.
+
+**[Website](https://invariant.dev) · [Docs](docs/api-examples.md) · [Pricing](https://invariant.dev/pricing.html)**
 
 ---
 
 ## Architecture
 
 ```
-coherence-engine/
+invariant/
 ├── apps/
 │   └── api/                    # Fastify REST API
 │       └── src/
@@ -37,7 +39,7 @@ interfaces (HTTP) → application (services) → domain (types/ports)
 ```
 
 - **Domain layer**: pure TypeScript types, repository interfaces. Zero infra deps.
-- **Application layer**: CoherenceEngine, SettlingService, ContradictionDetector, ActionValidationService.
+- **Application layer**: InvariantEngine, SettlingService, ContradictionDetector, ActionValidationService.
 - **Infrastructure layer**: Prisma repositories, config, DI container.
 - **Interfaces layer**: Fastify routes, OpenAPI schemas.
 
@@ -117,6 +119,39 @@ docker-compose up
 
 ---
 
+## SDK
+
+```bash
+npm install @invariant/sdk-node
+```
+
+```ts
+import { InvariantClient } from '@invariant/sdk-node';
+
+const client = new InvariantClient({ baseUrl: 'http://localhost:3000', apiKey: 'your-key' });
+
+// Assert a claim
+await client.claims.create({
+  entityId: 'battery-bp1',
+  predicate: 'temperature',
+  value: 95,
+  sourceId: 'sensor-array-3'
+});
+
+// Validate an action before executing
+const result = await client.actions.validate({
+  agentId: 'planner-1',
+  actionType: 'proceed_to_launch',
+  impactedEntityIds: ['launch-review-lr1']
+});
+
+if (result.admissibility === 'BLOCKED') {
+  console.log('Action blocked:', result.reasons);
+}
+```
+
+---
+
 ## Key API Endpoints
 
 | Method | Path | Description |
@@ -163,8 +198,8 @@ Every action proposal returns:
   "contradictionAmplification": 0.6,
   "uncertaintyExposure": 0.3,
   "provenanceFragility": 0.4,
-  "impactedEntityIds": [...],
-  "reasons": [...]
+  "impactedEntityIds": ["..."],
+  "reasons": ["..."]
 }
 ```
 
@@ -207,6 +242,10 @@ ACTION_EPSILON=0.6               # Max Psi for valid action
 ```
 
 ---
+
+## License
+
+Apache 2.0 — free to use, self-host, and build on.
 
 ## See Also
 
