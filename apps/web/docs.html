@@ -93,13 +93,11 @@
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary/30">
 <!-- TopNavBar Implementation -->
-<header class="bg-[#0b1326] flex justify-between items-center w-full px-6 h-16 fixed top-0 z-50">
+<header class="bg-[#0b1326] flex justify-between items-center w-full px-6 h-16 fixed top-0 z-50" style="-webkit-app-region: drag;">
 <div class="flex items-center gap-8">
 <span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk']">Invariant</span>
 <nav class="hidden md:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
 <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="index.html">Coherence: Φ(0.98)</a>
-
-<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="pricing.html">Pricing</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
@@ -107,9 +105,6 @@
 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-sm">search</span>
 <input class="bg-surface-container-low border-none text-sm px-10 py-2 rounded-lg focus:ring-1 focus:ring-primary w-64" placeholder="Search docs..." type="text" oninput="filterDocs(this.value)"/>
 </div>
-<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
-<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
-<button class="material-symbols-outlined text-[#94a3b8] hover:text-[#adc6ff] transition-colors">settings</button>
 </div>
 </header>
 <div class="flex pt-16 h-screen overflow-hidden">

@@ -101,7 +101,7 @@
 <div class="flex h-screen w-full overflow-hidden">
 <!-- SideNavBar Component -->
 <aside class="hidden md:flex flex-col h-full w-64 bg-[#131b2e] py-4 shrink-0 z-50">
-<div class="px-6 mb-8">
+<div class="px-6 mb-8 pt-9">
 <a href="index.html" class="group block">
 <h1 class="text-lg font-headline text-[#dae2fd] tracking-tight group-hover:text-primary transition-colors">Invariant Engine</h1>
 <p class="text-[10px] font-mono text-outline uppercase tracking-widest">v2.4.0-stable</p>
@@ -147,26 +147,17 @@
 <!-- Main Content Area -->
 <main class="flex-1 flex flex-col min-w-0 bg-surface relative overflow-hidden">
 <!-- TopNavBar Component -->
-<header class="flex justify-between items-center w-full px-6 h-16 shrink-0 bg-[#0b1326] z-40">
+<header class="flex justify-between items-center w-full px-6 h-16 shrink-0 bg-[#0b1326] z-40" style="-webkit-app-region: drag;">
 <div class="flex items-center gap-8">
 <span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-headline">Invariant</span>
-<nav class="hidden lg:flex items-center gap-6">
+<nav class="hidden lg:flex items-center gap-6" style="-webkit-app-region: no-drag;">
 <a class="text-sm text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] py-1" href="index.html">Coherence: Φ(0.98)</a>
-
-<a class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="pricing.html">Pricing</a>
 </nav>
 </div>
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-4" style="-webkit-app-region: no-drag;">
 <div class="relative group hidden sm:block">
 <input class="bg-surface-container-low border-none rounded-lg text-sm px-4 py-1.5 w-64 focus:ring-1 focus:ring-primary text-on-surface placeholder:text-outline/50 transition-all" placeholder="Query entities..." type="text" oninput="filterEntities(this.value)"/>
 <span class="material-symbols-outlined absolute right-3 top-1.5 text-outline/50 text-sm">search</span>
-</div>
-<div class="flex items-center gap-2">
-<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
-<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
-<button class="p-2 text-[#94a3b8] hover:text-[#adc6ff] transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
 </div>
 </div>
 </header>

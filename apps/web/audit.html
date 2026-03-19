@@ -95,7 +95,7 @@
 <div class="flex h-screen overflow-hidden">
 <!-- SideNavBar -->
 <aside class="hidden md:flex flex-col h-full py-4 bg-[#131b2e] dark:bg-[#131b2e] w-64 shrink-0 font-['Inter'] text-sm">
-<div class="px-6 mb-8">
+<div class="px-6 mb-8 pt-9">
 <div class="flex items-center gap-2 mb-1">
 <span class="material-symbols-outlined text-[#3B82F6]" style="font-variation-settings: 'FILL' 1;">security</span>
 <a href="index.html" class="hover:text-primary transition-colors"><span class="text-lg font-['Space_Grotesk'] text-[#dae2fd] hover:text-primary">Invariant Engine</span></a>
@@ -140,13 +140,11 @@
 <!-- Main Content Area -->
 <main class="flex-1 flex flex-col min-w-0 bg-surface overflow-y-auto">
 <!-- TopNavBar -->
-<header class="flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] dark:bg-[#0b1326] shrink-0 font-['Space_Grotesk'] tracking-tight">
+<header class="flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] dark:bg-[#0b1326] shrink-0 font-['Space_Grotesk'] tracking-tight" style="-webkit-app-region: drag;">
 <div class="flex items-center gap-8">
 <div class="text-xl font-bold text-[#dae2fd] tracking-tighter">Invariant</div>
 <nav class="hidden lg:flex gap-6 text-sm">
 <a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] pb-1" href="index.html">Coherence: Φ(0.98)</a>
-
-<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors pb-1" href="pricing.html">Pricing</a>
 </nav>
 </div>
 <div class="flex items-center gap-4">
@@ -154,11 +152,6 @@
 <span class="material-symbols-outlined text-outline text-sm mr-2">search</span>
 <input class="bg-transparent border-none focus:ring-0 text-xs w-48 text-on-surface" placeholder="Search trace ID..." type="text" oninput="filterAudit(this.value)"/>
 </div>
-<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
-<a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
-<button class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
 </div>
 </header>
 <!-- Audit View Canvas -->
