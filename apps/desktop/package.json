@@ -1,0 +1,68 @@
+{
+  "name": "invariant-desktop",
+  "version": "1.0.0",
+  "description": "Invariant — native macOS menubar app",
+  "main": "main.js",
+  "type": "module",
+  "author": "Invariant",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --mac --arm64 --x64",
+    "build:dmg": "electron-builder --mac dmg --arm64 --x64"
+  },
+  "build": {
+    "appId": "dev.invariant.desktop",
+    "productName": "Invariant",
+    "copyright": "© 2026 Invariant",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "minimumSystemVersion": "13.0"
+    },
+    "dmg": {
+      "title": "Install Invariant",
+      "background": "assets/dmg-bg.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      }
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "assets/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../web",
+        "to": "apps/web",
+        "filter": [
+          "**/*",
+          "!.vercel/**",
+          "!.env.local"
+        ]
+      }
+    ],
+    "extraMetadata": {
+      "main": "main.js"
+    }
+  },
+  "devDependencies": {
+    "electron": "30.5.1",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "7zip-bin": "^5.2.0"
+  }
+}
