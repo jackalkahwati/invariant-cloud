@@ -19,6 +19,14 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "icon": "assets/icon.png",
+      "identity": "Velo Labs Inc. (4WD59CZ9Z6)",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": {
+        "teamId": "4WD59CZ9Z6"
+      },
       "target": [
         {
           "target": "dmg",
