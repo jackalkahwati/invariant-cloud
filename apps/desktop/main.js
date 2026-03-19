@@ -177,45 +177,39 @@ async function pollCoherence() {
 // ── Auto-updater ──────────────────────────────────────────────────────────
 
 function setupAutoUpdater() {
-  autoUpdater.autoDownload = false;
+  // Download silently in background — user only sees a restart prompt
+  autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
 
   autoUpdater.on('update-available', (info) => {
-    new Notification({
-      title: 'Invariant Update Available',
-      body: `Version ${info.version} is ready to download.`,
-    }).show();
-
+    // Just update the tray to show update banner — download starts automatically
     if (tray) tray.setContextMenu(buildTrayMenuWithUpdate(info.version));
-
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'Update Available',
-      message: `Invariant ${info.version} is available`,
-      detail: `You're on ${app.getVersion()}. Download and install now?`,
-      buttons: ['Download & Install', 'Later'],
-      defaultId: 0,
-    }).then(({ response }) => {
-      if (response === 0) autoUpdater.downloadUpdate();
-    });
   });
 
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-downloaded', (info) => {
     new Notification({
-      title: 'Invariant — Update Ready',
-      body: 'Restart to apply the update.',
+      title: 'Invariant update ready',
+      body: `v${info.version} downloaded — restart to install.`,
     }).show();
+
+    // Refresh app menu so "Check for Updates" shows "Restart to Update"
+    setAppMenu(info.version);
 
     dialog.showMessageBox({
       type: 'info',
       title: 'Update Ready',
-      message: 'Update downloaded',
-      detail: 'Restart Invariant to apply the update.',
+      message: `Invariant ${info.version} is ready`,
+      detail: 'The update has been downloaded. Restart now to install it.',
       buttons: ['Restart Now', 'Later'],
       defaultId: 0,
     }).then(({ response }) => {
       if (response === 0) autoUpdater.quitAndInstall();
     });
+  });
+
+  autoUpdater.on('update-not-available', () => {
+    // Refresh menu to show current version is up to date
+    setAppMenu();
   });
 
   autoUpdater.on('error', (err) => {
@@ -245,11 +239,56 @@ function checkForUpdates(manual = false) {
   });
 }
 
+// ── Native macOS app menu ─────────────────────────────────────────────────
+
+function setAppMenu(pendingVersion = null) {
+  const updateItem = pendingVersion
+    ? { label: `Restart to Update to ${pendingVersion}…`, click: () => autoUpdater.quitAndInstall() }
+    : { label: 'Check for Updates…', click: () => checkForUpdates(true) };
+
+  const menu = Menu.buildFromTemplate([
+    {
+      label: app.name,
+      submenu: [
+        { label: `About Invariant`, role: 'about' },
+        { type: 'separator' },
+        updateItem,
+        { label: `Version ${app.getVersion()}`, enabled: false },
+        { type: 'separator' },
+        { label: 'Change API Endpoint…', click: () => openWindow('account.html') },
+        { type: 'separator' },
+        { label: 'Hide Invariant', role: 'hide' },
+        { label: 'Hide Others', role: 'hideOthers' },
+        { type: 'separator' },
+        { label: 'Quit Invariant', role: 'quit' },
+      ],
+    },
+    {
+      label: 'View',
+      submenu: [
+        { label: 'World State', click: () => openWindow('dashboard.html') },
+        { label: 'Actions & Audit', click: () => openWindow('audit.html') },
+        { label: 'Constraints', click: () => openWindow('constraints.html') },
+        { label: 'Documentation', click: () => openWindow('docs.html') },
+      ],
+    },
+    {
+      label: 'Window',
+      role: 'windowMenu',
+    },
+  ]);
+
+  Menu.setApplicationMenu(menu);
+}
+
 // ── App lifecycle ─────────────────────────────────────────────────────────
 
 app.whenReady().then(async () => {
   // Hide from dock — menubar-only app
   app.dock?.hide();
+
+  // Set native macOS app menu (Invariant > Check for Updates…)
+  setAppMenu();
 
   // Create tray
   const icon = nativeImage.createFromPath(
