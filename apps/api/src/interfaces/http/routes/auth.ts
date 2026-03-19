@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { prisma } from '../../../infrastructure/database/prisma.js';
-import { authConfig } from '../../../infrastructure/config.js';
+import { authConfig, githubConfig } from '../../../infrastructure/config.js';
 import { sendWelcomeEmail } from '../../../application/services/EmailService.js';
 
 /** Generate a new API key: inv_<12 random hex chars> */
@@ -130,7 +130,7 @@ export async function authRoutes(app: FastifyInstance) {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return reply.status(401).send({ error: 'Invalid credentials' });
+    if (!user || !user.passwordHash) return reply.status(401).send({ error: 'Invalid credentials' });
 
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return reply.status(401).send({ error: 'Invalid credentials' });
@@ -149,6 +149,113 @@ export async function authRoutes(app: FastifyInstance) {
         ? { id: membership.workspace.id, name: membership.workspace.name, slug: membership.workspace.slug, tier: membership.workspace.tier }
         : null,
     });
+  });
+
+  // GET /auth/github — redirect to GitHub OAuth
+  app.get('/auth/github', {
+    schema: { tags: ['Auth'], summary: 'Start GitHub OAuth flow' },
+  }, async (_req, reply) => {
+    const params = new URLSearchParams({
+      client_id:    githubConfig.clientId,
+      redirect_uri: githubConfig.callbackUrl,
+      scope:        'user:email',
+    });
+    return reply.redirect(`https://github.com/login/oauth/authorize?${params}`);
+  });
+
+  // GET /auth/github/callback — handle GitHub OAuth callback
+  app.get<{ Querystring: { code?: string; error?: string } }>('/auth/github/callback', {
+    schema: { tags: ['Auth'], summary: 'GitHub OAuth callback' },
+  }, async (req, reply) => {
+    const { code, error } = req.query;
+    const fe = githubConfig.frontendUrl;
+
+    if (error || !code) {
+      return reply.redirect(`${fe}/login.html?error=github_denied`);
+    }
+
+    // Exchange code for access token
+    let accessToken: string;
+    try {
+      const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id:     githubConfig.clientId,
+          client_secret: githubConfig.clientSecret,
+          code,
+          redirect_uri:  githubConfig.callbackUrl,
+        }),
+      });
+      const tokenData = await tokenRes.json() as { access_token?: string };
+      if (!tokenData.access_token) return reply.redirect(`${fe}/login.html?error=github_token`);
+      accessToken = tokenData.access_token;
+    } catch {
+      return reply.redirect(`${fe}/login.html?error=github_token`);
+    }
+
+    // Get user profile
+    const ghHeaders = { 'Authorization': `Bearer ${accessToken}`, 'Accept': 'application/json', 'User-Agent': 'Invariant' };
+    const [userRes, emailsRes] = await Promise.all([
+      fetch('https://api.github.com/user', { headers: ghHeaders }),
+      fetch('https://api.github.com/user/emails', { headers: ghHeaders }),
+    ]);
+    const ghUser = await userRes.json() as { id: number; login: string; name?: string; avatar_url?: string; email?: string };
+    const ghEmails = await emailsRes.json() as Array<{ email: string; primary: boolean; verified: boolean }>;
+
+    const email = ghUser.email
+      ?? ghEmails.find(e => e.primary && e.verified)?.email
+      ?? ghEmails[0]?.email;
+
+    if (!email) return reply.redirect(`${fe}/login.html?error=github_no_email`);
+
+    const githubId = String(ghUser.id);
+
+    // Find existing user by githubId or email, or create a new one
+    let user = await prisma.user.findFirst({ where: { OR: [{ githubId }, { email }] } });
+
+    if (!user) {
+      // Brand-new user — create user + workspace + API key
+      const displayName = ghUser.name ?? ghUser.login;
+      user = await prisma.user.create({
+        data: { email, passwordHash: null, name: displayName, githubId, avatarUrl: ghUser.avatar_url },
+      });
+
+      const wName = `${displayName}'s Workspace`;
+      const workspace = await prisma.workspace.create({
+        data: {
+          name: wName,
+          slug: await uniqueSlug(wName),
+          members: { create: { userId: user.id, role: 'OWNER' } },
+        },
+      });
+
+      const rawKey = generateRawApiKey();
+      await prisma.workspaceApiKey.create({
+        data: {
+          workspaceId: workspace.id,
+          name: 'Default',
+          keyPrefix: rawKey.slice(0, 12),
+          keyHash: await hashApiKey(rawKey),
+        },
+      });
+
+      sendWelcomeEmail(email, rawKey, wName).catch(() => {});
+      const token = signToken(user.id);
+      const params = new URLSearchParams({ token, apiKey: rawKey, new: '1' });
+      return reply.redirect(`${fe}/account.html?${params}`);
+    }
+
+    // Existing user — link GitHub if not already linked
+    if (!user.githubId) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { githubId, avatarUrl: ghUser.avatar_url },
+      });
+    }
+
+    const token = signToken(user.id);
+    return reply.redirect(`${fe}/account.html?token=${token}`);
   });
 
   // GET /auth/me

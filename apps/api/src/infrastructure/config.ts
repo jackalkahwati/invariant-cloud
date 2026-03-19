@@ -60,6 +60,13 @@ export const stripeConfig = {
   cancelUrl:           getEnvString('STRIPE_CANCEL_URL',  'http://localhost:8080/pricing.html'),
 };
 
+export const githubConfig = {
+  clientId:     getEnvString('GITHUB_CLIENT_ID',     ''),
+  clientSecret: getEnvString('GITHUB_CLIENT_SECRET', ''),
+  callbackUrl:  getEnvString('GITHUB_CALLBACK_URL',  'http://localhost:3000/auth/github/callback'),
+  frontendUrl:  getEnvString('FRONTEND_URL',         'http://localhost:8080'),
+};
+
 export const authConfig = {
   jwtSecret:    getEnvString('JWT_SECRET', 'dev-jwt-secret-change-in-prod'),
   jwtExpiresIn: getEnvString('JWT_EXPIRES_IN', '7d'),

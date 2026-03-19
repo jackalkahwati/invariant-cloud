@@ -443,6 +443,24 @@ async function startUpgrade() {
   }
 }
 
+// Handle GitHub OAuth redirect params (?token=...&apiKey=...&new=1)
+(function handleOAuthRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const apiKey = params.get('apiKey');
+  const isNew = params.get('new') === '1';
+
+  if (token) {
+    localStorage.setItem('inv_token', token);
+    window.history.replaceState({}, '', 'account.html');
+    if (isNew && apiKey) {
+      newKeyValue = apiKey;
+      document.getElementById('newkey-display').textContent = apiKey;
+      document.getElementById('newkey-modal').classList.remove('hidden');
+    }
+  }
+})();
+
 // Init
 loadWorkspace();
 </script>
