@@ -540,10 +540,10 @@ function renderClaimFeed(claims) {
 
 async function loadDashboard() {
   try {
-    const [cohRes, snapRes, claimsRes, contraRes] = await Promise.all([
+    const [cohRes, snapRes, entitiesRes, contraRes] = await Promise.all([
       fetch(`${API_BASE}/world/coherence`, { headers: HEADERS }),
       fetch(`${API_BASE}/world/snapshot`, { headers: HEADERS }),
-      fetch(`${API_BASE}/claims?limit=10`, { headers: HEADERS }),
+      fetch(`${API_BASE}/entities`, { headers: HEADERS }),
       fetch(`${API_BASE}/contradictions`, { headers: HEADERS }),
     ]);
 
@@ -584,10 +584,30 @@ async function loadDashboard() {
       termLog([`[INFO] Snapshot: ${snap.entityCount} entities, ${snap.claimCount} claims, ${snap.contradictionCount} contradictions`]);
     }
 
-    if (claimsRes.ok) {
-      const body = await claimsRes.json();
-      const claims = Array.isArray(body) ? body : (body.claims || body.data || []);
-      renderClaimFeed(claims);
+    if (entitiesRes.ok) {
+      const entities = await entitiesRes.json();
+      const eList = Array.isArray(entities) ? entities : [];
+      // Render entities as "claim feed" items showing their type and metadata
+      const feed = document.getElementById('claim-feed');
+      if (feed && eList.length > 0) {
+        feed.innerHTML = '';
+        eList.forEach(e => {
+          const color = e.isActive ? 'tertiary' : 'outline';
+          const time = new Date(e.createdAt).toISOString().substring(11, 19);
+          feed.innerHTML += `
+            <div class="claim-item p-3 bg-surface-container-lowest border-l-2 border-${color} rounded-r hover:bg-surface-container-high transition-colors">
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-[10px] font-mono text-${color}">${e.type}</span>
+                <span class="text-[10px] font-mono text-outline/50">${time}</span>
+              </div>
+              <p class="text-xs font-mono text-on-surface mb-2">${e.name}</p>
+              <div class="flex justify-between items-center">
+                <span class="text-[9px] px-1.5 py-0.5 bg-${color}/10 text-${color} rounded">${e.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
+                <span class="material-symbols-outlined text-xs text-${color}">${e.isActive ? 'verified' : 'circle'}</span>
+              </div>
+            </div>`;
+        });
+      }
     }
 
     if (contraRes.ok) {
