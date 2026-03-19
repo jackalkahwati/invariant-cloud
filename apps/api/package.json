@@ -16,6 +16,7 @@
     "db:generate": "prisma generate",
     "db:reset": "prisma migrate reset --force",
     "db:push": "prisma db push",
+    "db:migrate:prod": "prisma migrate deploy --schema=../../prisma/schema.prisma",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {

@@ -27,11 +27,27 @@ import { checkoutRoutes } from './interfaces/http/routes/checkout.js';
 import { authRoutes } from './interfaces/http/routes/auth.js';
 import { workspaceRoutes } from './interfaces/http/routes/workspace.js';
 
-export async function buildApp() {
-  const app = Fastify({ logger: false });
+const ALLOWED_ORIGINS = [
+  'https://invariant.me',
+  'https://www.invariant.me',
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+];
 
-  // CORS
-  await app.register(cors, { origin: true });
+export async function buildApp() {
+  const isProd = process.env['NODE_ENV'] === 'production';
+  const app = Fastify({
+    logger: isProd ? { level: 'info' } : false,
+  });
+
+  // CORS — lock down to known origins in production
+  await app.register(cors, {
+    origin: (origin, cb) => {
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+      cb(new Error('Not allowed by CORS'), false);
+    },
+    credentials: true,
+  });
 
   // OpenAPI / Swagger
   await app.register(swagger, {
