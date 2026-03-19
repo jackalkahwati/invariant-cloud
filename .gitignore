@@ -18,3 +18,7 @@ apps/api/tests/**/*.js
 apps/api/tests/**/*.js.map
 apps/api/tests/**/*.d.ts
 apps/api/tests/**/*.d.ts.map
+.vercel
+.env*.local
+apps/web/.vercel
+apps/web/.env.local

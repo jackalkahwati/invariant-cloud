@@ -1,4 +1,24 @@
 {
   "version": 2,
-  "outputDirectory": "apps/web"
+  "outputDirectory": "apps/web",
+  "rewrites": [
+    { "source": "/auth/:path*", "destination": "/api/index" },
+    { "source": "/checkout/:path*", "destination": "/api/index" },
+    { "source": "/workspace/:path*", "destination": "/api/index" },
+    { "source": "/world/:path*", "destination": "/api/index" },
+    { "source": "/entities/:path*", "destination": "/api/index" },
+    { "source": "/claims/:path*", "destination": "/api/index" },
+    { "source": "/observations/:path*", "destination": "/api/index" },
+    { "source": "/contradictions/:path*", "destination": "/api/index" },
+    { "source": "/branches/:path*", "destination": "/api/index" },
+    { "source": "/constraints/:path*", "destination": "/api/index" },
+    { "source": "/dependencies/:path*", "destination": "/api/index" },
+    { "source": "/actions/:path*", "destination": "/api/index" },
+    { "source": "/policy/:path*", "destination": "/api/index" },
+    { "source": "/trace/:path*", "destination": "/api/index" },
+    { "source": "/plans/:path*", "destination": "/api/index" },
+    { "source": "/search", "destination": "/api/index" },
+    { "source": "/health", "destination": "/api/index" },
+    { "source": "/docs/:path*", "destination": "/api/index" }
+  ]
 }
