@@ -1,6 +1,6 @@
 {
   "name": "invariant-desktop",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Invariant — native macOS menubar app",
   "main": "main.js",
   "type": "module",
@@ -66,10 +66,8 @@
       "main": "main.js"
     },
     "publish": {
-      "provider": "github",
-      "owner": "jackalkahwati",
-      "repo": "invariant-cloud",
-      "releaseType": "release"
+      "provider": "generic",
+      "url": "https://invariant.me/updates"
     }
   },
   "devDependencies": {

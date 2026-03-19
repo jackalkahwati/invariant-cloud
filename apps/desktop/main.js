@@ -180,6 +180,8 @@ function setupAutoUpdater() {
   // Download silently in background — user only sees a restart prompt
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
+  // Use invariant.me as the update feed (avoids GitHub private repo auth issues)
+  autoUpdater.setFeedURL({ provider: 'generic', url: 'https://invariant.me/updates' });
 
   autoUpdater.on('update-available', (info) => {
     // Just update the tray to show update banner — download starts automatically

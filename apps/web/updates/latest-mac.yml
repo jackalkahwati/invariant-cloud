@@ -1,0 +1,11 @@
+version: 1.0.3
+files:
+  - url: https://github.com/jackalkahwati/invariant-cloud/releases/download/v1.0.3/Invariant-1.0.3.dmg
+    sha512: TDiZXBN8yrRpKnsz/V3LYNPolxTP1Oku6fdpBKjstYBYA1z+cHsZruul01nax+sWvz74ITiZlvRfH3Kpm5WkBw==
+    size: 106749281
+  - url: https://github.com/jackalkahwati/invariant-cloud/releases/download/v1.0.3/Invariant-1.0.3-arm64.dmg
+    sha512: 794RPQbWpQJPzSwny4Qrx/YYhLENL8lYxBvlNC+7RJq9Hrj7MHRtnB3ZK77BSO//aU7uj/BrJkhVxIE6zz76KA==
+    size: 98733670
+path: https://github.com/jackalkahwati/invariant-cloud/releases/download/v1.0.3/Invariant-1.0.3.dmg
+sha512: TDiZXBN8yrRpKnsz/V3LYNPolxTP1Oku6fdpBKjstYBYA1z+cHsZruul01nax+sWvz74ITiZlvRfH3Kpm5WkBw==
+releaseDate: '2026-03-19T23:33:37.892Z'
