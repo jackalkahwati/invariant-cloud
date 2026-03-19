@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd apps/api && npm install && npx prisma generate && npm run build",
+  "buildCommand": "cd apps/api && npm install && npx prisma generate --schema=../../prisma/schema.prisma && npm run build",
   "outputDirectory": "apps/web",
   "functions": {
     "api/index.ts": {
