@@ -212,14 +212,15 @@
 <h3 class="text-xs font-mono text-outline uppercase tracking-wider mb-8">Action Inconsistency Score Ψ(a,G)</h3>
 <div class="relative w-48 h-48 mb-8">
 <!-- SVG Gauge -->
-<svg class="w-full h-full transform -rotate-90">
-<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
-<circle class="text-secondary transition-all duration-1000" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="375.98" stroke-width="12"></circle>
+<svg class="w-full h-full" viewBox="0 0 192 192">
+<!-- Track -->
+<circle cx="96" cy="96" fill="transparent" r="80" stroke="#2d3449" stroke-width="12" stroke-dasharray="502.65" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-225 96 96)"/>
+<!-- Progress (0.32 of 0.75 arc = ~43%) -->
+<circle cx="96" cy="96" fill="transparent" r="80" stroke="#ffb95f" stroke-width="12" stroke-dasharray="502.65" stroke-dashoffset="286.51" stroke-linecap="round" transform="rotate(-225 96 96)" class="transition-all duration-1000"/>
+<!-- Center label -->
+<text x="96" y="88" text-anchor="middle" dominant-baseline="middle" font-size="36" font-weight="700" font-family="Space Grotesk, sans-serif" fill="#ffb95f" letter-spacing="-1">0.32</text>
+<text x="96" y="116" text-anchor="middle" dominant-baseline="middle" font-size="9" font-family="JetBrains Mono, monospace" fill="#8c909f" letter-spacing="1.5">CRITICAL RISK</text>
 </svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center">
-<div class="text-5xl font-headline font-bold text-secondary tracking-tighter">0.32</div>
-<div class="text-[10px] font-mono text-outline uppercase">Critical Risk</div>
-</div>
 </div>
 <div class="w-full grid grid-cols-5 gap-1 mb-4">
 <div class="h-1.5 bg-secondary rounded-sm"></div>
