@@ -272,6 +272,8 @@ app.whenReady().then(async () => {
 
   // IPC: navigate to page from renderer
   ipcMain.on('navigate', (_e, page) => openWindow(page));
+  // IPC: check for updates from renderer
+  ipcMain.on('check-for-updates', () => checkForUpdates(true));
 });
 
 app.on('window-all-closed', (e) => {

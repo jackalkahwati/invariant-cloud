@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('invariantDesktop', {
   },
   // Navigate to a different page
   navigate: (page) => ipcRenderer.send('navigate', page),
+  // Trigger update check from the UI
+  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
   // Is this running inside the desktop app?
   isDesktop: true,
 });
