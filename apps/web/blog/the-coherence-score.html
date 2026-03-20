@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Coherence Score: How Invariant Measures Agent World State | Invariant</title>
+<meta name="description" content="Under the hood of Invariant's Φ formula — how we turn a graph of claims, constraints, and dependencies into a single number that tells you whether your agent's worldview can be trusted."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff", "on-secondary": "#472a00", "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe", "on-error": "#690005", "surface-container": "#171f33",
+          "secondary-container": "#ee9800", "on-secondary-fixed": "#2a1700", "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6", "primary-fixed": "#d8e2ff", "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236", "on-surface-variant": "#c2c6d6", "secondary": "#ffb95f",
+          "on-surface": "#dae2fd", "surface-bright": "#31394d", "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd", "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449", "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572", "surface-variant": "#2d3449", "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800", "outline": "#8c909f", "surface": "#0b1326",
+          "on-primary-container": "#00285d", "primary-container": "#4d8eff", "on-tertiary": "#003824",
+          "error-container": "#93000a", "outline-variant": "#424754", "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42", "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3", "surface-container-low": "#131b2e", "tertiary": "#4edea3",
+          "error": "#ffb4ab", "secondary-fixed-dim": "#ffb95f", "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8", "surface-container-high": "#222a3d", "surface-tint": "#adc6ff",
+          "background": "#0b1326", "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: { "headline": ["Space Grotesk"], "body": ["Inter"], "label": ["Inter"], "mono": ["JetBrains Mono"] },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .node-link-bg { background-image: radial-gradient(#424754 1px, transparent 1px); background-size: 32px 32px; }
+  .prose h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; font-weight: 700; color: #dae2fd; margin-top: 2.5rem; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .prose h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 600; color: #c2c6d6; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+  .prose p { color: #c2c6d6; line-height: 1.8; margin-bottom: 1.25rem; }
+  .prose strong { color: #dae2fd; }
+  .prose code { font-family: 'JetBrains Mono', monospace; font-size: 0.82em; background: #131b2e; color: #adc6ff; padding: 0.15em 0.4em; border-radius: 3px; }
+  .prose pre { background: #0d1525; border: 1px solid #424754; border-radius: 8px; padding: 1.25rem 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+  .prose pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.7; color: #dae2fd; }
+  .prose ul { color: #c2c6d6; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  .prose ul li { margin-bottom: 0.4rem; line-height: 1.7; }
+  .prose hr { border-color: #424754; margin: 2.5rem 0; }
+  .prose blockquote { border-left: 3px solid #4d8eff; padding-left: 1.25rem; margin: 1.5rem 0; color: #8c909f; font-style: italic; }
+  .math-block { background: #0d1525; border: 1px solid #424754; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; overflow-x: auto; }
+  .math-block .MathJax { color: #dae2fd !important; }
+  .dim-row td { padding: 0.5rem 0.75rem; border-bottom: 1px solid #424754; font-size: 0.875rem; }
+  .dim-row td:first-child { font-family: 'JetBrains Mono', monospace; color: #adc6ff; }
+  .dim-row td:last-child { color: #c2c6d6; }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Nav -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight border-b border-outline-variant/10">
+  <div class="flex items-center gap-8">
+    <a href="../index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter hover:text-primary transition-colors">Invariant</a>
+    <div class="hidden md:flex gap-6">
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="../index.html">Home</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="../docs.html">Docs</a>
+      <a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] h-16 flex items-center" href="../blog.html">Blog</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="../pricing.html">Pricing</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant-cloud" target="_blank">GitHub</a>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <a href="../login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+    <a href="../register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+  </div>
+</nav>
+
+<!-- Background -->
+<div class="absolute inset-0 node-link-bg opacity-10 pointer-events-none"></div>
+
+<main class="relative z-10 flex-1 pt-24 pb-20 px-6">
+  <div class="max-w-2xl mx-auto">
+
+    <!-- Back -->
+    <a href="../blog.html" class="inline-flex items-center gap-1.5 text-xs font-mono text-outline hover:text-primary transition-colors mb-10">
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      All posts
+    </a>
+
+    <!-- Header -->
+    <div class="mb-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-xs font-mono text-tertiary uppercase tracking-widest">Technical</span>
+        <span class="text-outline/40">·</span>
+        <span class="text-xs font-mono text-outline">March 20, 2026</span>
+        <span class="text-outline/40">·</span>
+        <span class="text-xs font-mono text-outline">10 min read</span>
+      </div>
+      <h1 class="font-['Space_Grotesk'] text-3xl md:text-4xl font-bold text-on-surface tracking-tight leading-tight mb-5">The Coherence Score: How Invariant Measures Agent World State</h1>
+      <p class="text-outline text-lg leading-relaxed">Under the hood of the Φ formula — turning a graph of claims, constraints, and dependencies into a number that tells you whether your agent's worldview can be trusted.</p>
+    </div>
+
+    <hr class="border-outline-variant/20 mb-10"/>
+
+    <!-- Body -->
+    <div class="prose">
+
+      <p>Every time your agent proposes an action, Invariant computes a risk score and decides whether to allow it. That decision comes from the <strong>coherence score</strong> — a single number, Φ, that represents the structural integrity of the agent's current world model.</p>
+
+      <p>This post explains exactly how it's computed, what each dimension means, and how to tune it for your use case.</p>
+
+      <hr/>
+
+      <h2>The Formula</h2>
+
+      <p>The coherence score is a weighted sum over five dimensions of world state quality:</p>
+
+      <div class="math-block">
+        \[ \Phi = \lambda_c V_c + \lambda_k V_k + \lambda_d V_d + \lambda_u V_u + \lambda_b V_b \]
+      </div>
+
+      <p>Each <strong>V</strong> term measures a specific type of structural health. Each <strong>λ</strong> is a configurable weight. Higher Φ means a more coherent, trustworthy world state. Lower Φ means the agent is operating on shakier ground.</p>
+
+      <hr/>
+
+      <h2>The Five Dimensions</h2>
+
+      <table class="w-full mb-6" style="border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom: 1px solid #424754;">
+            <td style="padding:0.5rem 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:#8c909f; text-transform:uppercase; letter-spacing:0.05em;">Dimension</td>
+            <td style="padding:0.5rem 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:#8c909f; text-transform:uppercase; letter-spacing:0.05em;">Variable</td>
+            <td style="padding:0.5rem 0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:#8c909f; text-transform:uppercase; letter-spacing:0.05em;">What it measures</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="dim-row"><td>Constraint violations</td><td>V<sub>c</sub></td><td>How many active constraints are currently violated</td></tr>
+          <tr class="dim-row"><td>Claim staleness</td><td>V<sub>k</sub></td><td>How stale the agent's beliefs are, weighted by importance</td></tr>
+          <tr class="dim-row"><td>Dependency integrity</td><td>V<sub>d</sub></td><td>Whether entity relationships are still structurally valid</td></tr>
+          <tr class="dim-row"><td>Uncertainty exposure</td><td>V<sub>u</sub></td><td>How many unresolved contradictions the agent is sitting on</td></tr>
+          <tr class="dim-row"><td>Branch divergence</td><td>V<sub>b</sub></td><td>How far the current branch has diverged from the canonical state</td></tr>
+        </tbody>
+      </table>
+
+      <h3>V<sub>c</sub> — Constraint Violations</h3>
+      <p>Constraints are rules that must hold across entities at all times — for example, "no two deployments can be active for the same service simultaneously" or "a file cannot be both locked and modified." V<sub>c</sub> decreases as active constraints are violated. A single critical constraint violation can drop the score significantly.</p>
+
+      <h3>V<sub>k</sub> — Claim Staleness</h3>
+      <p>Every claim in the world state has a timestamp and a decay rate. Staleness is computed as:</p>
+
+      <div class="math-block">
+        \[ \text{Staleness}(k) = 1 - e^{-\lambda_s (t - \tau_k)} \]
+      </div>
+
+      <p>Where <code>τ_k</code> is the time the claim was last verified and <code>λ_s</code> is the decay constant (configurable per claim type). A freshly-verified claim has near-zero staleness. A claim that hasn't been touched in an hour has high staleness and drags down V<sub>k</sub>.</p>
+
+      <h3>V<sub>d</sub> — Dependency Integrity</h3>
+      <p>Entities in the world state are connected by typed dependency edges: <code>SUPPORTS</code>, <code>REQUIRES</code>, <code>INVALIDATES</code>, <code>PRODUCES</code>, <code>DEPENDS_ON</code>. When an entity is modified or deleted, Invariant traverses the dependency graph and flags edges that are now structurally broken. V<sub>d</sub> reflects how many of these broken edges exist.</p>
+
+      <h3>V<sub>u</sub> — Uncertainty Exposure</h3>
+      <p>When two claims about the same entity contradict each other, Invariant opens a contradiction record rather than silently preferring one. V<sub>u</sub> measures the agent's exposure to unresolved contradictions — how many exist and how central the affected entities are to the current action.</p>
+
+      <h3>V<sub>b</sub> — Branch Divergence</h3>
+      <p>When a contradiction can't be resolved, the world state forks into branches representing alternative coherent realities. V<sub>b</sub> measures how far the current working branch has diverged from the canonical trunk — a proxy for how speculative the agent's current assumptions are.</p>
+
+      <hr/>
+
+      <h2>From Φ to Action Risk</h2>
+
+      <p>Φ is a world-state score. When an agent proposes an action, Invariant computes an <strong>action risk score</strong> that combines the current Φ with the specific impact of the proposed action:</p>
+
+      <div class="math-block">
+        \[ R(a) = \mu_1 r_c + \mu_2 r_d + \mu_3 r_u + \mu_4 r_e + \mu_5 r_p + \mu_6 r_g \]
+      </div>
+
+      <p>Where each r term captures a specific risk dimension of the action itself:</p>
+
+      <ul>
+        <li><strong>r<sub>c</sub></strong> — constraint violation risk (does this action break any active rule?)</li>
+        <li><strong>r<sub>d</sub></strong> — dependency breakage risk (does this action sever a required edge?)</li>
+        <li><strong>r<sub>u</sub></strong> — contradiction amplification (does this action make existing contradictions worse?)</li>
+        <li><strong>r<sub>e</sub></strong> — uncertainty exposure (is the agent acting on a claim it isn't sure about?)</li>
+        <li><strong>r<sub>p</sub></strong> — provenance fragility (is the claim this action depends on from a low-trust source?)</li>
+        <li><strong>r<sub>g</sub></strong> — propagated risk (graph traversal — how many downstream entities does this touch?)</li>
+      </ul>
+
+      <p>If <code>R(a) > ε</code> (your configured action budget threshold), the action is blocked. If <code>R(a) ≤ ε</code>, it proceeds and the world state is updated.</p>
+
+      <hr/>
+
+      <h2>Default Weights and Tuning</h2>
+
+      <p>Out of the box, Invariant ships with sensible defaults that work well for most agent use cases:</p>
+
+      <pre><code># Coherence score weights (Phi)
+COHERENCE_LAMBDA_C=1.0   # constraint violations (highest weight)
+COHERENCE_LAMBDA_K=1.5   # staleness (highest — stale beliefs are dangerous)
+COHERENCE_LAMBDA_D=0.8   # dependency integrity
+COHERENCE_LAMBDA_U=0.5   # uncertainty exposure
+COHERENCE_LAMBDA_B=0.7   # branch divergence
+
+# Action risk threshold
+ACTION_EPSILON=0.6        # block if R(a) > 0.6
+ACTION_BUDGET=5.0         # total cumulative risk budget per session</code></pre>
+
+      <p>For high-stakes agents (infra, finance, healthcare), lower <code>ACTION_EPSILON</code> to 0.3–0.4 and increase <code>COHERENCE_LAMBDA_C</code>. For exploratory agents that need more latitude, raise <code>ACTION_EPSILON</code> and lower <code>COHERENCE_LAMBDA_K</code>.</p>
+
+      <hr/>
+
+      <h2>Reading the Score in Practice</h2>
+
+      <p>The coherence score is returned with every action validation response:</p>
+
+      <pre><code>{
+  "status": "allowed",
+  "riskScore": 0.23,
+  "coherenceScore": 0.81,
+  "worldState": {
+    "activeConstraints": 3,
+    "violations": 0,
+    "contradictions": 1,
+    "staleClaims": 2,
+    "branchDepth": 0
+  }
+}</code></pre>
+
+      <p>A coherence score above 0.8 is healthy. 0.6–0.8 means the agent is operating on somewhat stale or uncertain state — worth monitoring. Below 0.6, consider pausing execution and re-grounding the agent's world state before proceeding.</p>
+
+      <hr/>
+
+      <h2>Why a Score, Not Just Blocks?</h2>
+
+      <p>Hard blocks are necessary but not sufficient. An agent running at coherence 0.62 with no blocked actions is still an agent operating on thin ice — the blocks just haven't triggered yet.</p>
+
+      <p>The coherence score gives you a continuous signal you can log, alert on, and feed back to the agent as context. Some teams inject the current Φ directly into the agent's system prompt: <em>"Your current world-state coherence is 0.71. Proceed carefully and re-verify stale claims before modifying shared resources."</em></p>
+
+      <p>That feedback loop — model aware of its own epistemic state — is where the real reliability gains come from.</p>
+
+      <hr/>
+
+      <h2>What's Next</h2>
+
+      <p>We're working on per-entity coherence scores, so you can identify specifically which part of the world state is degraded rather than just the aggregate. We're also building a visual coherence timeline in the dashboard — watching Φ drop in real time as an agent run progresses is surprisingly useful for debugging.</p>
+
+      <p>If you want to dig into the math further, see the <a href="../docs.html" style="color:#adc6ff">full API docs</a> or <a href="mailto:jack@thestardrive.com" style="color:#adc6ff">reach out directly</a>.</p>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="mt-14 p-7 bg-surface-container-low border border-outline-variant/20 rounded-xl">
+      <p class="font-['Space_Grotesk'] font-bold text-on-surface mb-2">See the coherence score in your agent</p>
+      <p class="text-sm text-outline mb-5">Free tier available. Integrates in under 10 minutes.</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="../register.html" class="px-5 py-2.5 bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] font-bold text-sm rounded-lg hover:opacity-90 transition-opacity">Get started free</a>
+        <a href="../docs.html" class="px-5 py-2.5 bg-surface-container-high border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors">Read the docs</a>
+      </div>
+    </div>
+
+    <!-- More posts -->
+    <div class="mt-12">
+      <p class="text-xs font-mono text-outline uppercase tracking-widest mb-5">More posts</p>
+      <a href="why-ai-agents-lie-to-themselves.html" class="group flex items-start justify-between gap-4 p-5 bg-surface-container-low border border-outline-variant/15 hover:border-outline-variant/30 rounded-xl transition-all">
+        <div>
+          <p class="text-xs font-mono text-primary uppercase tracking-widest mb-1.5">Deep Dive</p>
+          <p class="font-['Space_Grotesk'] font-bold text-on-surface group-hover:text-primary transition-colors text-sm">Why AI Agents Lie to Themselves — and How to Fix It</p>
+        </div>
+        <span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors mt-1 shrink-0">arrow_forward</span>
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="relative z-10 py-10 px-6 border-t border-outline-variant/10">
+  <div class="max-w-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <span class="font-['Space_Grotesk'] font-bold text-on-surface/60 tracking-tighter">Invariant</span>
+    <div class="flex gap-6 text-sm text-outline">
+      <a href="../docs.html" class="hover:text-primary transition-colors">Docs</a>
+      <a href="../pricing.html" class="hover:text-primary transition-colors">Pricing</a>
+      <a href="https://github.com/jackalkahwati/invariant-cloud" target="_blank" class="hover:text-primary transition-colors">GitHub</a>
+      <a href="../privacy.html" class="hover:text-primary transition-colors">Privacy</a>
+      <a href="../terms.html" class="hover:text-primary transition-colors">Terms</a>
+    </div>
+    <span class="text-xs font-mono text-outline/40">© 2026 Stardrive Inc.</span>
+  </div>
+</footer>
+
+</body>
+</html>

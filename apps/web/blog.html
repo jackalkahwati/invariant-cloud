@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Blog</title>
+<meta name="description" content="Technical writing on AI agent reliability, coherence, and the infrastructure layer that keeps agents honest."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff", "on-secondary": "#472a00", "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe", "on-error": "#690005", "surface-container": "#171f33",
+          "secondary-container": "#ee9800", "on-secondary-fixed": "#2a1700", "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6", "primary-fixed": "#d8e2ff", "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236", "on-surface-variant": "#c2c6d6", "secondary": "#ffb95f",
+          "on-surface": "#dae2fd", "surface-bright": "#31394d", "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd", "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449", "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572", "surface-variant": "#2d3449", "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800", "outline": "#8c909f", "surface": "#0b1326",
+          "on-primary-container": "#00285d", "primary-container": "#4d8eff", "on-tertiary": "#003824",
+          "error-container": "#93000a", "outline-variant": "#424754", "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42", "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3", "surface-container-low": "#131b2e", "tertiary": "#4edea3",
+          "error": "#ffb4ab", "secondary-fixed-dim": "#ffb95f", "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8", "surface-container-high": "#222a3d", "surface-tint": "#adc6ff",
+          "background": "#0b1326", "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: { "headline": ["Space Grotesk"], "body": ["Inter"], "label": ["Inter"], "mono": ["JetBrains Mono"] },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  .node-link-bg { background-image: radial-gradient(#424754 1px, transparent 1px); background-size: 32px 32px; }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- Nav -->
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight border-b border-outline-variant/10">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter hover:text-primary transition-colors">Invariant</a>
+    <div class="hidden md:flex gap-6">
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="index.html">Home</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="docs.html">Docs</a>
+      <a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] h-16 flex items-center" href="blog.html">Blog</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="pricing.html">Pricing</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant-cloud" target="_blank">GitHub</a>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors">Sign in</a>
+    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+  </div>
+</nav>
+
+<!-- Background -->
+<div class="absolute inset-0 node-link-bg opacity-10 pointer-events-none"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+<main class="relative z-10 flex-1 pt-24 pb-20 px-6">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-14">
+      <p class="text-xs font-mono text-outline uppercase tracking-widest mb-3">Invariant Blog</p>
+      <h1 class="font-['Space_Grotesk'] text-4xl font-bold text-on-surface tracking-tight mb-4">Writing on AI agent reliability</h1>
+      <p class="text-outline text-lg leading-relaxed">Technical posts on coherence, state management, and the infrastructure layer that keeps agents honest.</p>
+    </div>
+
+    <!-- Posts -->
+    <div class="space-y-px">
+
+      <!-- Post 1 -->
+      <a href="blog/why-ai-agents-lie-to-themselves.html" class="group block bg-surface-container-low hover:bg-surface-container border border-outline-variant/15 hover:border-outline-variant/30 rounded-xl p-7 transition-all">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xs font-mono text-primary uppercase tracking-widest">Deep Dive</span>
+          <span class="text-outline/40">·</span>
+          <span class="text-xs font-mono text-outline">March 20, 2026</span>
+        </div>
+        <h2 class="font-['Space_Grotesk'] text-xl font-bold text-on-surface group-hover:text-primary transition-colors mb-2">Why AI Agents Lie to Themselves — and How to Fix It</h2>
+        <p class="text-outline text-sm leading-relaxed mb-4">OpenClaw just crossed 100k stars. Millions of people are running autonomous agents that take real-world actions on their behalf. There's a failure mode nobody is talking about loudly enough.</p>
+        <div class="flex items-center gap-2 text-xs font-mono text-outline/60 group-hover:text-primary transition-colors">
+          <span>Read post</span>
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </div>
+      </a>
+
+      <!-- Post 2 -->
+      <a href="blog/the-coherence-score.html" class="group block bg-surface-container-low hover:bg-surface-container border border-outline-variant/15 hover:border-outline-variant/30 rounded-xl p-7 mt-3 transition-all">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xs font-mono text-tertiary uppercase tracking-widest">Technical</span>
+          <span class="text-outline/40">·</span>
+          <span class="text-xs font-mono text-outline">March 20, 2026</span>
+        </div>
+        <h2 class="font-['Space_Grotesk'] text-xl font-bold text-on-surface group-hover:text-primary transition-colors mb-2">The Coherence Score: How Invariant Measures Agent World State</h2>
+        <p class="text-outline text-sm leading-relaxed mb-4">Under the hood of Invariant's Φ formula — how we turn a graph of claims, constraints, and dependencies into a single number that tells you whether your agent's worldview can be trusted.</p>
+        <div class="flex items-center gap-2 text-xs font-mono text-outline/60 group-hover:text-primary transition-colors">
+          <span>Read post</span>
+          <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="relative z-10 py-10 px-6 border-t border-outline-variant/10">
+  <div class="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+    <span class="font-['Space_Grotesk'] font-bold text-on-surface/60 tracking-tighter">Invariant</span>
+    <div class="flex gap-6 text-sm text-outline">
+      <a href="docs.html" class="hover:text-primary transition-colors">Docs</a>
+      <a href="pricing.html" class="hover:text-primary transition-colors">Pricing</a>
+      <a href="https://github.com/jackalkahwati/invariant-cloud" target="_blank" class="hover:text-primary transition-colors">GitHub</a>
+      <a href="privacy.html" class="hover:text-primary transition-colors">Privacy</a>
+      <a href="terms.html" class="hover:text-primary transition-colors">Terms</a>
+    </div>
+    <span class="text-xs font-mono text-outline/40">© 2026 Stardrive Inc.</span>
+  </div>
+</footer>
+
+</body>
+</html>
