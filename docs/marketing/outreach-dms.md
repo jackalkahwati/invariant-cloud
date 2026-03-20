@@ -69,7 +69,12 @@ Already listed above — ping separately for newsletter inclusion.
 Find via LinkedIn — search "Head of AI" or "AI Engineer" at companies building B2B agents.
 Customize: "We're in early access — looking for 5 teams building production agents to give free Team tier in exchange for feedback..."
 
-### 10. A YC founder building agents
+### 10. Peter Steinberger — OpenClaw creator
+@steipete on X / GitHub
+Why: He built the hottest agent tool right now. If he integrates or mentions Invariant, that's access to 100k+ engaged users immediately.
+Customize: "Hey Peter — congrats on OpenClaw, it's incredible. I built Invariant — it's a coherence layer that validates OpenClaw actions against world state before they execute. Basically catches the class of bugs where OpenClaw acts on a stale or contradicted belief. Would love to show you and give you free access. Feels like a natural pairing."
+
+### 11. A YC founder building agents
 Check the current YC batch at ycombinator.com/companies — filter by AI/agents.
 Message via LinkedIn or Founder intro request.
 Customize: "Fellow founder — building the coherence layer for AI agents. Would love 15 min and free access in exchange for honest feedback."

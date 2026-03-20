@@ -5,11 +5,11 @@
 ---
 
 **Tweet 1 (lead):**
-AI agents have a coherence problem nobody talks about enough.
+OpenClaw just hit 100k GitHub stars. Millions of people running autonomous agents on their computers.
 
-It's not hallucination. It's not bad tools. It's the agent's *worldview* drifting from reality mid-run — and taking real-world actions based on beliefs that stopped being true 10 steps ago.
+There's a failure mode nobody is talking about that's going to bite a lot of them.
 
-Here's what's actually happening 🧵
+It's not hallucination. It's coherence collapse. 🧵
 
 ---
 

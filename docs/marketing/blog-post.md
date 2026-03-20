@@ -4,7 +4,11 @@
 
 ---
 
-There's a failure mode in AI agents that nobody talks about enough.
+OpenClaw just crossed 100,000 GitHub stars. Jensen Huang called it "the next ChatGPT." Millions of people are running an autonomous agent on their computer that can send emails, manage files, and call APIs — all on their behalf.
+
+That's exciting. It's also terrifying if you think about it for a few minutes.
+
+Because there's a failure mode in AI agents that nobody is talking about loudly enough — and OpenClaw, LangChain agents, AutoGen pipelines, and every other long-running agent system is vulnerable to it.
 
 It's not hallucination. It's not tool misuse. It's **coherence collapse** — when an agent's internal model of the world drifts so far from reality that its next action is guaranteed to be wrong, and it has no idea.
 
@@ -14,7 +18,7 @@ Here's what it looks like in practice.
 
 ## The Bug You Can't See
 
-Imagine an agent managing a deployment pipeline. It reads the current server state, decides to scale up a service, calls a tool, gets a success response. So far so good.
+Imagine OpenClaw is managing your inbox and calendar. It reads your current schedule, decides to accept a meeting, sends a confirmation. So far so good.
 
 Then, three tool calls later, it reads a cached claim that the service is still at the old replica count. It makes a decision based on that stale fact. That decision conflicts with a constraint it set two steps ago. The constraint fires silently. The agent keeps going.
 
@@ -85,9 +89,11 @@ That's it. One check. If the action is coherent with the current world state and
 
 ---
 
-## The Problem Is Getting Worse
+## The Problem Is Getting Worse Fast
 
-Agents are getting longer-running, more autonomous, and more consequential. A customer service bot that gets confused is embarrassing. An agent managing your infrastructure, your finances, or your patient data that gets confused is a production incident.
+OpenClaw hit 100k GitHub stars in weeks. Agents are getting longer-running, more autonomous, and more consequential faster than the infrastructure to support them.
+
+A confused chatbot is embarrassing. An OpenClaw agent that sends the wrong email, deletes the wrong file, or calls the wrong API because it was acting on a stale belief — that's a real incident. On your machine.
 
 The AI community has invested enormously in making models smarter and tools more capable. Almost nobody has invested in making agent *state* trustworthy. That's the gap Invariant fills.
 
