@@ -276,7 +276,7 @@ async function handleLogin(e) {
     window.location.href = 'account.html';
 
   } catch (err) {
-    errMsg.textContent = 'Could not reach the API. Make sure the server is running on localhost:3000.';
+    errMsg.textContent = 'Could not reach the server. Please try again or contact support.';
     errMsg.classList.remove('hidden');
     btn.disabled = false;
     btnText.textContent = 'Sign in →';

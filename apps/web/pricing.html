@@ -564,7 +564,7 @@ async function startCheckout(tier = 'team') {
 
     window.location.href = data.url;
   } catch (e) {
-    alert('Could not start checkout. On localhost, run the API on :3000. On invariant.me, confirm Vercel env has STRIPE_SECRET_KEY and price IDs.');
+    alert('Could not start checkout. Please try again or contact jack@thestardrive.com.');
     btnText.textContent = cfg.reset;
     btn.disabled = false;
     btn.classList.remove('opacity-70');

@@ -464,7 +464,7 @@
 <div class="p-6 overflow-x-auto">
 <pre class="font-mono text-sm leading-relaxed"><code><span style="color:#adc6ff">import</span> { <span style="color:#ffb95f">InvariantClient</span> } <span style="color:#adc6ff">from</span> <span style="color:#4edea3">'invariant-sdk'</span>;
 
-<span style="color:#adc6ff">const</span> client = <span style="color:#adc6ff">new</span> <span style="color:#ffb95f">InvariantClient</span>({ baseUrl: <span style="color:#4edea3">'http://localhost:3000'</span> });
+<span style="color:#adc6ff">const</span> client = <span style="color:#adc6ff">new</span> <span style="color:#ffb95f">InvariantClient</span>({ baseUrl: <span style="color:#4edea3">'https://invariant.me'</span> });
 
 <span style="color:#8c909f">// Assert a claim from a sensor or tool output</span>
 <span style="color:#adc6ff">await</span> client.claims.<span style="color:#ffb95f">create</span>({
@@ -617,7 +617,7 @@
             <div class="w-3 h-3 rounded-full bg-secondary/60"></div>
             <div class="w-3 h-3 rounded-full bg-tertiary/60"></div>
           </div>
-          <span class="text-xs font-mono text-outline">Invariant, connected to localhost:3000</span>
+          <span class="text-xs font-mono text-outline">Invariant, connected to invariant.me</span>
           <div class="w-16"></div>
         </div>
         <!-- Popover content -->
