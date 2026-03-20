@@ -30,6 +30,17 @@ Until automated metering ships, **document** usage as follows:
 
 **Pre-launch:** limits are **soft**. Do not hard-block customers until counters are accurate in production and communicated.
 
+## API safety caps (cost protection)
+
+| Env | Default | Purpose |
+|-----|---------|---------|
+| `API_RATE_LIMIT_MAX` | `1000` | Max requests per minute per `X-API-Key` value (or per IP if no key). Set lower in production to cap accident traffic (e.g. `120` or `240`). |
+| `ENFORCE_USAGE_CAPS` | `true` if `NODE_ENV=production`, else `false` | When true, workspace keys and JWT auth cannot exceed **monthly billable units** for their tier (see table below). The shared master `API_KEY` bypasses monthly caps (operator key). |
+
+Monthly caps use `Workspace.claimsThisMonth` (auto-reset each UTC month) and the same unit weights as above. Set `ENFORCE_USAGE_CAPS=false` while tuning metering.
+
+**Tier ceilings (billable units / month):** FREE 100k, STARTER 1M, TEAM 10M, ENTERPRISE ~1B (contract).
+
 ## Why subscription + included usage (not pure per-call)
 
 - Covers fixed cost (managed Postgres, API uptime).  

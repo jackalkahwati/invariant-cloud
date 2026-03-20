@@ -12,7 +12,14 @@ import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 
+import { prisma } from './infrastructure/database/prisma.js';
 import { corsAllowedExtraOrigins, serverConfig } from './infrastructure/config.js';
+import { resolveInvariantAuth } from './interfaces/http/middleware/invariantAuth.js';
+import {
+  billableUnitsForRequest,
+  resetMonthlyClaimsIfNeeded,
+  tierMonthlyBillableCap,
+} from './interfaces/http/middleware/usageLimits.js';
 import { entityRoutes } from './interfaces/http/routes/entities.js';
 import { claimRoutes } from './interfaces/http/routes/claims.js';
 import { observationRoutes } from './interfaces/http/routes/observations.js';
@@ -93,7 +100,7 @@ export async function buildApp() {
   // Auth endpoints use a stricter 20 req/min keyed by IP.
   await app.register(rateLimit, {
     global: true,
-    max: 1000,
+    max: serverConfig.apiRateLimitMax,
     timeWindow: '1 minute',
     keyGenerator: (req) => {
       const key = req.headers['x-api-key'];
@@ -160,15 +167,50 @@ export async function buildApp() {
     uiConfig: { docExpansion: 'list', deepLinking: false },
   });
 
-  // API Key authentication hook
+  // API authentication: master API_KEY, workspace inv_* key, or JWT Bearer
   app.addHook('preHandler', async (req, reply) => {
-    // Skip auth for docs, health, public checkout, and auth endpoints
-    if (req.url.startsWith('/docs') || req.url === '/health' || req.url.startsWith('/checkout') || req.url.startsWith('/auth/')) return;
+    const path = req.url.split('?')[0];
+    if (path.startsWith('/docs') || path === '/health' || path.startsWith('/checkout') || path.startsWith('/auth/')) return;
 
-    const key = req.headers['x-api-key'];
-    if (key !== serverConfig.apiKey) {
+    const auth = await resolveInvariantAuth(req);
+    if (!auth) {
       return reply.status(401).send({ error: 'Invalid or missing API key' });
     }
+    req.invariantAuth = auth;
+
+    if (!auth.master && auth.workspaceId && serverConfig.enforceUsageCaps) {
+      const units = billableUnitsForRequest(req.method, path);
+      if (units > 0) {
+        const w = await prisma.workspace.findUnique({ where: { id: auth.workspaceId } });
+        if (!w) return reply.status(401).send({ error: 'Workspace not found' });
+        const refreshed = await resetMonthlyClaimsIfNeeded(w);
+        const cap = tierMonthlyBillableCap(refreshed.tier);
+        if (refreshed.claimsThisMonth + units > cap) {
+          return reply.status(429).send({
+            error: 'Monthly billable usage limit exceeded. Upgrade your plan or wait for the next billing period.',
+            tier: refreshed.tier,
+            used: refreshed.claimsThisMonth,
+            limit: cap,
+          });
+        }
+      }
+    }
+  });
+
+  // Count billable units only after successful responses (2xx), workspace callers only
+  app.addHook('onResponse', async (req, reply) => {
+    if (!serverConfig.enforceUsageCaps) return;
+    const auth = req.invariantAuth;
+    if (!auth || auth.master || !auth.workspaceId) return;
+    const path = req.url.split('?')[0];
+    if (path.startsWith('/docs') || path === '/health' || path.startsWith('/checkout') || path.startsWith('/auth/')) return;
+    const units = billableUnitsForRequest(req.method, path);
+    if (units <= 0) return;
+    if (reply.statusCode < 200 || reply.statusCode >= 300) return;
+    await prisma.workspace.update({
+      where: { id: auth.workspaceId },
+      data: { claimsThisMonth: { increment: units } },
+    });
   });
 
   // Health check (no auth required)

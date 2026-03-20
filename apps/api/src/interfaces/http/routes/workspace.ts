@@ -1,33 +1,13 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest } from 'fastify';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 import { prisma } from '../../../infrastructure/database/prisma.js';
-import { authConfig } from '../../../infrastructure/config.js';
+import { serverConfig } from '../../../infrastructure/config.js';
+import { tierMonthlyBillableCap } from '../middleware/usageLimits.js';
 
-async function getWorkspaceFromRequest(req: { headers: Record<string, string | string[] | undefined> }): Promise<string | null> {
-  // Try API key first
-  const apiKey = req.headers['x-api-key'] as string | undefined;
-  if (apiKey) {
-    const allKeys = await prisma.workspaceApiKey.findMany({ where: { isActive: true } });
-    for (const k of allKeys) {
-      if (await bcrypt.compare(apiKey, k.keyHash)) {
-        await prisma.workspaceApiKey.update({ where: { id: k.id }, data: { lastUsedAt: new Date() } });
-        return k.workspaceId;
-      }
-    }
-    return null;
-  }
-  // Try JWT Bearer
-  const auth = req.headers['authorization'] as string | undefined;
-  if (auth?.startsWith('Bearer ')) {
-    try {
-      const payload = jwt.verify(auth.slice(7), authConfig.jwtSecret) as { userId: string };
-      const membership = await prisma.workspaceMember.findFirst({ where: { userId: payload.userId } });
-      return membership?.workspaceId ?? null;
-    } catch { return null; }
-  }
-  return null;
+/** Workspace routes run after global auth; use attached context (avoids second bcrypt). */
+function workspaceIdFromRequest(req: FastifyRequest): string | null {
+  return req.invariantAuth?.workspaceId ?? null;
 }
 
 export async function workspaceRoutes(app: FastifyInstance) {
@@ -35,7 +15,7 @@ export async function workspaceRoutes(app: FastifyInstance) {
   app.get('/workspace', {
     schema: { tags: ['Workspace'], summary: 'Get current workspace info, tier, and API keys' },
   }, async (req, reply) => {
-    const workspaceId = await getWorkspaceFromRequest(req as Parameters<typeof getWorkspaceFromRequest>[0]);
+    const workspaceId = workspaceIdFromRequest(req);
     if (!workspaceId) return reply.status(401).send({ error: 'Unauthorized' });
 
     const workspace = await prisma.workspace.findUnique({
@@ -57,6 +37,8 @@ export async function workspaceRoutes(app: FastifyInstance) {
       status: workspace.status,
       trialEndsAt: workspace.trialEndsAt,
       claimsThisMonth: workspace.claimsThisMonth,
+      monthlyBillableLimit: tierMonthlyBillableCap(workspace.tier),
+      usageCapsEnforced: serverConfig.enforceUsageCaps,
       apiKeys: workspace.apiKeys,
     });
   });
@@ -69,7 +51,7 @@ export async function workspaceRoutes(app: FastifyInstance) {
       body: { type: 'object', properties: { name: { type: 'string' } } },
     },
   }, async (req, reply) => {
-    const workspaceId = await getWorkspaceFromRequest(req as Parameters<typeof getWorkspaceFromRequest>[0]);
+    const workspaceId = workspaceIdFromRequest(req);
     if (!workspaceId) return reply.status(401).send({ error: 'Unauthorized' });
 
     const rawKey = 'inv_' + crypto.randomBytes(24).toString('hex');
@@ -98,7 +80,7 @@ export async function workspaceRoutes(app: FastifyInstance) {
   app.delete<{ Params: { id: string } }>('/workspace/api-keys/:id', {
     schema: { tags: ['Workspace'], summary: 'Revoke an API key' },
   }, async (req, reply) => {
-    const workspaceId = await getWorkspaceFromRequest(req as Parameters<typeof getWorkspaceFromRequest>[0]);
+    const workspaceId = workspaceIdFromRequest(req);
     if (!workspaceId) return reply.status(401).send({ error: 'Unauthorized' });
 
     await prisma.workspaceApiKey.updateMany({

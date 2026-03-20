@@ -15,6 +15,20 @@ function getEnvString(key: string, fallback: string): string {
   return process.env[key] ?? fallback;
 }
 
+function getEnvInt(key: string, fallback: number): number {
+  const val = process.env[key];
+  if (!val) return fallback;
+  const parsed = parseInt(val, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+function getEnvBool(key: string, fallback: boolean): boolean {
+  const val = process.env[key];
+  if (val === undefined || val === '') return fallback;
+  const v = val.toLowerCase();
+  return v === '1' || v === 'true' || v === 'yes';
+}
+
 function parseCommaSeparatedEnv(key: string): string[] {
   const raw = process.env[key];
   if (!raw) return [];
@@ -58,6 +72,16 @@ export const serverConfig = {
   host: getEnvString('HOST', '0.0.0.0'),
   apiKey: getEnvString('API_KEY', 'dev-api-key'),
   logLevel: getEnvString('LOG_LEVEL', 'info') as 'trace' | 'debug' | 'info' | 'warn' | 'error',
+  /** Per-key (or IP) request cap per time window. Lower in production to limit accident spend, e.g. API_RATE_LIMIT_MAX=120 */
+  apiRateLimitMax: getEnvInt('API_RATE_LIMIT_MAX', 1000),
+  /**
+   * When true, workspace + JWT callers cannot exceed monthly billable units for their tier (master API_KEY bypasses).
+   * Defaults on in production; set ENFORCE_USAGE_CAPS=false to keep soft limits during metering tuning.
+   */
+  enforceUsageCaps: getEnvBool(
+    'ENFORCE_USAGE_CAPS',
+    process.env['NODE_ENV'] === 'production',
+  ),
 };
 
 export const stripeConfig = {
