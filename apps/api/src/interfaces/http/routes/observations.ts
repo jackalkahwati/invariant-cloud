@@ -4,7 +4,7 @@ import {
 } from '../../../infrastructure/container.js';
 
 export async function observationRoutes(app: FastifyInstance) {
-  // POST /observations — ingest an observation and extract claims
+  // POST /observations, ingest an observation and extract claims
   app.post('/observations', {
     schema: {
       tags: ['Observations'],

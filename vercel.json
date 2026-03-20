@@ -1,8 +1,27 @@
 {
   "version": 2,
-  "buildCommand": "npm run build --workspace=apps/api",
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npm run vercel-build",
   "outputDirectory": "apps/web",
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 60
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)\\.html",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    }
+  ],
   "rewrites": [
+    { "source": "/docs", "destination": "/api/index" },
+    { "source": "/docs/:path*", "destination": "/api/index" },
     { "source": "/auth/:path*", "destination": "/api/index" },
     { "source": "/checkout/:path*", "destination": "/api/index" },
     { "source": "/workspace/:path*", "destination": "/api/index" },

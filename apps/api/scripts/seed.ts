@@ -1,5 +1,5 @@
 /**
- * Seed Script — Engineering Program Scenario
+ * Seed Script, Engineering Program Scenario
  *
  * Seeds the Coherence Engine with a realistic aerospace/engineering program
  * scenario that clearly demonstrates:
@@ -55,7 +55,7 @@ const actionValidationService = new ActionValidationService(
 );
 
 async function seed() {
-  console.log('🚀 Seeding Coherence Engine — Engineering Program Scenario\n');
+  console.log('🚀 Seeding Coherence Engine, Engineering Program Scenario\n');
 
   // ── Clean slate ──────────────────────────────────────────────
   console.log('Clearing existing data...');
@@ -128,7 +128,7 @@ async function seed() {
   // ── Claims ────────────────────────────────────────────────────
   console.log('Creating claims...');
 
-  // R-42: marked complete (problematic — no verification)
+  // R-42: marked complete (problematic, no verification)
   await claimRepo.create({
     entityId: reqR42.id, predicate: 'status', value: 'complete',
     confidence: 0.9, sourceId: humanEngineer.id, timestamp: new Date(),
@@ -145,7 +145,7 @@ async function seed() {
     confidence: 1.0, sourceId: systemSource.id, timestamp: new Date(), status: 'ACTIVE',
   });
 
-  // Verification status — NOT started (will conflict with complete status)
+  // Verification status, NOT started (will conflict with complete status)
   await claimRepo.create({
     entityId: reqR42.id, predicate: 'verificationStatus', value: 'not_started',
     confidence: 0.95, sourceId: systemSource.id, timestamp: new Date(), status: 'ACTIVE',
@@ -168,7 +168,7 @@ async function seed() {
     confidence: 1.0, sourceId: systemSource.id, timestamp: new Date(), status: 'ACTIVE',
   });
 
-  // LaunchReadiness: marked green (WRONG — should be blocked by constraints)
+  // LaunchReadiness: marked green (WRONG, should be blocked by constraints)
   await claimRepo.create({
     entityId: launchReadiness.id, predicate: 'status', value: 'green',
     confidence: 0.7, sourceId: agentPlanner.id, timestamp: new Date(), status: 'ACTIVE',

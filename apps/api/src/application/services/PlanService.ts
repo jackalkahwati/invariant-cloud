@@ -138,7 +138,7 @@ export class PlanService {
 
   /**
    * Validate a step against the coherence engine before executing.
-   * Returns the validation result — caller decides whether to proceed.
+   * Returns the validation result, caller decides whether to proceed.
    */
   async validateStep(stepId: string) {
     const step = await this.planRepo.findStepById(stepId);

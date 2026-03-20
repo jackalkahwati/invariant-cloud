@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html class="dark" lang="en" data-pricing-page="starter-79-team-199-mar2026"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Invariant | Pricing</title>
@@ -103,8 +103,7 @@
 <div class="hidden md:flex gap-6">
 <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="index.html">Home</a>
 <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="docs.html">Docs</a>
-<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="dashboard.html">Dashboard</a>
-<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant" target="_blank">GitHub</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant-cloud" target="_blank">GitHub</a>
 <a class="text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] h-16 flex items-center" href="pricing.html">Pricing</a>
 </div>
 </div>
@@ -128,17 +127,17 @@
 Simple, honest pricing
 </h1>
 <p class="text-on-surface-variant text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-The engine is open source. You pay for the platform around it.
+The engine is open source. Cloud is a <strong class="text-on-surface font-semibold">monthly subscription</strong> with generous included usage, not a penny-per-call tax. We’re pre-launch: limits stay <strong class="text-on-surface font-semibold">soft</strong> while we learn real patterns.
 </p>
 </div>
 </section>
 
 <!-- Pricing Cards -->
-<section class="py-16 px-6">
-<div class="max-w-6xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+<section id="cloud-plans" class="py-16 px-6 scroll-mt-24">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
 
-<!-- Free — Self-Hosted -->
+<!-- Free, Self-Hosted -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col">
 <div class="mb-6">
 <h2 class="font-headline text-xl font-bold text-on-surface mb-1">Free</h2>
@@ -187,90 +186,128 @@ View on GitHub
 </div>
 </div>
 
-<!-- Team — Cloud (HIGHLIGHTED) -->
+<!-- Starter, Cloud (early access) -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col relative">
+<div class="absolute -top-3 left-8">
+<span class="bg-tertiary/10 text-tertiary font-mono text-[10px] px-2 py-0.5 rounded border border-tertiary/20 uppercase tracking-wider">Early access</span>
+</div>
+
+<div class="mb-6">
+<h2 class="font-headline text-xl font-bold text-on-surface mb-1">Starter</h2>
+<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud</p>
+<div class="mb-4">
+<span class="font-headline text-4xl font-bold text-on-surface">$79</span>
+<span class="text-on-surface-variant text-sm ml-1">/ month</span>
+</div>
+<p class="text-sm text-on-surface-variant">Solo builders and prototypes, managed cloud without the $0 → $200 cliff</p>
+</div>
+
+<button id="checkout-btn-starter" onclick="startCheckout('starter')" class="mb-8 w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors border border-outline-variant/20 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span id="checkout-btn-starter-text">Start 14-day trial</span>
+</button>
+
+<ul class="space-y-3 flex-1">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Everything in Free (feature parity)</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Managed hosting + API keys</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant"><strong class="text-on-surface">~1M billable units</strong> / month included <span class="text-outline">(see FAQ)</span></span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant"><strong class="text-on-surface">Soft limits</strong> pre-launch, we won’t cut you off while we calibrate</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
+<span class="text-sm text-on-surface-variant">Direct email to the founding team</span>
+</li>
+</ul>
+
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<p class="text-xs font-mono text-outline">Overage: we’ll agree fair rates once we have data</p>
+</div>
+</div>
+
+<!-- Team, Cloud (HIGHLIGHTED) -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-primary/40 flex flex-col relative" style="box-shadow: 0 0 32px rgba(173,198,255,0.08);">
 <div class="absolute -top-3 left-8">
-<span class="bg-primary/10 text-primary font-mono text-[10px] px-2 py-0.5 rounded border border-primary/20 uppercase tracking-wider">Most Popular</span>
+<span class="bg-primary/10 text-primary font-mono text-[10px] px-2 py-0.5 rounded border border-primary/20 uppercase tracking-wider">Most popular</span>
 </div>
 
 <div class="mb-6">
 <h2 class="font-headline text-xl font-bold text-on-surface mb-1">Team</h2>
 <p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud</p>
 <div class="mb-4">
-<span class="font-headline text-4xl font-bold text-on-surface">$200</span>
+<span class="font-headline text-4xl font-bold text-on-surface">$199</span>
 <span class="text-on-surface-variant text-sm ml-1">/ month</span>
 </div>
-<p class="text-sm text-on-surface-variant">For teams shipping AI agents to production</p>
+<p class="text-sm text-on-surface-variant">Teams shipping agents to production</p>
 </div>
 
-<button id="checkout-btn" onclick="startCheckout()" class="mb-8 w-full py-2.5 px-4 cta-primary text-on-primary font-bold text-sm rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<button id="checkout-btn" onclick="startCheckout('team')" class="mb-8 w-full py-2.5 px-4 cta-primary text-on-primary font-bold text-sm rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
 <span class="material-symbols-outlined text-sm">rocket_launch</span>
-<span id="checkout-btn-text">Start free trial</span>
+<span id="checkout-btn-text">Start 14-day trial</span>
 </button>
 
 <ul class="space-y-3 flex-1">
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Everything in Free</span>
+<span class="text-sm text-on-surface-variant">Everything in Starter</span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Managed cloud hosting (no ops)</span>
+<span class="text-sm text-on-surface-variant"><strong class="text-on-surface">~10M billable units</strong> / month included</span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Multi-agent session management</span>
+<span class="text-sm text-on-surface-variant">Audit exports (JSON, CSV)</span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Team world state — shared graph across agents</span>
+<span class="text-sm text-on-surface-variant">Webhooks (e.g. action blocked, contradictions)</span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Audit log exports (JSON, CSV)</span>
+<span class="text-sm text-on-surface-variant">Slack &amp; PagerDuty integrations <span class="text-outline">(roadmap)</span></span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Webhook alerts when &#934; exceeds threshold</span>
+<span class="text-sm text-on-surface-variant">Email support, 48h SLA <span class="text-outline">(target)</span></span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Slack &amp; PagerDuty integrations</span>
-</li>
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Email support, 48h SLA</span>
-</li>
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">Up to 10M claims/month included</span>
+<span class="text-sm text-on-surface-variant">Soft limits + grandfathering for design partners</span>
 </li>
 </ul>
 
 <div class="mt-8 pt-6 border-t border-outline-variant/20">
-<p class="text-xs font-mono text-outline">Additional claims at $0.01 per 10k</p>
+<p class="text-xs font-mono text-outline">Overage: usage packs or per-unit, finalized after launch telemetry</p>
 </div>
 </div>
 
-<!-- Enterprise — Cloud -->
+<!-- Enterprise, Cloud -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20 flex flex-col">
 <div class="mb-6">
 <h2 class="font-headline text-xl font-bold text-on-surface mb-1">Enterprise</h2>
-<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud</p>
+<p class="text-xs font-mono text-outline uppercase tracking-wider mb-4">Cloud or VPC</p>
 <div class="mb-4">
-<span class="font-headline text-4xl font-bold text-on-surface">$800</span>
-<span class="text-on-surface-variant text-sm"> / month</span>
+<span class="font-headline text-3xl font-bold text-on-surface">Custom</span>
 </div>
-<p class="text-sm text-on-surface-variant">For regulated industries and large-scale deployments</p>
+<p class="text-sm text-on-surface-variant">VPC, compliance programs, SSO, and procurement-friendly terms</p>
 </div>
 
-<button id="enterprise-checkout-btn" onclick="startCheckout('enterprise')" class="mb-2 w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<a href="mailto:jack@thestardrive.com?subject=Invariant%20Enterprise%20%E2%80%94%20pricing" class="mb-8 w-full py-2.5 px-4 bg-surface-container-high text-on-surface font-bold text-sm rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2 border border-outline-variant/20">
 <span class="material-symbols-outlined text-sm">shield</span>
-<span id="enterprise-checkout-btn-text">Start free trial</span>
-</button>
-<a href="mailto:hello@invariant.dev" class="mb-6 w-full text-center text-xs text-outline hover:text-primary transition-colors block">
-Need on-premise or custom SLA? Contact us →
+<span>Contact sales</span>
 </a>
+<p class="text-xs text-outline text-center -mt-6 mb-8">We’ll quote from your volume, security, and SLA needs, not a public list price.</p>
 
 <ul class="space-y-3 flex-1">
 <li class="flex items-start gap-3">
@@ -279,7 +316,7 @@ Need on-premise or custom SLA? Contact us →
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
-<span class="text-sm text-on-surface-variant">SOC 2 Type II compliance</span>
+<span class="text-sm text-on-surface-variant">SOC 2 Type II (in progress)</span>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-tertiary text-sm mt-0.5 shrink-0">check</span>
@@ -332,73 +369,82 @@ Need on-premise or custom SLA? Contact us →
 <p class="text-on-surface-variant text-sm">Every tier, every feature, no fine print surprises.</p>
 </div>
 
-<div class="rounded-xl overflow-hidden border border-outline-variant/20">
+<div class="rounded-xl overflow-x-auto border border-outline-variant/20">
+<div class="min-w-[800px]">
 <!-- Table header -->
-<div class="grid grid-cols-4 bg-surface-container-highest px-6 py-4">
+<div class="grid grid-cols-5 bg-surface-container-highest px-4 md:px-6 py-4 gap-2">
 <div class="text-xs font-mono text-outline uppercase tracking-wider">Feature</div>
 <div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Free</div>
+<div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Starter</div>
 <div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Team</div>
 <div class="text-xs font-mono text-primary uppercase tracking-wider text-center">Enterprise</div>
 </div>
 
 <!-- Row 1 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">Hosting</div>
-<div class="text-xs text-center text-on-surface-variant">Self-managed</div>
-<div class="text-xs text-center text-on-surface-variant">Invariant Cloud</div>
-<div class="text-xs text-center text-on-surface-variant">Invariant Cloud / VPC</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container-low items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Hosting</div>
+<div class="text-[11px] text-center text-on-surface-variant">Self-managed</div>
+<div class="text-[11px] text-center text-on-surface-variant">Cloud</div>
+<div class="text-[11px] text-center text-on-surface-variant">Cloud</div>
+<div class="text-[11px] text-center text-on-surface-variant">Cloud / VPC</div>
 </div>
 
 <!-- Row 2 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">Claims/month</div>
-<div class="text-xs text-center text-on-surface-variant">Unlimited (self)</div>
-<div class="text-xs text-center text-on-surface-variant">10M included</div>
-<div class="text-xs text-center text-on-surface-variant">Custom</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Billable units <span class="text-outline normal-case">(v0)</span></div>
+<div class="text-[11px] text-center text-on-surface-variant">Unlimited (self)</div>
+<div class="text-[11px] text-center text-on-surface-variant">~1M / mo</div>
+<div class="text-[11px] text-center text-on-surface-variant">~10M / mo</div>
+<div class="text-[11px] text-center text-on-surface-variant">Custom</div>
 </div>
 
 <!-- Row 3 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">World state persistence</div>
-<div class="text-xs text-center text-on-surface-variant">Local DB</div>
-<div class="text-xs text-center text-on-surface-variant">Managed Postgres</div>
-<div class="text-xs text-center text-on-surface-variant">Managed / Bring your own</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container-low items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Persistence</div>
+<div class="text-[11px] text-center text-on-surface-variant">Your DB</div>
+<div class="text-[11px] text-center text-on-surface-variant">Managed</div>
+<div class="text-[11px] text-center text-on-surface-variant">Managed</div>
+<div class="text-[11px] text-center text-on-surface-variant">Managed / BYO</div>
 </div>
 
 <!-- Row 4 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">Audit exports</div>
-<div class="text-xs text-center text-outline">—</div>
-<div class="text-xs text-center text-on-surface-variant">JSON, CSV</div>
-<div class="text-xs text-center text-on-surface-variant">JSON, CSV, PDF, SIEM</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Audit exports</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-on-surface-variant">JSON, CSV</div>
+<div class="text-[11px] text-center text-on-surface-variant">+ SIEM, PDF</div>
 </div>
 
 <!-- Row 5 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">SSO / RBAC</div>
-<div class="text-xs text-center text-outline">—</div>
-<div class="text-xs text-center text-outline">—</div>
-<div class="text-xs text-center">
-<span class="material-symbols-outlined text-tertiary text-sm">check</span>
-</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container-low items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">SSO / RBAC</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center"><span class="material-symbols-outlined text-tertiary text-sm">check</span></div>
 </div>
 
 <!-- Row 6 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">SLA</div>
-<div class="text-xs text-center text-on-surface-variant">Community</div>
-<div class="text-xs text-center text-on-surface-variant">48h</div>
-<div class="text-xs text-center text-on-surface-variant">4h</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Support SLA</div>
+<div class="text-[11px] text-center text-on-surface-variant">Community</div>
+<div class="text-[11px] text-center text-on-surface-variant">Best effort</div>
+<div class="text-[11px] text-center text-on-surface-variant">48h target</div>
+<div class="text-[11px] text-center text-on-surface-variant">Custom</div>
 </div>
 
 <!-- Row 7 -->
-<div class="grid grid-cols-4 px-6 py-4 bg-surface-container-low items-center">
-<div class="text-sm text-on-surface-variant font-mono text-xs">Compliance</div>
-<div class="text-xs text-center text-outline">—</div>
-<div class="text-xs text-center text-outline">—</div>
-<div class="text-xs text-center text-on-surface-variant">SOC 2, HIPAA</div>
+<div class="grid grid-cols-5 px-4 md:px-6 py-4 bg-surface-container-low items-center gap-2">
+<div class="text-sm text-on-surface-variant font-mono text-[11px]">Compliance</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-outline">-</div>
+<div class="text-[11px] text-center text-on-surface-variant">SOC 2 / HIPAA <span class="text-outline">program</span></div>
 </div>
 </div>
+</div>
+<p class="text-center text-xs text-outline mt-4 max-w-2xl mx-auto">“Billable units (v0)” = weighted usage (claims, observations, validations). Exact weights and enforcement ship after we have production traffic, see the <a href="docs.html" class="text-primary/90 hover:underline">documentation</a> for full policy.</p>
 </div>
 </section>
 
@@ -415,19 +461,31 @@ Need on-premise or custom SLA? Contact us →
 <!-- FAQ 1 -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
 <h3 class="font-headline font-bold text-lg mb-4">Is the engine really fully open source?</h3>
-<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The CoherenceEngine, SettlingService, ContradictionDetector, and ActionValidationService are all Apache 2.0. Fork it, self-host it, build on it. No "open core tricks" inside the core engine — the limits are at the platform layer only.</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The CoherenceEngine, SettlingService, ContradictionDetector, and ActionValidationService are all Apache 2.0. Fork it, self-host it, build on it. No "open core tricks" inside the core engine, the limits are at the platform layer only.</p>
 </div>
 
 <!-- FAQ 2 -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
 <h3 class="font-headline font-bold text-lg mb-4">What counts as a "claim"?</h3>
-<p class="text-on-surface-variant text-sm leading-relaxed">A claim is any assertion pushed to <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /claims</code> or extracted from <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /observations</code>. Think of it as one fact about one entity at one point in time. Claims are lightweight — typical agent sessions generate hundreds to thousands, not millions.</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">A claim is any assertion pushed to <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /claims</code> or extracted from <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /observations</code>. Think of it as one fact about one entity at one point in time. Claims are lightweight, typical agent sessions generate hundreds to thousands, not millions.</p>
 </div>
 
 <!-- FAQ 3 -->
 <div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
 <h3 class="font-headline font-bold text-lg mb-4">Can I start self-hosted and migrate to Cloud later?</h3>
-<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The Cloud API is a drop-in replacement for your self-hosted endpoint. Change one line in your <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">InvariantClient</code> config — same SDK, same methods, same response shapes. No data migration required.</p>
+<p class="text-on-surface-variant text-sm leading-relaxed">Yes. The Cloud API is a drop-in replacement for your self-hosted endpoint. Change one line in your <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">InvariantClient</code> config, same SDK, same methods, same response shapes. No data migration required.</p>
+</div>
+
+<!-- FAQ 4 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-lg mb-4">Why subscription instead of pure per-API-call pricing?</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">A flat per-call fee punishes experimentation, couples revenue to random traffic spikes, and makes Stripe fees painful on micro-charges. A monthly base covers our fixed cost (managed Postgres, uptime), while included “billable units” keep heavy users fair. We can add metered overage once we know real distributions.</p>
+</div>
+
+<!-- FAQ 5 -->
+<div class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/20">
+<h3 class="font-headline font-bold text-lg mb-4">What is a billable unit?</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed"><strong class="text-on-surface">v0 (pre-launch):</strong> we count a weighted mix of writes, each new claim (including from observations) counts as <strong class="text-on-surface">1</strong> unit; each <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">POST /actions/validate</code> or <code class="font-mono text-primary text-xs bg-surface-container-high px-1.5 py-0.5 rounded">/actions/simulate</code> counts as <strong class="text-on-surface">10</strong> units. Ordinary reads are unmetered for now. Limits are <strong class="text-on-surface">soft</strong> until launch telemetry is in. Details finalized after launch telemetry.</p>
 </div>
 
 </div>
@@ -443,11 +501,13 @@ Need on-premise or custom SLA? Contact us →
 <span class="text-lg font-bold text-[#dae2fd] tracking-tighter">Invariant Engine</span>
 <span class="text-[10px] font-mono text-outline">v2.4.0-stable</span>
 </div>
-<div class="flex gap-8">
+<div class="flex flex-wrap gap-x-8 gap-y-2 justify-center">
 <a class="text-sm text-outline hover:text-primary transition-colors" href="docs.html">Docs</a>
 <a class="text-sm text-outline hover:text-primary transition-colors" href="https://github.com/jackalkahwati/invariant" target="_blank">GitHub</a>
 <a class="text-sm text-outline hover:text-primary transition-colors" href="pricing.html">Pricing</a>
-<a class="text-sm text-outline hover:text-primary transition-colors" href="mailto:hello@invariant.dev">Enterprise</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="privacy.html">Privacy</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="terms.html">Terms</a>
+<a class="text-sm text-outline hover:text-primary transition-colors" href="mailto:jack@thestardrive.com">Enterprise</a>
 </div>
 <div class="text-sm text-outline font-mono">
                 &copy; 2026 Invariant
@@ -455,16 +515,19 @@ Need on-premise or custom SLA? Contact us →
 </div>
 </footer>
 
+<script src="api-base.js"></script>
 <script>
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000'
-  : '';
+const API_BASE = window.INVARIANT_API_BASE;
 
 async function startCheckout(tier = 'team') {
-  const btnId   = tier === 'enterprise' ? 'enterprise-checkout-btn' : 'checkout-btn';
-  const textId  = tier === 'enterprise' ? 'enterprise-checkout-btn-text' : 'checkout-btn-text';
-  const btn     = document.getElementById(btnId);
-  const btnText = document.getElementById(textId);
+  const map = {
+    starter: { btn: 'checkout-btn-starter', text: 'checkout-btn-starter-text', reset: 'Start 14-day trial' },
+    team:    { btn: 'checkout-btn', text: 'checkout-btn-text', reset: 'Start 14-day trial' },
+  };
+  const cfg = map[tier] || map.team;
+  const btn     = document.getElementById(cfg.btn);
+  const btnText = document.getElementById(cfg.text);
+  if (!btn || !btnText) return;
 
   btn.disabled = true;
   btnText.textContent = 'Redirecting…';
@@ -493,7 +556,7 @@ async function startCheckout(tier = 'team') {
 
     if (!res.ok) {
       alert(data.error || 'Could not start checkout. Is the API running?');
-      btnText.textContent = 'Start free trial';
+      btnText.textContent = cfg.reset;
       btn.disabled = false;
       btn.classList.remove('opacity-70');
       return;
@@ -501,8 +564,8 @@ async function startCheckout(tier = 'team') {
 
     window.location.href = data.url;
   } catch (e) {
-    alert('Could not reach the API. Make sure the server is running on localhost:3000.');
-    btnText.textContent = 'Start free trial';
+    alert('Could not start checkout. On localhost, run the API on :3000. On invariant.me, confirm Vercel env has STRIPE_SECRET_KEY and price IDs.');
+    btnText.textContent = cfg.reset;
     btn.disabled = false;
     btn.classList.remove('opacity-70');
   }

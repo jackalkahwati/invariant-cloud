@@ -1,4 +1,4 @@
-# Coherence Engine — Mathematical Formulation
+# Coherence Engine, Mathematical Formulation
 
 This document maps each mathematical equation from the specification to its
 concrete implementation in the codebase.
@@ -44,7 +44,7 @@ Phi(G) = lambda_c * Vc(G)
 **Default weights** (configurable via env):
 ```
 COHERENCE_LAMBDA_C=1.0   # Constraint violations
-COHERENCE_LAMBDA_K=1.5   # Contradictions (higher weight — more critical)
+COHERENCE_LAMBDA_K=1.5   # Contradictions (higher weight, more critical)
 COHERENCE_LAMBDA_D=0.8   # Dependency mismatches
 COHERENCE_LAMBDA_U=0.5   # Staleness
 COHERENCE_LAMBDA_B=0.7   # Unresolved branches

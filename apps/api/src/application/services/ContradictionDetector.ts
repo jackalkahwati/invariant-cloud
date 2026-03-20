@@ -1,13 +1,13 @@
 /**
- * ContradictionDetector — Modular contradiction detection service.
+ * ContradictionDetector, Modular contradiction detection service.
  *
  * Implements multiple typed detectors:
- *   1. ExactNumericConflict   — same entity+predicate, incompatible numbers
- *   2. StatusConflict         — same entity+predicate, incompatible status strings
- *   3. TemporalConflict       — same entity+predicate, logically impossible sequence
- *   4. MutexTagConflict       — mutually exclusive values from a defined set
- *   5. RangeThresholdConflict — value violates a known range constraint
- *   6. SemanticConflict       — STUB ONLY in v1 (requires embedding/LLM)
+ *   1. ExactNumericConflict  , same entity+predicate, incompatible numbers
+ *   2. StatusConflict        , same entity+predicate, incompatible status strings
+ *   3. TemporalConflict      , same entity+predicate, logically impossible sequence
+ *   4. MutexTagConflict      , mutually exclusive values from a defined set
+ *   5. RangeThresholdConflict, value violates a known range constraint
+ *   6. SemanticConflict      , STUB ONLY in v1 (requires embedding/LLM)
  *
  * Each detector is independently pluggable (implements ContradictionDetectorPlugin).
  */
@@ -80,7 +80,7 @@ export class StatusConflictDetector implements ContradictionDetectorPlugin {
     );
 
     if (!isMutex) {
-      // Still a potential conflict — different values for same predicate
+      // Still a potential conflict, different values for same predicate
       const score = computeContradictionScore(a, b);
       if (score < 0.3) return null;
       return {
@@ -108,20 +108,20 @@ export class TemporalConflictDetector implements ContradictionDetectorPlugin {
     if (a.entityId !== b.entityId) return null;
     if (a.predicate !== b.predicate) return null;
 
-    // Both should be active — if both claim different values for a point-in-time predicate
+    // Both should be active, if both claim different values for a point-in-time predicate
     // and their timestamps are very close, flag as temporal conflict
     if (a.status !== 'ACTIVE' || b.status !== 'ACTIVE') return null;
 
     const timeDelta = Math.abs(a.timestamp.getTime() - b.timestamp.getTime());
     const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
-    // If both are within 5 minutes and have different values — potential temporal conflict
+    // If both are within 5 minutes and have different values, potential temporal conflict
     if (timeDelta < FIVE_MINUTES_MS) {
       const score = computeContradictionScore(a, b);
       if (score > 0.3) {
         return {
           type: this.type,
-          score: score * 0.8,  // slightly lower than direct conflict
+          score: score * 0.8, // slightly lower than direct conflict
           description: `Temporal conflict on ${a.entity.name}.${a.predicate}: two claims within ${Math.round(timeDelta / 1000)}s`,
         };
       }
@@ -174,7 +174,7 @@ export class RangeThresholdConflictDetector implements ContradictionDetectorPlug
   }
 }
 
-// ── 5. Semantic Conflict — STUB ───────────────────────────────
+// ── 5. Semantic Conflict, STUB ───────────────────────────────
 
 export class SemanticConflictDetector implements ContradictionDetectorPlugin {
   type: ContradictionType = 'SEMANTIC';

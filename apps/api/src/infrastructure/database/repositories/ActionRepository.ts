@@ -83,4 +83,17 @@ export class PrismaActionRepository implements IActionRepository {
       provenanceChain: v.provenanceChain as unknown as ProvenanceRef[],
     }));
   }
+
+  async findAll({ limit = 20, status }: { limit?: number; status?: string } = {}): Promise<ActionProposal[]> {
+    const items = await prisma.actionProposal.findMany({
+      where: status ? { status: status as never } : undefined,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+    return items.map(p => ({
+      ...p,
+      parameters: p.parameters as Record<string, unknown>,
+      provenanceChain: p.provenanceChain as unknown as ProvenanceRef[],
+    }));
+  }
 }

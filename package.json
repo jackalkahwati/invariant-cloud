@@ -1,7 +1,7 @@
 {
   "name": "coherence-engine",
   "version": "1.0.0",
-  "description": "The coherence layer for agents",
+  "description": "Invariant — the coherence layer for AI agents",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -14,7 +14,12 @@
     "seed": "npm run seed --workspace=apps/api",
     "db:migrate": "npm run db:migrate --workspace=apps/api",
     "db:generate": "npm run db:generate --workspace=apps/api",
-    "db:reset": "npm run db:reset --workspace=apps/api"
+    "db:reset": "npm run db:reset --workspace=apps/api",
+    "stripe:invariant-prices": "node --env-file=.env apps/api/scripts/stripe-invariant-prices.mjs",
+    "vercel-build": "prisma generate --schema=prisma/schema.prisma && npm run build --workspace=apps/api"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
   },
   "engines": {
     "node": ">=20.0.0"

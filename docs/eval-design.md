@@ -1,4 +1,4 @@
-# Coherence Engine — Eval & Ablation Design
+# Coherence Engine, Eval & Ablation Design
 
 ## Thesis Under Test
 
@@ -41,10 +41,10 @@ apps/evals/
 ## Scenario Design
 
 Each scenario specifies:
-1. **Initial world state** — entities, claims, constraints, dependencies
-2. **Optional update sequence** — for drift/long-horizon scenarios
-3. **Proposed action** — what the evaluator must validate
-4. **Ground truth** — the correct answer, determined independently
+1. **Initial world state**, entities, claims, constraints, dependencies
+2. **Optional update sequence**, for drift/long-horizon scenarios
+3. **Proposed action**, what the evaluator must validate
+4. **Ground truth**, the correct answer, determined independently
 
 Ground truth is adversarial to all systems including our own engine.
 
@@ -100,10 +100,10 @@ Each ablation removes exactly one architectural ingredient:
 | `no_budget` | DeltaPhi budget (Infinity) | Does coherence cost add decision structure? |
 
 **Interpretation guide:**
-- Drop > 10%: **CRITICAL** — this ingredient is load-bearing
-- Drop 5–10%: **IMPORTANT** — meaningful contribution
-- Drop 2–5%: **MARGINAL** — some benefit
-- Drop < 2%: **MINIMAL** — may need more scenarios to detect signal
+- Drop > 10%: **CRITICAL**, this ingredient is load-bearing
+- Drop 5–10%: **IMPORTANT**, meaningful contribution
+- Drop 2–5%: **MARGINAL**, some benefit
+- Drop < 2%: **MINIMAL**, may need more scenarios to detect signal
 
 ---
 
@@ -123,11 +123,11 @@ Each ablation removes exactly one architectural ingredient:
 | `overallScore` | 0.35·action + 0.25·contradF1 + 0.20·branchF1 + 0.10·invalF1 + 0.10·reasoning | Composite |
 
 ### Aggregate
-- `meanOverallScore` — primary headline metric
-- `actionAccuracy` — fraction with exact action classification
-- `actionWithinRiskRate` — fraction within one tier
-- `byCategory` — breakdown per scenario type
-- `byDifficulty` — breakdown per difficulty level
+- `meanOverallScore`, primary headline metric
+- `actionAccuracy`, fraction with exact action classification
+- `actionWithinRiskRate`, fraction within one tier
+- `byCategory`, breakdown per scenario type
+- `byDifficulty`, breakdown per difficulty level
 
 ---
 

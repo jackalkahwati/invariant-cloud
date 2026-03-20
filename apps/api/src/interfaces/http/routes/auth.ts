@@ -105,7 +105,7 @@ export async function authRoutes(app: FastifyInstance) {
 
     return reply.status(201).send({
       token,
-      apiKey: rawKey,  // returned ONCE — not stored in plaintext
+      apiKey: rawKey, // returned ONCE, not stored in plaintext
       user:  { id: user.id, email: user.email, name: user.name },
       workspace: { id: workspace.id, name: workspace.name, slug: workspace.slug, tier: workspace.tier },
     });
@@ -152,7 +152,7 @@ export async function authRoutes(app: FastifyInstance) {
     });
   });
 
-  // GET /auth/github — redirect to GitHub OAuth
+  // GET /auth/github, redirect to GitHub OAuth
   app.get('/auth/github', {
     schema: { tags: ['Auth'], summary: 'Start GitHub OAuth flow' },
   }, async (_req, reply) => {
@@ -164,7 +164,7 @@ export async function authRoutes(app: FastifyInstance) {
     return reply.redirect(`https://github.com/login/oauth/authorize?${params}`);
   });
 
-  // GET /auth/github/callback — handle GitHub OAuth callback
+  // GET /auth/github/callback, handle GitHub OAuth callback
   app.get<{ Querystring: { code?: string; error?: string } }>('/auth/github/callback', {
     schema: { tags: ['Auth'], summary: 'GitHub OAuth callback' },
   }, async (req, reply) => {
@@ -216,7 +216,7 @@ export async function authRoutes(app: FastifyInstance) {
     let user = await prisma.user.findFirst({ where: { OR: [{ githubId }, { email }] } });
 
     if (!user) {
-      // Brand-new user — create user + workspace + API key
+      // Brand-new user, create user + workspace + API key
       const displayName = ghUser.name ?? ghUser.login;
       user = await prisma.user.create({
         data: { email, passwordHash: null, name: displayName, githubId, avatarUrl: ghUser.avatar_url },
@@ -247,7 +247,7 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.redirect(`${fe}/account.html?${params}`);
     }
 
-    // Existing user — link GitHub if not already linked
+    // Existing user, link GitHub if not already linked
     if (!user.githubId) {
       await prisma.user.update({
         where: { id: user.id },

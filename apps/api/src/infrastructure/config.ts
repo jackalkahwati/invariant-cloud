@@ -1,5 +1,5 @@
 /**
- * Configuration — loaded from environment variables with defaults.
+ * Configuration, loaded from environment variables with defaults.
  */
 
 import type { EngineConfig } from '../domain/entities/types.js';
@@ -15,6 +15,15 @@ function getEnvString(key: string, fallback: string): string {
   return process.env[key] ?? fallback;
 }
 
+function parseCommaSeparatedEnv(key: string): string[] {
+  const raw = process.env[key];
+  if (!raw) return [];
+  return raw.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
+/** Optional extra browser origins for @fastify/cors (e.g. staging URL). Comma-separated in CORS_EXTRA_ORIGINS. */
+export const corsAllowedExtraOrigins = parseCommaSeparatedEnv('CORS_EXTRA_ORIGINS');
+
 export const engineConfig: EngineConfig = {
   coherenceWeights: {
     lambdaC: getEnvFloat('COHERENCE_LAMBDA_C', 1.0),
@@ -22,15 +31,15 @@ export const engineConfig: EngineConfig = {
     lambdaD: getEnvFloat('COHERENCE_LAMBDA_D', 0.8),
     lambdaU: getEnvFloat('COHERENCE_LAMBDA_U', 0.5),
     lambdaB: getEnvFloat('COHERENCE_LAMBDA_B', 0.7),
-    kScale:  getEnvFloat('COHERENCE_K_SCALE',  2.0),
+    kScale:  getEnvFloat('COHERENCE_K_SCALE', 2.0),
   },
   actionWeights: {
-    mu1: 0.20,  // constraint violation risk
-    mu2: 0.20,  // dependency breakage risk
-    mu3: 0.15,  // contradiction amplification
-    mu4: 0.10,  // uncertainty exposure
-    mu5: 0.15,  // provenance fragility
-    mu6: 0.20,  // propagated risk (Phase 1: graph-traversal transitive risk)
+    mu1: 0.20, // constraint violation risk
+    mu2: 0.20, // dependency breakage risk
+    mu3: 0.15, // contradiction amplification
+    mu4: 0.10, // uncertainty exposure
+    mu5: 0.15, // provenance fragility
+    mu6: 0.20, // propagated risk (Phase 1: graph-traversal transitive risk)
   },
   stalenessLambda: getEnvFloat('STALENESS_LAMBDA', 0.001),
   contradictionThreshold: getEnvFloat('CONTRADICTION_THRESHOLD', 0.5),
@@ -53,18 +62,19 @@ export const serverConfig = {
 
 export const stripeConfig = {
   secretKey:           process.env['STRIPE_SECRET_KEY']            ?? '',
+  starterPriceId:      process.env['STRIPE_STARTER_PRICE_ID']      ?? '',
   teamPriceId:         process.env['STRIPE_TEAM_PRICE_ID']         ?? process.env['STRIPE_PRICE_ID'] ?? '',
   enterprisePriceId:   process.env['STRIPE_ENTERPRISE_PRICE_ID']   ?? '',
   webhookSecret:       process.env['STRIPE_WEBHOOK_SECRET']        ?? '',
-  successUrl:          getEnvString('STRIPE_SUCCESS_URL', 'http://localhost:8080/success.html'),
-  cancelUrl:           getEnvString('STRIPE_CANCEL_URL',  'http://localhost:8080/pricing.html'),
+  successUrl:          getEnvString('STRIPE_SUCCESS_URL', 'https://invariant.me/success.html'),
+  cancelUrl:           getEnvString('STRIPE_CANCEL_URL', 'https://invariant.me/pricing.html'),
 };
 
 export const githubConfig = {
-  clientId:     getEnvString('GITHUB_CLIENT_ID',     ''),
+  clientId:     getEnvString('GITHUB_CLIENT_ID', ''),
   clientSecret: getEnvString('GITHUB_CLIENT_SECRET', ''),
-  callbackUrl:  getEnvString('GITHUB_CALLBACK_URL',  'http://localhost:3000/auth/github/callback'),
-  frontendUrl:  getEnvString('FRONTEND_URL',         'http://localhost:8080'),
+  callbackUrl:  getEnvString('GITHUB_CALLBACK_URL', 'http://localhost:3000/auth/github/callback'),
+  frontendUrl:  getEnvString('FRONTEND_URL', 'http://localhost:8080'),
 };
 
 export const authConfig = {
@@ -73,10 +83,10 @@ export const authConfig = {
 };
 
 export const emailConfig = {
-  host:     getEnvString('SMTP_HOST',     'smtp.gmail.com'),
+  host:     getEnvString('SMTP_HOST', 'smtp.gmail.com'),
   port:     parseInt(getEnvString('SMTP_PORT', '587'), 10),
-  user:     getEnvString('SMTP_USER',     ''),
-  pass:     getEnvString('SMTP_PASS',     ''),
-  from:     getEnvString('SMTP_FROM',     'Invariant <hello@invariant.dev>'),
+  user:     getEnvString('SMTP_USER', ''),
+  pass:     getEnvString('SMTP_PASS', ''),
+  from:     getEnvString('SMTP_FROM', 'Invariant <jack@thestardrive.com>'),
   enabled:  process.env['SMTP_USER'] !== undefined && process.env['SMTP_USER'] !== '',
 };

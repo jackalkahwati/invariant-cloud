@@ -1,16 +1,18 @@
 /**
- * Coherence Engine — Fastify App Factory
+ * Coherence Engine, Fastify App Factory
  *
  * Exports buildApp() for use by both the local server (main.ts) and
  * the Vercel serverless handler (api/index.ts).
  */
 
+import { randomUUID } from 'node:crypto';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 
-import { serverConfig } from './infrastructure/config.js';
+import { corsAllowedExtraOrigins, serverConfig } from './infrastructure/config.js';
 import { entityRoutes } from './interfaces/http/routes/entities.js';
 import { claimRoutes } from './interfaces/http/routes/claims.js';
 import { observationRoutes } from './interfaces/http/routes/observations.js';
@@ -26,13 +28,27 @@ import { planRoutes } from './interfaces/http/routes/plans.js';
 import { checkoutRoutes } from './interfaces/http/routes/checkout.js';
 import { authRoutes } from './interfaces/http/routes/auth.js';
 import { workspaceRoutes } from './interfaces/http/routes/workspace.js';
+import { webhookRoutes } from './interfaces/http/routes/webhooks.js';
+import { registerIdempotencyMiddleware } from './interfaces/http/middleware/idempotency.js';
 
 const ALLOWED_ORIGINS = [
   'https://invariant.me',
   'https://www.invariant.me',
   'http://localhost:8080',
   'http://127.0.0.1:8080',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
 ];
+
+/** Vercel preview / production *.vercel.app (HTML and API share one host, but some clients still send Origin). */
+function isVercelDeploymentOrigin(origin: string): boolean {
+  try {
+    const u = new URL(origin);
+    return u.protocol === 'https:' && u.hostname.endsWith('.vercel.app');
+  } catch {
+    return false;
+  }
+}
 
 export async function buildApp() {
   const isProd = process.env['NODE_ENV'] === 'production';
@@ -40,13 +56,59 @@ export async function buildApp() {
     logger: isProd ? { level: 'info' } : false,
   });
 
-  // CORS — lock down to known origins in production
+  // CORS, lock down to known origins in production
   await app.register(cors, {
     origin: (origin, cb) => {
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+      if (
+        !origin ||
+        ALLOWED_ORIGINS.includes(origin) ||
+        corsAllowedExtraOrigins.includes(origin) ||
+        isVercelDeploymentOrigin(origin)
+      ) {
+        return cb(null, true);
+      }
       cb(new Error('Not allowed by CORS'), false);
     },
     credentials: true,
+  });
+
+  // ── Idempotency key middleware ────────────────────────────────────────────
+  registerIdempotencyMiddleware(app);
+
+  // ── X-Request-Id middleware ──────────────────────────────────────────────
+  // Reads an existing X-Request-Id from the incoming request, or mints a
+  // fresh UUID v4.  The value is attached to request.id and echoed back on
+  // every response via the X-Request-Id header.
+  app.addHook('onRequest', async (req, reply) => {
+    const incoming = req.headers['x-request-id'];
+    const requestId = (Array.isArray(incoming) ? incoming[0] : incoming) ?? randomUUID();
+    // Fastify stores request.id as a string, override it so downstream
+    // code (loggers, error handlers) all see the same correlation ID.
+    (req as unknown as Record<string, unknown>).id = requestId;
+    reply.header('X-Request-Id', requestId);
+  });
+
+  // ── Rate limiting ────────────────────────────────────────────────────────
+  // Global: 1 000 requests / minute keyed by API key (falls back to IP).
+  // Auth endpoints use a stricter 20 req/min keyed by IP.
+  await app.register(rateLimit, {
+    global: true,
+    max: 1000,
+    timeWindow: '1 minute',
+    keyGenerator: (req) => {
+      const key = req.headers['x-api-key'];
+      return (Array.isArray(key) ? key[0] : key) ?? req.ip;
+    },
+    errorResponseBuilder: (_req, context) => ({
+      error: 'Rate limit exceeded',
+      retryAfter: Math.ceil((context as unknown as { ttl: number }).ttl / 1000),
+    }),
+    addHeaders: {
+      'x-ratelimit-limit': true,
+      'x-ratelimit-remaining': true,
+      'x-ratelimit-reset': true,
+      'retry-after': true,
+    },
   });
 
   // OpenAPI / Swagger
@@ -54,9 +116,10 @@ export async function buildApp() {
     openapi: {
       openapi: '3.0.0',
       info: {
-        title: 'Coherence Engine API',
-        description: 'The coherence layer for agents — a shared world-state and truth-maintenance engine.',
+        title: 'Invariant API',
+        description: 'The coherence layer for AI agents, validate actions, track world state, detect contradictions.',
         version: '1.0.0',
+        contact: { name: 'Invariant', url: 'https://invariant.me' },
       },
       components: {
         securitySchemes: {
@@ -69,20 +132,25 @@ export async function buildApp() {
       },
       security: [{ apiKey: [] }],
       tags: [
-        { name: 'Entities', description: 'Persistent things in the world' },
-        { name: 'Claims', description: 'Structured assertions about entities' },
-        { name: 'Observations', description: 'Raw inputs that generate claims' },
-        { name: 'Contradictions', description: 'Detected inconsistencies' },
-        { name: 'Branches', description: 'Alternative coherent state paths' },
-        { name: 'Constraints', description: 'Rules that must hold' },
-        { name: 'Dependencies', description: 'Signed typed relations between entities' },
-        { name: 'Actions', description: 'Proposed actions validated against world state' },
-        { name: 'World', description: 'World state, coherence score, and audit trail' },
-        { name: 'Policy', description: 'Governance rules, approvals, and escalation' },
-        { name: 'Trace', description: 'Timeline recording, replay, and session debugging' },
-        { name: 'Plans', description: 'Task decomposition and coherence-aware orchestration' },
-        { name: 'Auth', description: 'User registration, login, and JWT auth' },
-        { name: 'Workspace', description: 'Workspace management, API keys, and usage' },
+        // Agent Runtime
+        { name: 'Actions', description: 'Agent Runtime, validate proposed actions against world state before execution' },
+        { name: 'Trace', description: 'Agent Runtime, timeline recording, replay, and session debugging' },
+        { name: 'Plans', description: 'Agent Runtime, task decomposition and coherence-aware orchestration' },
+        { name: 'Policy', description: 'Agent Runtime, governance rules, approvals, and escalation' },
+        // World State
+        { name: 'World', description: 'World State, coherence score, snapshots, and settling' },
+        { name: 'Entities', description: 'World State, persistent things tracked in the world graph' },
+        { name: 'Claims', description: 'World State, typed, sourced assertions about entities' },
+        { name: 'Observations', description: 'World State, raw inputs ingested and resolved into claims' },
+        // Governance
+        { name: 'Contradictions', description: 'Governance, detected inconsistencies between claims' },
+        { name: 'Branches', description: 'Governance, alternative coherent state paths when contradictions cannot be resolved' },
+        { name: 'Constraints', description: 'Governance, rules that must hold across entities' },
+        { name: 'Dependencies', description: 'Governance, signed typed relations between entities (SUPPORTS, REQUIRES, INVALIDATES, …)' },
+        // Platform
+        { name: 'Auth', description: 'Platform, user registration, login, and JWT auth' },
+        { name: 'Workspace', description: 'Platform, workspace management, API keys, and usage' },
+        { name: 'Webhooks', description: 'Platform, outbound event webhooks for agent integrations' },
       ],
     },
   });
@@ -124,9 +192,29 @@ export async function buildApp() {
   await app.register(traceRoutes);
   // Layer 4: Plans
   await app.register(planRoutes);
-  // Auth and Workspace (registered before API key hook would block them — /auth/ is skipped in preHandler)
-  await app.register(authRoutes);
+  // Auth and Workspace (registered before API key hook would block them, /auth/ is skipped in preHandler)
+  // Auth routes carry a tighter rate limit: 20 req/min per IP to deter brute-force.
+  await app.register(async (authApp) => {
+    await authApp.register(rateLimit, {
+      max: 20,
+      timeWindow: '1 minute',
+      keyGenerator: (req) => req.ip,
+      errorResponseBuilder: (_req, context) => ({
+        error: 'Rate limit exceeded',
+        retryAfter: Math.ceil((context as unknown as { ttl: number }).ttl / 1000),
+      }),
+      addHeaders: {
+        'x-ratelimit-limit': true,
+        'x-ratelimit-remaining': true,
+        'x-ratelimit-reset': true,
+        'retry-after': true,
+      },
+    });
+    await authApp.register(authRoutes);
+  });
   await app.register(workspaceRoutes);
+  // Webhooks
+  await app.register(webhookRoutes);
   // Billing
   app.addContentTypeParser('application/json', { parseAs: 'buffer' }, (req, body, done) => {
     // Store raw buffer for Stripe webhook signature verification

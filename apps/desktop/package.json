@@ -1,7 +1,7 @@
 {
   "name": "invariant-desktop",
-  "version": "1.0.3",
-  "description": "Invariant — native macOS menubar app",
+  "version": "1.1.0",
+  "description": "Invariant: native macOS menubar app",
   "main": "main.js",
   "type": "module",
   "author": "Invariant",
@@ -30,10 +30,11 @@
       "target": [
         {
           "target": "dmg",
-          "arch": [
-            "arm64",
-            "x64"
-          ]
+          "arch": ["arm64", "x64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["arm64", "x64"]
         }
       ],
       "minimumSystemVersion": "13.0"

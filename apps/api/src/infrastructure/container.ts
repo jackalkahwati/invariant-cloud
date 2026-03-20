@@ -1,11 +1,11 @@
 /**
- * Dependency injection container — assembles all services and repositories.
+ * Dependency injection container, assembles all services and repositories.
  *
  * Layers:
- *   Layer 1: State (existing) — Entity, Claim, Constraint, Dependency, Contradiction, Branch
- *   Layer 2: Policy — PolicyRule, ApprovalRequest, PolicyEvaluation
- *   Layer 3: Trace  — TraceSession, TraceEvent
- *   Layer 4: Plan   — Plan, PlanStep
+ *   Layer 1: State (existing), Entity, Claim, Constraint, Dependency, Contradiction, Branch
+ *   Layer 2: Policy, PolicyRule, ApprovalRequest, PolicyEvaluation
+ *   Layer 3: Trace , TraceSession, TraceEvent
+ *   Layer 4: Plan  , Plan, PlanStep
  */
 
 import { PrismaEntityRepository } from './database/repositories/EntityRepository.js';
@@ -27,6 +27,7 @@ import { ActionValidationService } from '../application/services/ActionValidatio
 import { PolicyService } from '../application/services/PolicyService.js';
 import { TraceService } from '../application/services/TraceService.js';
 import { PlanService } from '../application/services/PlanService.js';
+import { WebhookService } from '../application/services/WebhookService.js';
 import { engineConfig } from './config.js';
 
 // ── Layer 1: State repositories ────────────────────────────────────────────────
@@ -83,5 +84,8 @@ export const traceService = new TraceService(traceRepo);
 
 // ── Layer 4: Plan services ────────────────────────────────────────────────────
 export const planService = new PlanService(planRepo, actionValidationService, traceService);
+
+// ── Webhook service ───────────────────────────────────────────────────────────
+export const webhookService = new WebhookService();
 
 export { engineConfig };

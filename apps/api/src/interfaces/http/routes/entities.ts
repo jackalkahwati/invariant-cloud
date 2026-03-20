@@ -31,7 +31,7 @@ export async function entityRoutes(app: FastifyInstance) {
     return entity;
   });
 
-  // GET /entities/:id/state — current active claims for entity
+  // GET /entities/:id/state, current active claims for entity
   app.get('/entities/:id/state', {
     schema: {
       tags: ['Entities'],

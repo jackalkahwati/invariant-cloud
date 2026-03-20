@@ -6,7 +6,7 @@ import {
 import { computeCoherenceScore } from '../../../application/services/CoherenceEngine.js';
 
 export async function worldRoutes(app: FastifyInstance) {
-  // GET /world/coherence — current coherence score and Phi breakdown
+  // GET /world/coherence, current coherence score and Phi breakdown
   app.get('/world/coherence', {
     schema: {
       tags: ['World'],
@@ -38,7 +38,7 @@ export async function worldRoutes(app: FastifyInstance) {
     };
   });
 
-  // GET /world/snapshot — current world state snapshot
+  // GET /world/snapshot, current world state snapshot
   app.get('/world/snapshot', {
     schema: {
       tags: ['World'],
@@ -76,7 +76,7 @@ export async function worldRoutes(app: FastifyInstance) {
     };
   });
 
-  // POST /world/settle — manually trigger a settling pass
+  // POST /world/settle, manually trigger a settling pass
   app.post('/world/settle', {
     schema: {
       tags: ['World'],
@@ -107,7 +107,7 @@ export async function worldRoutes(app: FastifyInstance) {
     };
   });
 
-  // GET /world/history — recent snapshots
+  // GET /world/history, recent snapshots
   app.get('/world/history', {
     schema: {
       tags: ['World'],
@@ -122,7 +122,7 @@ export async function worldRoutes(app: FastifyInstance) {
     return snapshotRepo.findAll(query.limit ?? 20);
   });
 
-  // GET /search — search entities and claims
+  // GET /search, search entities and claims
   app.get('/search', {
     schema: {
       tags: ['World'],
@@ -167,7 +167,68 @@ export async function worldRoutes(app: FastifyInstance) {
     return results;
   });
 
-  // GET /audit/:id — get audit event by ID
+  // GET /world/stream, Server-Sent Events: live coherence score
+  // Pushes `{ coherenceScore, phi, timestamp }` every 5 seconds.
+  // Accepts optional `?entityId=` to scope the stream to a specific entity.
+  // Properly tears down the interval when the client disconnects.
+  app.get('/world/stream', {
+    schema: {
+      tags: ['World'],
+      summary: 'Server-Sent Events stream of coherence score updates',
+      querystring: {
+        type: 'object',
+        properties: {
+          entityId: { type: 'string', description: 'Filter updates to a specific entity' },
+        },
+      },
+    },
+  }, async (req, reply) => {
+    const query = req.query as { entityId?: string };
+    const entityId = query.entityId ?? null;
+
+    // SSE response headers
+    reply.raw.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    });
+
+    // Flush an initial comment to establish the stream immediately
+    reply.raw.write(': connected\n\n');
+
+    const sendEvent = async () => {
+      try {
+        const breakdown = await settlingService.computeCurrentPhiBreakdown();
+        const payload: Record<string, unknown> = {
+          coherenceScore: breakdown.coherenceScore,
+          phi: breakdown.phi,
+          timestamp: new Date().toISOString(),
+        };
+        if (entityId) payload.entityId = entityId;
+        reply.raw.write(`data: ${JSON.stringify(payload)}\n\n`);
+      } catch {
+        // Silently skip failed snapshots, the stream will retry next tick
+      }
+    };
+
+    // Send immediately, then every 5 seconds
+    await sendEvent();
+    const interval = setInterval(() => { void sendEvent(); }, 5000);
+
+    // Clean up when the client disconnects
+    reply.raw.on('close', () => {
+      clearInterval(interval);
+    });
+
+    // Keep the Fastify reply open (do not call reply.send())
+    await new Promise<void>((resolve) => {
+      reply.raw.on('close', resolve);
+      reply.raw.on('error', resolve);
+    });
+  });
+
+  // GET /audit/:id, get audit event by ID
   app.get('/audit/:id', {
     schema: {
       tags: ['World'],
@@ -181,7 +242,7 @@ export async function worldRoutes(app: FastifyInstance) {
     return event;
   });
 
-  // GET /audit — recent audit trail
+  // GET /audit, recent audit trail
   app.get('/audit', {
     schema: {
       tags: ['World'],

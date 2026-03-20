@@ -8,7 +8,7 @@
  * Supports:
  *  - Live event recording (appendEvent)
  *  - Timeline retrieval (getTimeline)
- *  - Session replay (replay) — returns events in order for step-through debugging
+ *  - Session replay (replay), returns events in order for step-through debugging
  *  - Cross-session summaries
  */
 
@@ -153,7 +153,7 @@ export class TraceService {
   }
 
   /**
-   * Replay a session — returns ordered frames with derived display fields.
+   * Replay a session, returns ordered frames with derived display fields.
    * Optionally stop at a specific sequence number for step-through debugging.
    */
   async replay(sessionId: string, upToSeq?: number): Promise<{
@@ -262,13 +262,13 @@ function summarizeEvent(type: string, data: Record<string, unknown>): string {
     case 'SETTLING_ROUND':
       return `Settling round ${data['round']}: Φ=${(data['phiAfter'] as number)?.toFixed(3)} coherence=${(data['coherenceAfter'] as number)?.toFixed(1)} changes=${data['changes']}`;
     case 'PLAN_CREATED':
-      return `Plan created: "${data['planName']}" — ${data['goal']}`;
+      return `Plan created: "${data['planName']}", ${data['goal']}`;
     case 'PLAN_STEP_STARTED':
       return `Step started: ${data['stepName']} (${data['operation']})`;
     case 'PLAN_STEP_COMPLETED':
       return `Step completed: ${data['stepName']}`;
     case 'PLAN_STEP_FAILED':
-      return `Step failed: ${data['stepName']} — ${data['reason']}`;
+      return `Step failed: ${data['stepName']}, ${data['reason']}`;
     default:
       return `${type}: ${JSON.stringify(data).slice(0, 80)}`;
   }

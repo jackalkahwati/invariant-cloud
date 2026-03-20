@@ -1,5 +1,5 @@
 /**
- * CoherenceEngine — Core Mathematical Reasoning Functions
+ * CoherenceEngine, Core Mathematical Reasoning Functions
  *
  * This module implements the incoherence energy Phi(G), coherence score,
  * staleness decay, contradiction scoring, confidence propagation, and
@@ -130,7 +130,7 @@ function computeOverlap(
  * Handles numeric, string/status, boolean, and null cases.
  */
 export function computeIncompatibility(valueA: unknown, valueB: unknown): number {
-  // Both null/undefined — not incompatible
+  // Both null/undefined, not incompatible
   if (valueA == null && valueB == null) return 0;
   if (valueA == null || valueB == null) return 0.3;
 
@@ -139,7 +139,7 @@ export function computeIncompatibility(valueA: unknown, valueB: unknown): number
     return valueA !== valueB ? 1.0 : 0;
   }
 
-  // Numeric conflict — use relative difference
+  // Numeric conflict, use relative difference
   if (typeof valueA === 'number' && typeof valueB === 'number') {
     const range = Math.abs(valueA) + Math.abs(valueB);
     if (range === 0) return 0;
@@ -152,7 +152,7 @@ export function computeIncompatibility(valueA: unknown, valueB: unknown): number
     return valueA.toLowerCase() === valueB.toLowerCase() ? 0 : 1.0;
   }
 
-  // Object comparison — stringify fallback
+  // Object comparison, stringify fallback
   const sa = JSON.stringify(valueA);
   const sb = JSON.stringify(valueB);
   return sa === sb ? 0 : 1.0;
@@ -244,12 +244,12 @@ export function computeCoherenceScore(phi: number, kScale: number, phiRef = 10.0
 
 /**
  * Psi(a, G) =
- *     mu_1 * ConstraintViolationRisk(a, G)       — direct constraint violations on impacted entities
- *   + mu_2 * DependencyBreakageRisk(a, G)         — direct dependency breakage
- *   + mu_3 * ContradictionAmplification(a, G)     — direct contradiction amplification
- *   + mu_4 * UncertaintyExposure(a, G)            — staleness / confidence uncertainty
- *   + mu_5 * ProvenanceFragility(a, G)            — provenance chain fragility
- *   + mu_6 * PropagatedRisk(a, G)                 — transitive risk via dependency graph (Phase 1)
+ *     mu_1 * ConstraintViolationRisk(a, G)      , direct constraint violations on impacted entities
+ *   + mu_2 * DependencyBreakageRisk(a, G)        , direct dependency breakage
+ *   + mu_3 * ContradictionAmplification(a, G)    , direct contradiction amplification
+ *   + mu_4 * UncertaintyExposure(a, G)           , staleness / confidence uncertainty
+ *   + mu_5 * ProvenanceFragility(a, G)           , provenance chain fragility
+ *   + mu_6 * PropagatedRisk(a, G)                , transitive risk via dependency graph (Phase 1)
  *
  * Each component is [0,1]. mu6 defaults to 0.20 if not set.
  */

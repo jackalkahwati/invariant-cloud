@@ -33,7 +33,7 @@ const actionWeights: ActionWeights = {
   mu3: 0.20,
   mu4: 0.15,
   mu5: 0.15,
-  mu6: 0.20,  // propagated risk weight
+  mu6: 0.20, // propagated risk weight
 };
 
 const config: Pick<EngineConfig, 'actionBudget' | 'actionEpsilon' | 'propagatedRiskGlobalThreshold'> = {
@@ -342,7 +342,7 @@ describe('classifyActionAdmissibility', () => {
     expect(classifyActionAdmissibility(0, 0, config, true)).toBe('BRANCH_DEPENDENT');
   });
 
-  // Phase 1: global threshold rule — propagated risk alone triggers BLOCKED
+  // Phase 1: global threshold rule, propagated risk alone triggers BLOCKED
   it('BLOCKED when propagated risk exceeds global threshold even with low local Psi', () => {
     // action looks locally safe (deltaPhi=0, psi=0.1) but has a hard constraint
     // violation reachable downstream (propagatedRisk=0.9 > theta_global=0.70)

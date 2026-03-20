@@ -31,7 +31,7 @@ async function getWorkspaceFromRequest(req: { headers: Record<string, string | s
 }
 
 export async function workspaceRoutes(app: FastifyInstance) {
-  // GET /workspace — workspace info + usage + API keys
+  // GET /workspace, workspace info + usage + API keys
   app.get('/workspace', {
     schema: { tags: ['Workspace'], summary: 'Get current workspace info, tier, and API keys' },
   }, async (req, reply) => {
@@ -61,7 +61,7 @@ export async function workspaceRoutes(app: FastifyInstance) {
     });
   });
 
-  // POST /workspace/api-keys — generate a new API key
+  // POST /workspace/api-keys, generate a new API key
   app.post<{ Body: { name?: string } }>('/workspace/api-keys', {
     schema: {
       tags: ['Workspace'],
@@ -89,12 +89,12 @@ export async function workspaceRoutes(app: FastifyInstance) {
       id:        keyRecord.id,
       name:      keyRecord.name,
       keyPrefix: keyRecord.keyPrefix,
-      apiKey:    rawKey,  // returned ONCE
+      apiKey:    rawKey, // returned ONCE
       createdAt: keyRecord.createdAt,
     });
   });
 
-  // DELETE /workspace/api-keys/:id — revoke an API key
+  // DELETE /workspace/api-keys/:id, revoke an API key
   app.delete<{ Params: { id: string } }>('/workspace/api-keys/:id', {
     schema: { tags: ['Workspace'], summary: 'Revoke an API key' },
   }, async (req, reply) => {

@@ -1,11 +1,11 @@
 /**
- * ActionValidationService — Validate proposed actions against the world state.
+ * ActionValidationService, Validate proposed actions against the world state.
  *
  * For each action proposal, computes:
  *   DeltaPhi(a) = Phi(G after hypothetical action) - Phi(G current)
  *   Psi(a, G)  = mu1*CVR + mu2*DBR + mu3*CA + mu4*UE + mu5*PF + mu6*PropagatedRisk
  *
- * Phase 1 addition — PropagatedRisk(a, G):
+ * Phase 1 addition, PropagatedRisk(a, G):
  *   Bounded BFS on the signed dependency graph (positive-type edges only:
  *   SUPPORTS, REQUIRES, IMPLIES) from the action's impacted entities.
  *   At each reachable entity, accumulates constraint violation severity
@@ -78,7 +78,7 @@ export class ActionValidationService {
 
     // ── Compute Psi components ────────────────────────────────────
 
-    // mu1: ConstraintViolationRisk — how likely does this action violate constraints?
+    // mu1: ConstraintViolationRisk, how likely does this action violate constraints?
     const constraintViolationRisk = await this.computeConstraintViolationRisk(
       proposal,
       activeClaims,
@@ -86,7 +86,7 @@ export class ActionValidationService {
       reasons,
     );
 
-    // mu2: DependencyBreakageRisk — does this action break required dependencies?
+    // mu2: DependencyBreakageRisk, does this action break required dependencies?
     const dependencyBreakageRisk = await this.computeDependencyBreakageRisk(
       proposal,
       activeClaims,
@@ -94,14 +94,14 @@ export class ActionValidationService {
       reasons,
     );
 
-    // mu3: ContradictionAmplification — does this action worsen existing contradictions?
+    // mu3: ContradictionAmplification, does this action worsen existing contradictions?
     const contradictionAmplification = this.computeContradictionAmplification(
       proposal,
       openContradictions,
       reasons,
     );
 
-    // mu4: UncertaintyExposure — how uncertain are the claims supporting this action?
+    // mu4: UncertaintyExposure, how uncertain are the claims supporting this action?
     const { uncertaintyExposure, provenanceChain } = await this.computeUncertaintyAndProvenance(
       proposal,
       activeClaims,
@@ -109,10 +109,10 @@ export class ActionValidationService {
       reasons,
     );
 
-    // mu5: ProvenanceFragility — how fragile is the provenance chain?
+    // mu5: ProvenanceFragility, how fragile is the provenance chain?
     const provenanceFragility = this.computeProvenanceFragility(provenanceChain, reasons);
 
-    // mu6: PropagatedRisk — transitive risk via signed dependency graph (Phase 1)
+    // mu6: PropagatedRisk, transitive risk via signed dependency graph (Phase 1)
     const propagatedRisk = await this.computePropagatedRisk(
       proposal,
       activeClaims,
@@ -365,7 +365,7 @@ export class ActionValidationService {
   }
 
   /**
-   * PropagatedRisk — bounded BFS on the signed dependency graph.
+   * PropagatedRisk, bounded BFS on the signed dependency graph.
    *
    * Starting from the action's impacted entities, traverses outward through
    * positive-type dependency edges (SUPPORTS, REQUIRES, IMPLIES) up to k hops.
@@ -484,7 +484,7 @@ export class ActionValidationService {
       if (worst) {
         reasons.push(
           `Propagated risk: hard constraint violation (severity ${worst.severity.toFixed(2)}) ` +
-          `on reachable entity at dependency distance ${worst.distance} — ` +
+          `on reachable entity at dependency distance ${worst.distance}, ` +
           `exceeds global threshold, action BLOCKED`,
         );
       }

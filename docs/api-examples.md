@@ -1,4 +1,4 @@
-# Coherence Engine — API Examples
+# Coherence Engine, API Examples
 
 All requests require `X-API-Key: <your-api-key>` header.
 Default dev key: `dev-api-key`

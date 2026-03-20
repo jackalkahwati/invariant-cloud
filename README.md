@@ -1,148 +1,96 @@
-# Invariant
+# Invariant, the coherence layer for AI agents
 
-> The coherence layer for AI agents
+> Validate actions, track world state, detect contradictions. One API your agents call before they act.
 
-A shared world-state and truth-maintenance engine that sits beneath agents and humans. It ingests observations, claims, tool outputs, and actions, reconciles them into a persistent state graph, detects contradictions, preserves conflicting branches, propagates implications, tracks uncertainty, and validates whether proposed actions are still consistent with current state.
-
-**[Website](https://invariant.dev) · [Docs](docs/api-examples.md) · [Pricing](https://invariant.dev/pricing.html)**
+**[Website](https://invariant.me) · [API Docs](https://invariant-engine.vercel.app/docs) · [Local Docs](http://localhost:3000/docs)**
 
 ---
 
-## Architecture
+## Why Invariant?
 
-```
-invariant/
-├── apps/
-│   └── api/                    # Fastify REST API
-│       └── src/
-│           ├── domain/         # Types, interfaces (no deps on infra)
-│           ├── application/    # Reasoning engine, services
-│           ├── infrastructure/ # Prisma repositories, config, DI
-│           └── interfaces/     # HTTP routes (Fastify)
-├── packages/
-│   └── sdk/                    # Agent SDK (fetch-based client)
-├── prisma/
-│   └── schema.prisma           # PostgreSQL schema
-├── docs/
-│   ├── equations.md            # Math → code mapping
-│   ├── api-examples.md         # REST API usage examples
-│   └── roadmap.md              # Future extensions
-└── docker-compose.yml
-```
-
-### Clean Architecture Layers
-
-```
-interfaces (HTTP) → application (services) → domain (types/ports)
-                                          ↑
-                       infrastructure (Prisma, config)
-```
-
-- **Domain layer**: pure TypeScript types, repository interfaces. Zero infra deps.
-- **Application layer**: InvariantEngine, SettlingService, ContradictionDetector, ActionValidationService.
-- **Infrastructure layer**: Prisma repositories, config, DI container.
-- **Interfaces layer**: Fastify routes, OpenAPI schemas.
+- **Tool-call gating**, agents ask before they act; Invariant blocks actions that would violate constraints or amplify contradictions
+- **Shared world state**, every agent and human writes to the same state graph; no more conflicting parallel writes
+- **Audit trail**, every claim, action, and contradiction is logged with provenance so you can replay and debug any session
 
 ---
 
-## Core Concepts
+## Quickstart (under 15 min)
 
-### World State Graph
-```
-G = (V, E, C, D, B)
-  V = entities
-  E = claims/assertions
-  C = constraints
-  D = signed dependencies
-  B = branches
-```
-
-### Incoherence Energy
-```
-Phi(G) = λ_c·Vc + λ_k·Vk + λ_d·Vd + λ_u·Vu + λ_b·Vb
-```
-
-### Coherence Score
-```
-CoherenceScore(G) = 100 · exp(-k · Phi_norm(G))
-```
-
-### Settling Loop (Discrete Fixed-Point)
-```
-G^(r+1) = T(G^(r))   until   G^(r+1) = G^(r)
-```
-T performs: detect contradictions → create branches → propagate deps → evaluate constraints → recompute confidence.
-
-**Monotonicity invariant**: `Phi(G^(r+1)) <= Phi(G^(r))` for all ordinary reconciliation passes. Tested in `tests/unit/Monotonicity.test.ts`.
-
----
-
-## Quick Start
-
-### Prerequisites
-- Node.js 20+
-- Docker and Docker Compose
-
-### 1. Local dev with Docker
+### 1. Start the stack
 
 ```bash
-cp .env.example .env
-docker-compose up -d postgres
-cd apps/api
-npm install
-npx prisma migrate dev --name init
-npm run dev
+cp .env.example .env          # fill in secrets
+docker compose up             # starts postgres + api on :3000
 ```
 
-API: http://localhost:3000
-Swagger: http://localhost:3000/docs
+Swagger UI: http://localhost:3000/docs
 
-### 2. Seed the engineering scenario
+### 2. Get an API key
+
+Register via the API or dashboard:
 
 ```bash
-npm run seed
+curl -X POST http://localhost:3000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "you@example.com", "password": "secret" }'
+
+# Then create a workspace API key from the dashboard or /workspace/keys
 ```
 
-This seeds:
-- 7 entities (Project Atlas, Requirement R-42, Thermal Test T-7, Battery Pack BP-1, Launch Readiness Review, Task TK-19, Agent Planner-1)
-- 10 claims with contradictions baked in
-- 4 constraints
-- 5 signed dependencies
-- Runs settling and shows coherence degradation
-- Validates and blocks `proceed_to_launch` action
-
-### 3. Full Docker stack
+### 3. Install the SDK
 
 ```bash
-docker-compose up
+# TypeScript / Node
+npm install invariant-sdk
+
+# Python
+pip install invariant-sdk
 ```
 
----
-
-## SDK
-
-```bash
-npm install @invariant/sdk-node
-```
+### 4. Validate your first action
 
 ```ts
-import { InvariantClient } from '@invariant/sdk-node';
+import { InvariantClient } from 'invariant-sdk';
+
+const client = new InvariantClient({
+  baseUrl: 'http://localhost:3000',
+  apiKey: 'your-api-key',
+});
+
+const result = await client.actions.validate({
+  operation: 'deploy_to_production',
+  impactedEntityIds: ['service-payments'],
+});
+
+if (result.admissibility === 'BLOCKED') {
+  console.log('Blocked:', result.reasons);
+  // Never call the tool, let Invariant stop you here
+}
+```
+
+---
+
+## SDK Examples
+
+**TypeScript**
+
+```ts
+import { InvariantClient } from 'invariant-sdk';
 
 const client = new InvariantClient({ baseUrl: 'http://localhost:3000', apiKey: 'your-key' });
 
-// Assert a claim
+// Assert a claim about an entity
 await client.claims.create({
   entityId: 'battery-bp1',
-  predicate: 'temperature',
+  predicate: 'temperature_celsius',
   value: 95,
-  sourceId: 'sensor-array-3'
+  sourceId: 'sensor-array-3',
 });
 
-// Validate an action before executing
+// Validate an action before executing it
 const result = await client.actions.validate({
-  agentId: 'planner-1',
-  actionType: 'proceed_to_launch',
-  impactedEntityIds: ['launch-review-lr1']
+  operation: 'proceed_to_launch',
+  impactedEntityIds: ['launch-review-lr1'],
 });
 
 if (result.admissibility === 'BLOCKED') {
@@ -150,43 +98,44 @@ if (result.admissibility === 'BLOCKED') {
 }
 ```
 
----
+**Python**
 
-## Key API Endpoints
+```python
+from invariant_sdk import InvariantClient
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/world/coherence` | Current Phi and CoherenceScore |
-| `GET` | `/world/snapshot` | Full world state summary |
-| `POST` | `/world/settle` | Trigger settling loop manually |
-| `POST` | `/observations` | Ingest observation + extract claims |
-| `POST` | `/claims` | Assert a claim about an entity |
-| `GET` | `/entities/:id/state` | Current entity state |
-| `GET` | `/contradictions` | List contradictions |
-| `GET` | `/branches` | List branches |
-| `POST` | `/actions/validate` | Validate action before execution |
-| `GET` | `/search?q=` | Search entities and claims |
-| `GET` | `/docs` | Swagger UI |
+client = InvariantClient(base_url="http://localhost:3000", api_key="your-key")
 
----
+# Assert a claim
+client.claims.create(
+    entity_id="battery-bp1",
+    predicate="temperature_celsius",
+    value=95,
+    source_id="sensor-array-3",
+)
 
-## Signed Dependency Types
+# Validate an action
+result = client.actions.validate(
+    operation="proceed_to_launch",
+    impacted_entity_ids=["launch-review-lr1"],
+)
 
-| Type | Semantics |
-|------|-----------|
-| `SUPPORTS` | A being valid strengthens B (positive consensus) |
-| `REQUIRES` | A requires B to hold |
-| `IMPLIES` | A being true logically implies B |
-| `INVALIDATES` | A being true invalidates B |
-| `EXCLUDES` | A and B cannot coexist |
-| `MUTEX` | A and B are mutually exclusive states |
-| `IMPLIES_NOT` | A implies B is false |
+if result.admissibility == "BLOCKED":
+    print("Action blocked:", result.reasons)
+```
 
 ---
 
-## Action Validation
+## Key Concepts
 
-Every action proposal returns:
+| Concept | Description |
+|---------|-------------|
+| **World state** | A persistent graph of entities, claims, constraints, and dependencies shared across all agents |
+| **Claims** | Typed, sourced assertions about an entity (`temperature = 95`, `status = "ready"`) |
+| **Contradictions** | Detected inconsistencies between claims, logged, branched, and surfaced to agents |
+| **Coherence score (Φ)** | A single 0–100 score reflecting how consistent the current world state is |
+| **Action validation** | Before a tool call runs, Invariant checks whether it would degrade coherence or violate constraints |
+
+### Action validation response
 
 ```json
 {
@@ -194,12 +143,7 @@ Every action proposal returns:
   "deltaPhi": 7.2,
   "psiScore": 0.82,
   "constraintViolationRisk": 0.9,
-  "dependencyBreakageRisk": 0.7,
-  "contradictionAmplification": 0.6,
-  "uncertaintyExposure": 0.3,
-  "provenanceFragility": 0.4,
-  "impactedEntityIds": ["..."],
-  "reasons": ["..."]
+  "reasons": ["Constraint THERMAL_LIMIT violated", "Dependency REQUIRES broken"]
 }
 ```
 
@@ -207,48 +151,91 @@ Every action proposal returns:
 
 ---
 
-## Running Tests
+## Cloud pricing (pre-launch)
 
-```bash
-cd apps/api
-npm test
-```
+- **Free**, self-host the open-source engine (no platform fee).  
+- **Starter**, managed cloud from **$79/mo** (14-day trial): `STRIPE_STARTER_PRICE_ID`.  
+- **Team**, **$199/mo** (14-day trial): `STRIPE_TEAM_PRICE_ID`.  
+- **Enterprise**, **contact sales** (VPC, SSO, compliance programs).
 
-Tests cover:
-- `CoherenceEngine.test.ts` — Phi, CoherenceScore, Staleness, Confidence, ContradictionScore, Psi
-- `ContradictionDetector.test.ts` — All 4 detection plugins + registry
-- `ConstraintChecker.test.ts` — NUMERIC_RANGE, STATUS_DEPENDENCY, MUTUAL_EXCLUSION
-- `Monotonicity.test.ts` — `Phi(G_next) <= Phi(G_current)` invariant across simulated settling rounds
+Billing is **subscription + included billable units** (not raw per-API-call). Limits are **soft** until metering is live. Policy and unit definitions: **`docs/billing-pricing.md`**. Stripe Price IDs and MCP notes: **`docs/stripe-setup.md`**.
 
 ---
 
-## Configuration
+## API Reference
 
-All weights and thresholds are configurable via environment variables:
+Full interactive reference: **https://invariant-engine.vercel.app/docs**
+
+Local (after `docker compose up`): http://localhost:3000/docs
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/actions/validate` | Validate an action before execution |
+| `POST` | `/actions/simulate` | Dry-run validate without persisting the proposal |
+| `GET` | `/world/coherence` | Current Φ and coherence score |
+| `GET` | `/world/snapshot` | Full world state summary |
+| `POST` | `/world/settle` | Trigger settling loop manually |
+| `POST` | `/claims` | Assert a claim about an entity |
+| `POST` | `/observations` | Ingest raw input and extract claims |
+| `GET` | `/contradictions` | List detected contradictions |
+| `GET` | `/entities/:id/state` | Current entity state |
+| `GET` | `/branches` | List alternative coherent branches |
+
+---
+
+## Self-Host
 
 ```bash
-COHERENCE_LAMBDA_C=1.0   # Constraint violation weight
-COHERENCE_LAMBDA_K=1.5   # Contradiction weight
-COHERENCE_LAMBDA_D=0.8   # Dependency mismatch weight
-COHERENCE_LAMBDA_U=0.5   # Staleness/uncertainty weight
-COHERENCE_LAMBDA_B=0.7   # Unresolved branch weight
-COHERENCE_K_SCALE=2.0    # Coherence score scaling
+git clone https://github.com/your-org/invariant
+cd invariant
+cp .env.example .env
+docker compose up
+```
 
-STALENESS_LAMBDA=0.001           # Decay constant (per second)
-CONTRADICTION_THRESHOLD=0.5      # Flag threshold
-BRANCH_THRESHOLD=0.7             # Branch creation threshold
-ACTION_BUDGET=5.0                # Max DeltaPhi for valid action
-ACTION_EPSILON=0.6               # Max Psi for valid action
+### Environment variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | - | PostgreSQL connection string (required) |
+| `API_KEY` | - | Master API key for the instance (required) |
+| `PORT` | `3000` | Port the API listens on |
+| `HOST` | `0.0.0.0` | Bind address |
+| `LOG_LEVEL` | `info` | Logging level (`debug`, `info`, `warn`, `error`) |
+| `ACTION_BUDGET` | `5.0` | Max ΔΦ allowed for a `VALID` action |
+| `ACTION_EPSILON` | `0.6` | Max Ψ score for a `VALID` action |
+| `CONTRADICTION_THRESHOLD` | `0.5` | Score above which a contradiction is flagged |
+| `BRANCH_THRESHOLD` | `0.7` | Score above which a new branch is created |
+| `COHERENCE_K_SCALE` | `2.0` | Scaling constant for coherence score curve |
+
+See `.env.example` for the full list of tuning parameters.
+
+---
+
+## Project Structure
+
+```
+invariant/
+├── apps/
+│   └── api/                    # Fastify REST API
+│       └── src/
+│           ├── domain/         # Types, interfaces (no infra deps)
+│           ├── application/    # Engine, services, validators
+│           ├── infrastructure/ # Prisma repositories, config, DI
+│           └── interfaces/     # HTTP routes (Fastify + OpenAPI)
+├── packages/
+│   ├── sdk/                    # TypeScript agent SDK (invariant-sdk)
+│   └── python-sdk/             # Python client (invariant-sdk)
+├── prisma/
+│   └── schema.prisma           # PostgreSQL schema
+├── docs/
+│   ├── api-examples.md         # REST API usage examples
+│   ├── billing-pricing.md      # Pre-launch billing policy & meters (v0)
+│   └── roadmap.md              # Future extensions
+└── docker-compose.yml          # Local development stack
 ```
 
 ---
 
 ## License
 
-Apache 2.0 — free to use, self-host, and build on.
-
-## See Also
-
-- [docs/equations.md](docs/equations.md) — Math to code mapping
-- [docs/api-examples.md](docs/api-examples.md) — Full API examples
-- [docs/roadmap.md](docs/roadmap.md) — Future extensions including continuous BPR
+Apache 2.0, free to use, self-host, and build on.

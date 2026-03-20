@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-headline { font-family: 'Space Grotesk', sans-serif; }
+  .font-mono { font-family: 'Fira Code', monospace; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  /* Custom toggle switch */
+  .toggle-input:checked + .toggle-track {
+    background-color: #adc6ff;
+  }
+  .toggle-input:checked + .toggle-track .toggle-thumb {
+    transform: translateX(1.25rem);
+    background-color: #002e6a;
+  }
+</style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff",
+          "on-secondary": "#472a00",
+          "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe",
+          "on-error": "#690005",
+          "surface-container": "#171f33",
+          "secondary-container": "#ee9800",
+          "on-secondary-fixed": "#2a1700",
+          "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#d8e2ff",
+          "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-surface-variant": "#c2c6d6",
+          "secondary": "#ffb95f",
+          "on-surface": "#dae2fd",
+          "surface-bright": "#31394d",
+          "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd",
+          "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449",
+          "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572",
+          "surface-variant": "#2d3449",
+          "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800",
+          "outline": "#8c909f",
+          "surface": "#0b1326",
+          "on-primary-container": "#00285d",
+          "primary-container": "#4d8eff",
+          "on-tertiary": "#003824",
+          "error-container": "#93000a",
+          "outline-variant": "#424754",
+          "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42",
+          "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-container-low": "#131b2e",
+          "tertiary": "#4edea3",
+          "error": "#ffb4ab",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8",
+          "surface-container-high": "#222a3d",
+          "surface-tint": "#adc6ff",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: {
+          "headline": ["Space Grotesk"],
+          "body": ["Inter"],
+          "label": ["Inter"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30 selection:text-primary overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-[#131b2e] py-4 shrink-0 z-50">
+  <div class="px-6 mb-8 pt-9">
+    <a href="index.html" class="group block" onclick="navigateTo('dashboard.html'); return false;">
+      <h1 class="text-lg font-headline text-[#dae2fd] tracking-tight group-hover:text-primary transition-colors">Invariant Engine</h1>
+      <p class="text-[10px] font-mono text-outline uppercase tracking-widest">Settings</p>
+    </a>
+  </div>
+  <nav class="flex-1 px-3 space-y-1">
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200 cursor-pointer" onclick="navigateTo('dashboard.html')">
+      <span class="material-symbols-outlined text-[20px]">public</span>
+      <span class="text-sm">World State</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200 cursor-pointer" onclick="navigateTo('audit.html')">
+      <span class="material-symbols-outlined text-[20px]">bolt</span>
+      <span class="text-sm">Actions</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200 cursor-pointer" onclick="navigateTo('constraints.html')">
+      <span class="material-symbols-outlined text-[20px]">gavel</span>
+      <span class="text-sm">Constraints</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200 cursor-pointer" onclick="navigateTo('trace.html')">
+      <span class="material-symbols-outlined text-[20px]">timeline</span>
+      <span class="text-sm">Traces</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="https://invariant.me/docs.html" target="_blank">
+      <span class="material-symbols-outlined text-[20px]">description</span>
+      <span class="text-sm">Documentation</span>
+    </a>
+    <!-- Settings (active) -->
+    <a class="flex items-center gap-3 px-3 py-2.5 bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6] font-medium group transition-all duration-200 cursor-pointer">
+      <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+      <span class="text-sm">Settings</span>
+    </a>
+  </nav>
+  <div class="px-3 mt-auto space-y-1 border-t border-outline-variant/10 pt-4">
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all cursor-pointer" onclick="navigateTo('audit.html')">
+      <span class="material-symbols-outlined text-[18px]">list_alt</span>
+      <span class="text-xs font-mono">Logs</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all cursor-pointer" onclick="window.invariantDesktop && window.invariantDesktop.checkForUpdates()">
+      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 18;">upgrade</span>
+      <span class="text-xs font-mono">Check for Updates</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface relative overflow-auto">
+  <!-- Header bar -->
+  <header class="flex justify-between items-center w-full px-6 h-16 shrink-0 bg-[#0b1326] z-40 border-b border-outline-variant/10" style="-webkit-app-region: drag;">
+    <div class="flex items-center gap-3" style="-webkit-app-region: no-drag;">
+      <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">settings</span>
+      <span class="text-base font-headline font-semibold text-on-surface">Settings</span>
+    </div>
+  </header>
+
+  <!-- Settings content -->
+  <div class="flex-1 p-8 max-w-2xl mx-auto w-full space-y-8">
+
+    <!-- Section: API Connection -->
+    <section>
+      <h2 class="font-headline text-sm font-semibold text-outline uppercase tracking-widest mb-4">API Connection</h2>
+      <div class="bg-[#131b2e] rounded-xl border border-outline-variant/20 p-6 space-y-4">
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5" for="api-endpoint">API Endpoint URL</label>
+          <input
+            id="api-endpoint"
+            type="url"
+            placeholder="http://localhost:3000"
+            class="w-full bg-[#0b1326] border border-outline-variant/30 rounded-lg px-3 py-2 text-sm text-on-surface placeholder:text-outline/50 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+          />
+          <p class="text-xs text-outline mt-1">Changes take effect on next launch. Currently used by the tray polling.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            id="test-conn-btn"
+            onclick="testConnection()"
+            class="text-sm font-semibold text-primary border border-primary/30 px-4 py-2 rounded-lg hover:bg-primary/5 transition-colors flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]">network_check</span>
+            Test Connection
+          </button>
+          <div id="conn-status" class="flex items-center gap-1.5 text-xs font-mono hidden">
+            <span id="conn-dot" class="w-2 h-2 rounded-full"></span>
+            <span id="conn-label"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: API Key -->
+    <section>
+      <h2 class="font-headline text-sm font-semibold text-outline uppercase tracking-widest mb-4">API Key</h2>
+      <div class="bg-[#131b2e] rounded-xl border border-outline-variant/20 p-6 space-y-4">
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1.5" for="api-key-input">API Key</label>
+          <div class="flex gap-2">
+            <input
+              id="api-key-input"
+              type="password"
+              placeholder="inv_••••••••••••••••"
+              autocomplete="off"
+              class="flex-1 bg-[#0b1326] border border-outline-variant/30 rounded-lg px-3 py-2 text-sm text-on-surface placeholder:text-outline/50 focus:outline-none focus:ring-1 focus:ring-primary font-mono"
+            />
+            <button
+              id="toggle-key-vis"
+              onclick="toggleKeyVisibility()"
+              title="Show/hide key"
+              class="px-2 text-outline hover:text-on-surface transition-colors border border-outline-variant/20 rounded-lg"
+            >
+              <span id="key-vis-icon" class="material-symbols-outlined text-[18px]">visibility</span>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            id="save-key-btn"
+            onclick="saveApiKey()"
+            class="text-sm font-semibold bg-primary text-on-primary px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]">lock</span>
+            Save Securely
+          </button>
+          <button
+            id="clear-key-btn"
+            onclick="clearApiKey()"
+            class="text-sm text-outline border border-outline-variant/20 px-4 py-2 rounded-lg hover:text-error hover:border-error/30 transition-colors flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+            Clear
+          </button>
+        </div>
+        <div id="key-saved-msg" class="hidden flex items-center gap-1.5 text-xs text-tertiary font-mono">
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">verified</span>
+          Saved securely in system keychain
+        </div>
+        <div id="key-cleared-msg" class="hidden flex items-center gap-1.5 text-xs text-outline font-mono">
+          <span class="material-symbols-outlined text-[14px]">delete</span>
+          API key cleared
+        </div>
+        <div id="key-local-msg" class="hidden flex items-center gap-1.5 text-xs text-secondary font-mono">
+          <span class="material-symbols-outlined text-[14px]">warning</span>
+          Stored in localStorage (desktop app not detected)
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: Notifications -->
+    <section>
+      <h2 class="font-headline text-sm font-semibold text-outline uppercase tracking-widest mb-4">Notifications</h2>
+      <div class="bg-[#131b2e] rounded-xl border border-outline-variant/20 p-6 space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-on-surface font-medium">Coherence drop alerts</p>
+            <p class="text-xs text-outline mt-0.5">Notify when coherence drops below threshold</p>
+          </div>
+          <!-- Toggle switch -->
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input id="notif-toggle" type="checkbox" class="sr-only toggle-input" onchange="saveNotifSettings()" checked/>
+            <div class="toggle-track w-11 h-6 bg-outline-variant/40 rounded-full relative transition-colors">
+              <div class="toggle-thumb absolute top-1 left-1 w-4 h-4 rounded-full bg-outline transition-transform"></div>
+            </div>
+          </label>
+        </div>
+
+        <div id="notif-threshold-row" class="space-y-2">
+          <div class="flex justify-between text-xs text-on-surface-variant">
+            <span>Alert threshold (drop in points)</span>
+            <span id="threshold-val" class="text-primary font-mono">10</span>
+          </div>
+          <input
+            id="notif-threshold"
+            type="range"
+            min="5"
+            max="20"
+            step="1"
+            value="10"
+            oninput="document.getElementById('threshold-val').textContent = this.value; saveNotifSettings();"
+            class="w-full accent-primary"
+          />
+          <div class="flex justify-between text-[10px] text-outline font-mono">
+            <span>5 pts (sensitive)</span>
+            <span>20 pts (quiet)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section: About -->
+    <section>
+      <h2 class="font-headline text-sm font-semibold text-outline uppercase tracking-widest mb-4">About</h2>
+      <div class="bg-[#131b2e] rounded-xl border border-outline-variant/20 p-6 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-on-surface-variant">Invariant Engine</span>
+          <span id="app-version" class="text-sm text-primary font-mono">-</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-on-surface-variant">Platform</span>
+          <span id="app-platform" class="text-sm text-outline font-mono">web</span>
+        </div>
+        <div class="pt-2 border-t border-outline-variant/10">
+          <button
+            onclick="window.invariantDesktop && window.invariantDesktop.checkForUpdates()"
+            class="text-sm text-primary hover:underline flex items-center gap-1.5"
+          >
+            <span class="material-symbols-outlined text-[16px]">system_update</span>
+            Check for Updates
+          </button>
+        </div>
+        <p class="text-xs text-outline pt-3">
+          <a href="privacy.html" class="text-primary/80 hover:text-primary hover:underline">Privacy</a>
+          <span class="mx-2 text-outline/40">·</span>
+          <a href="terms.html" class="text-primary/80 hover:text-primary hover:underline">Terms</a>
+        </p>
+      </div>
+    </section>
+
+  </div><!-- /settings content -->
+</main>
+
+</div><!-- /flex container -->
+
+<script>
+// ── Navigation ──────────────────────────────────────────────────────────────
+function navigateTo(page) {
+  if (window.invariantDesktop) {
+    window.invariantDesktop.navigate(page);
+  } else {
+    window.location.href = page;
+  }
+}
+
+// ── API Endpoint ────────────────────────────────────────────────────────────
+const endpointInput = document.getElementById('api-endpoint');
+
+function loadEndpoint() {
+  const saved = localStorage.getItem('inv_api_endpoint') || 'http://localhost:3000';
+  endpointInput.value = saved;
+}
+
+endpointInput.addEventListener('change', () => {
+  localStorage.setItem('inv_api_endpoint', endpointInput.value.trim());
+});
+
+async function testConnection() {
+  const btn = document.getElementById('test-conn-btn');
+  const statusEl = document.getElementById('conn-status');
+  const dotEl = document.getElementById('conn-dot');
+  const labelEl = document.getElementById('conn-label');
+
+  const url = (endpointInput.value.trim() || 'http://localhost:3000').replace(/\/$/, '');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span> Testing…';
+  statusEl.classList.add('hidden');
+
+  try {
+    const res = await fetch(`${url}/health`, { signal: AbortSignal.timeout(5000) });
+    if (res.ok) {
+      dotEl.className = 'w-2 h-2 rounded-full bg-[#4edea3]';
+      labelEl.textContent = 'Connected';
+      labelEl.className = 'text-[#4edea3]';
+    } else {
+      dotEl.className = 'w-2 h-2 rounded-full bg-[#ffb4ab]';
+      labelEl.textContent = `HTTP ${res.status}`;
+      labelEl.className = 'text-[#ffb4ab]';
+    }
+  } catch {
+    dotEl.className = 'w-2 h-2 rounded-full bg-[#ffb4ab]';
+    labelEl.textContent = 'Unreachable';
+    labelEl.className = 'text-[#ffb4ab]';
+  }
+
+  statusEl.classList.remove('hidden');
+  btn.disabled = false;
+  btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">network_check</span> Test Connection';
+}
+
+// ── API Key ─────────────────────────────────────────────────────────────────
+function toggleKeyVisibility() {
+  const input = document.getElementById('api-key-input');
+  const icon = document.getElementById('key-vis-icon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.textContent = 'visibility_off';
+  } else {
+    input.type = 'password';
+    icon.textContent = 'visibility';
+  }
+}
+
+async function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+
+  const savedMsg = document.getElementById('key-saved-msg');
+  const localMsg = document.getElementById('key-local-msg');
+  const clearedMsg = document.getElementById('key-cleared-msg');
+  clearedMsg.classList.add('hidden');
+
+  if (window.invariantDesktop?.saveApiKey) {
+    try {
+      await window.invariantDesktop.saveApiKey(key);
+      savedMsg.classList.remove('hidden');
+      localMsg.classList.add('hidden');
+      // Clear input for security
+      document.getElementById('api-key-input').value = '';
+    } catch (err) {
+      alert('Failed to save API key: ' + err.message);
+    }
+  } else {
+    // Fallback: localStorage (web browser context)
+    localStorage.setItem('inv_api_key', key);
+    localMsg.classList.remove('hidden');
+    savedMsg.classList.add('hidden');
+    document.getElementById('api-key-input').value = '';
+  }
+}
+
+async function clearApiKey() {
+  const savedMsg = document.getElementById('key-saved-msg');
+  const localMsg = document.getElementById('key-local-msg');
+  const clearedMsg = document.getElementById('key-cleared-msg');
+
+  if (window.invariantDesktop?.clearApiKey) {
+    await window.invariantDesktop.clearApiKey();
+  } else {
+    localStorage.removeItem('inv_api_key');
+  }
+
+  savedMsg.classList.add('hidden');
+  localMsg.classList.add('hidden');
+  clearedMsg.classList.remove('hidden');
+  document.getElementById('api-key-input').value = '';
+}
+
+// ── Notifications ───────────────────────────────────────────────────────────
+function loadNotifSettings() {
+  const enabled = localStorage.getItem('inv_notif_enabled');
+  const threshold = localStorage.getItem('inv_notif_threshold') || '10';
+
+  const toggle = document.getElementById('notif-toggle');
+  const thresholdInput = document.getElementById('notif-threshold');
+  const thresholdVal = document.getElementById('threshold-val');
+
+  if (enabled === 'false') {
+    toggle.checked = false;
+  }
+
+  thresholdInput.value = threshold;
+  thresholdVal.textContent = threshold;
+}
+
+function saveNotifSettings() {
+  const enabled = document.getElementById('notif-toggle').checked;
+  const threshold = document.getElementById('notif-threshold').value;
+  localStorage.setItem('inv_notif_enabled', String(enabled));
+  localStorage.setItem('inv_notif_threshold', threshold);
+}
+
+// ── About / Version ─────────────────────────────────────────────────────────
+async function loadVersion() {
+  const versionEl = document.getElementById('app-version');
+  const platformEl = document.getElementById('app-platform');
+
+  if (window.invariantDesktop?.getVersion) {
+    try {
+      const version = await window.invariantDesktop.getVersion();
+      versionEl.textContent = `v${version}`;
+      platformEl.textContent = 'desktop (Electron)';
+    } catch {
+      versionEl.textContent = 'unknown';
+    }
+  } else {
+    versionEl.textContent = 'web';
+    platformEl.textContent = 'browser';
+  }
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+loadEndpoint();
+loadNotifSettings();
+loadVersion();
+</script>
+</body>
+</html>

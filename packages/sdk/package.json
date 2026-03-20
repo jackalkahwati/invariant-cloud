@@ -1,14 +1,37 @@
 {
-  "name": "@coherence-engine/sdk",
+  "name": "invariant-sdk",
   "version": "1.0.0",
-  "description": "Agent SDK for the Coherence Engine",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Official TypeScript SDK for the Invariant Coherence Engine — publish observations, assert claims, validate actions, stream coherence events, and manage every resource through a fully-typed client.",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
   },
+  "keywords": [
+    "coherence",
+    "invariant",
+    "agent",
+    "sdk",
+    "ai",
+    "consistency",
+    "knowledge-graph"
+  ],
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.4.2"

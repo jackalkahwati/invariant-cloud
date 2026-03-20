@@ -1,3 +1,4 @@
+# Invariant — local development stack
 version: '3.9'
 
 services:

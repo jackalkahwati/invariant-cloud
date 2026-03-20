@@ -1,0 +1,10 @@
+# Keep serverless bundles small — static site is apps/web only
+apps/desktop
+**/dist/mac-*
+**/*.dmg
+**/*.zip
+**/.icon-*
+.git
+coverage
+*.test.ts
+apps/evals

@@ -20,7 +20,7 @@ export async function sendWelcomeEmail(to: string, apiKey: string, workspaceName
   await transport.sendMail({
     from: emailConfig.from,
     to,
-    subject: 'Welcome to Invariant — your API key is inside',
+    subject: 'Welcome to Invariant, your API key is inside',
     html: `
       <div style="font-family:Inter,sans-serif;background:#0b1326;color:#dae2fd;padding:40px;max-width:600px;margin:0 auto;border-radius:12px;">
         <h1 style="font-size:24px;font-weight:700;margin-bottom:8px;">Welcome to Invariant.</h1>
@@ -28,7 +28,7 @@ export async function sendWelcomeEmail(to: string, apiKey: string, workspaceName
         <div style="background:#131b2e;border-radius:8px;padding:16px;margin-bottom:24px;">
           <p style="font-size:11px;font-family:monospace;color:#8c909f;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 8px;">Your API Key</p>
           <code style="font-family:monospace;font-size:14px;color:#adc6ff;word-break:break-all;">${apiKey}</code>
-          <p style="font-size:11px;color:#8c909f;margin:8px 0 0;">Save this — it won't be shown again.</p>
+          <p style="font-size:11px;color:#8c909f;margin:8px 0 0;">Save this, it won't be shown again.</p>
         </div>
         <div style="background:#131b2e;border-radius:8px;padding:16px;margin-bottom:24px;">
           <p style="font-size:12px;color:#8c909f;margin:0 0 8px;">Quick start</p>
@@ -50,7 +50,7 @@ export async function sendTeamActivationEmail(to: string, workspaceName: string)
   await transport.sendMail({
     from: emailConfig.from,
     to,
-    subject: 'Invariant Team — your subscription is active',
+    subject: 'Invariant Team, your subscription is active',
     html: `
       <div style="font-family:Inter,sans-serif;background:#0b1326;color:#dae2fd;padding:40px;max-width:600px;margin:0 auto;border-radius:12px;">
         <h1 style="font-size:24px;font-weight:700;margin-bottom:8px;">You're on Team.</h1>

@@ -72,7 +72,7 @@ export async function branchRoutes(app: FastifyInstance) {
     return updated;
   });
 
-  // POST /branches — manually create a branch
+  // POST /branches, manually create a branch
   app.post('/branches', {
     schema: {
       tags: ['Branches'],

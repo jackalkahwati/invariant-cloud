@@ -92,60 +92,55 @@
       </script>
 </head>
 <body class="bg-surface text-on-surface selection:bg-primary/30">
-<!-- TopNavBar Implementation -->
-<header class="bg-[#0b1326] flex justify-between items-center w-full px-6 h-16 fixed top-0 z-50" style="-webkit-app-region: drag;">
+<!-- Marketing Nav -->
+<header class="bg-[#0b1326]/95 backdrop-blur-sm flex justify-between items-center w-full px-6 h-16 fixed top-0 z-50 border-b border-outline-variant/10">
 <div class="flex items-center gap-8">
-<span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk']">Invariant</span>
+<a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk'] hover:text-[#adc6ff] transition-colors">Invariant</a>
 <nav class="hidden md:flex items-center gap-6 font-['Space_Grotesk'] tracking-tight">
-<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors" href="index.html">Coherence: Φ(0.98)</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors text-sm" href="index.html">Home</a>
+<a class="text-[#adc6ff] text-sm font-medium" href="docs.html">Docs</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors text-sm" href="pricing.html">Pricing</a>
+<a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors text-sm" href="https://github.com/jackalkahwati/invariant" target="_blank">GitHub</a>
 </nav>
 </div>
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
 <div class="relative hidden sm:block">
 <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-sm">search</span>
-<input class="bg-surface-container-low border-none text-sm px-10 py-2 rounded-lg focus:ring-1 focus:ring-primary w-64" placeholder="Search docs..." type="text" oninput="filterDocs(this.value)"/>
+<input class="bg-surface-container-low border-none text-sm px-10 py-2 rounded-lg focus:ring-1 focus:ring-primary w-56" placeholder="Search docs..." type="text" oninput="filterDocs(this.value)"/>
 </div>
+<a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#adc6ff] transition-colors hidden md:block">Sign in</a>
+<a href="register.html" class="text-sm bg-[#adc6ff] text-[#002e6a] font-medium px-4 py-1.5 rounded-lg hover:bg-[#d8e2ff] transition-colors hidden md:block">Sign up</a>
 </div>
 </header>
 <div class="flex pt-16 h-screen overflow-hidden">
-<!-- SideNavBar Implementation -->
-<aside class="bg-[#131b2e] flex flex-col h-full py-4 w-64 hidden lg:flex shrink-0">
-<div class="px-6 mb-8">
-<a href="index.html" class="group block"><h2 class="text-lg font-['Space_Grotesk'] text-[#dae2fd] group-hover:text-[#adc6ff] transition-colors">Invariant Engine</h2></a>
-<p class="text-[10px] uppercase tracking-widest text-outline mt-1">v2.4.0-stable</p>
+<!-- Docs Table of Contents Sidebar -->
+<aside class="bg-[#0f1729] flex flex-col h-full py-8 w-60 hidden lg:flex shrink-0 border-r border-outline-variant/10 overflow-y-auto">
+<div class="px-5 mb-6">
+<p class="text-[10px] uppercase tracking-widest text-outline font-mono">On this page</p>
 </div>
-<nav class="flex-1 px-3 space-y-1">
-<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="dashboard.html">
-<span class="material-symbols-outlined text-sm">public</span>
-<span class="font-['Inter'] text-sm">World State</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="audit.html">
-<span class="material-symbols-outlined text-sm">bolt</span>
-<span class="font-['Inter'] text-sm">Actions</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd]" href="constraints.html">
-<span class="material-symbols-outlined text-sm">gavel</span>
-<span class="font-['Inter'] text-sm">Constraints</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200 ease-in-out bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6]" href="docs.html">
-<span class="material-symbols-outlined text-sm">description</span>
-<span class="font-['Inter'] text-sm">Documentation</span>
-</a>
+<nav class="flex-1 px-3 space-y-0.5 text-sm">
+<p class="px-3 pt-4 pb-1 text-[10px] uppercase tracking-widest text-outline font-mono">Getting Started</p>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#try-it">Try it live</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#getting-started">Installation</a>
+
+<p class="px-3 pt-5 pb-1 text-[10px] uppercase tracking-widest text-outline font-mono">API Reference</p>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#api-reference">Core Endpoints</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#posting-claims">Observations & Claims</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#defining-constraints">Constraints</a>
+
+<p class="px-3 pt-5 pb-1 text-[10px] uppercase tracking-widest text-outline font-mono">SDK</p>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#adc6ff] bg-[#222a3d]/60 transition-colors" href="#getting-started">TypeScript / Node</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#python-sdk">Python</a>
+
+<p class="px-3 pt-5 pb-1 text-[10px] uppercase tracking-widest text-outline font-mono">Concepts</p>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#defining-constraints">Coherence Score (Φ)</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded text-[#94a3b8] hover:text-[#dae2fd] hover:bg-[#222a3d]/50 transition-colors" href="#defining-constraints">World State Graph</a>
 </nav>
-<div class="px-4 mt-auto space-y-4">
-<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary-container py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/10">
-                    Deploy Agent
-                </button>
-<div class="pt-4 space-y-1 border-t border-outline-variant/20">
-<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-on-surface text-sm transition-colors cursor-pointer" onclick="toggleTerminal()">
-<span class="material-symbols-outlined text-sm">terminal</span>
-<span>Terminal</span>
+<div class="px-5 mt-8 pt-6 border-t border-outline-variant/10">
+<a href="https://github.com/jackalkahwati/invariant" target="_blank" class="flex items-center gap-2 text-[10px] font-mono text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xs">open_in_new</span>
+GitHub
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-on-surface text-sm transition-colors" href="audit.html">
-<span class="material-symbols-outlined text-sm">list_alt</span>
-<span>Logs</span>
-</a>
-</div>
 </div>
 </aside>
 <!-- Main Documentation Content -->
@@ -163,6 +158,83 @@
                             Integrate formal constraint checking into your deployment pipelines. The Invariant SDK allows you to define, verify, and enforce system invariants in real-time.
                         </p>
 </header>
+<!-- Try it live section with copy-paste curl examples -->
+<section class="mb-20" id="try-it">
+<h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-tertiary text-sm">▶</span>
+Try it live
+</h2>
+<p class="text-on-surface-variant mb-8">
+Run these commands in your terminal to interact with the Invariant API directly. No SDK required, just <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm text-primary">curl</code>.
+</p>
+<div class="space-y-5">
+
+<!-- Example 1: Health check -->
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono text-xs text-on-surface font-bold">Health check</span>
+</div>
+<button onclick="copyCmd(this, 'curl https://invariant.me/health')" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xs">content_copy</span>
+Copy
+</button>
+</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Verify the engine is running</span>
+<span class="syntax-keyword">curl</span> https://invariant.me/health</code></pre>
+</div>
+</div>
+
+<!-- Example 2: Validate action -->
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-mono text-xs text-on-surface font-bold">Validate an action</span>
+</div>
+<button onclick="copyCmd(this, `curl -X POST https://invariant.me/actions/validate -H \"X-API-Key: YOUR_KEY\" -H \"Content-Type: application/json\" -d \'{\"operation\":\"deploy_model\",\"impactedEntityIds\":[]}\' `)" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xs">content_copy</span>
+Copy
+</button>
+</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Validate a proposed action before executing</span>
+<span class="syntax-keyword">curl</span> -X POST https://invariant.me/actions/validate \
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span> \
+  -H <span class="syntax-string">"Content-Type: application/json"</span> \
+  -d <span class="syntax-string">'{"operation":"deploy_model","impactedEntityIds":[]}'</span></code></pre>
+</div>
+<div class="px-5 py-3 bg-surface-container-lowest/50 border-t border-outline-variant/5">
+<p class="text-[11px] text-on-surface-variant">Returns <code class="text-primary text-xs">admissibility</code> (VALID / RISKY / BLOCKED), ΔΦ coherence delta, and Ψ risk score.</p>
+</div>
+</div>
+
+<!-- Example 3: Get coherence -->
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-mono text-xs text-on-surface font-bold">Get coherence score</span>
+</div>
+<button onclick="copyCmd(this, 'curl https://invariant.me/world/coherence -H \"X-API-Key: YOUR_KEY\"')" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xs">content_copy</span>
+Copy
+</button>
+</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Fetch the global Φ(G) coherence score and breakdown</span>
+<span class="syntax-keyword">curl</span> https://invariant.me/world/coherence \
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span></code></pre>
+</div>
+<div class="px-5 py-3 bg-surface-container-lowest/50 border-t border-outline-variant/5">
+<p class="text-[11px] text-on-surface-variant">Returns <code class="text-primary text-xs">coherenceScore</code>, <code class="text-primary text-xs">phi</code>, and per-dimension breakdown: Vc, Vk, Vd, Vu, Vb.</p>
+</div>
+</div>
+
+</div>
+</section>
 <!-- Section: Getting Started -->
 <section class="mb-20" id="getting-started">
 <h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
@@ -173,8 +245,8 @@
                             Install the Invariant Node.js client to begin asserting claims and validating actions. The SDK wraps the full REST API and is optimized for high-concurrency agent environments.
                         </p>
 <div class="bg-surface-container-lowest p-4 rounded-xl border-b-2 border-primary/20 relative group mb-8">
-<code class="text-primary-fixed text-sm">npm install @invariant/sdk-node</code>
-<button onclick="navigator.clipboard.writeText('npm install @invariant/sdk-node')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" title="Copy to clipboard">
+<code class="text-primary-fixed text-sm">npm install invariant-sdk</code>
+<button onclick="navigator.clipboard.writeText('npm install invariant-sdk')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" title="Copy to clipboard">
 <span class="material-symbols-outlined text-base">content_copy</span>
 </button>
 </div>
@@ -219,6 +291,39 @@
 </div>
 </div>
 </section>
+<!-- Section: Python SDK -->
+<section class="mb-20" id="python-sdk">
+<h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-secondary text-sm">Py</span>
+Python SDK
+</h2>
+<p class="text-on-surface-variant mb-6">
+Install the official Python client for synchronous and async environments. Built on <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm">httpx</code> with Pydantic v2 models.
+</p>
+<div class="bg-surface-container-lowest p-4 rounded-xl border-b-2 border-secondary/20 relative group mb-8">
+<code class="text-primary-fixed text-sm">pip install invariant-sdk</code>
+<button onclick="navigator.clipboard.writeText('pip install invariant-sdk')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" title="Copy to clipboard">
+<span class="material-symbols-outlined text-base">content_copy</span>
+</button>
+</div>
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
+<span class="font-mono text-xs text-on-surface font-bold">Quick example</span>
+</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-keyword">from</span> invariant_sdk <span class="syntax-keyword">import</span> InvariantClient
+
+client = <span class="syntax-function">InvariantClient</span>(api_key=<span class="syntax-string">"YOUR_KEY"</span>)
+
+result = client.actions.<span class="syntax-function">validate</span>(
+    operation=<span class="syntax-string">"deploy_model"</span>,
+    impacted_entity_ids=[]
+)
+<span class="syntax-function">print</span>(result.admissibility)  <span class="syntax-comment"># VALID | RISKY | BLOCKED</span></code></pre>
+</div>
+</div>
+</section>
+
 <!-- Section: Defining Constraints -->
 <section class="mb-20" id="defining-constraints">
 <h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
@@ -248,99 +353,27 @@
 </section>
 </div>
 </div>
-<!-- Right Column: Interactive Code Terminal -->
-<div class="hidden xl:flex w-[500px] flex-col bg-surface-container-lowest border-l border-outline-variant/10">
-<!-- Terminal Header -->
-<div class="h-12 flex items-center justify-between px-4 bg-surface-container-low">
-<div class="flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-error/40"></div>
-<div class="w-3 h-3 rounded-full bg-secondary/40"></div>
-<div class="w-3 h-3 rounded-full bg-tertiary/40"></div>
-<span class="ml-4 text-[10px] font-mono text-outline uppercase tracking-widest">example_constraint.js</span>
-</div>
-<span class="text-[10px] font-mono text-primary/60">NODE.JS v20.x</span>
-</div>
-<!-- Code Content -->
-<div class="flex-1 overflow-auto p-6 bg-[#060e20]">
-<pre class="text-sm leading-relaxed"><code class="block"><span class="syntax-keyword">const</span> { InvariantClient } = <span class="syntax-function">require</span>(<span class="syntax-string">'@invariant/sdk-node'</span>);
-
-<span class="syntax-comment">// Initialize the engine orchestrator</span>
-<span class="syntax-keyword">const</span> client = <span class="syntax-keyword">new</span> <span class="syntax-function">InvariantClient</span>({
-  apiKey: process.env.INVARIANT_KEY,
-  region: <span class="syntax-string">'us-east-1'</span>
-});
-
-<span class="syntax-comment">// Define a STATUS_DEPENDENCY constraint</span>
-<span class="syntax-keyword">async function</span> <span class="syntax-function">enforceSystemSafety</span>() {
-  <span class="syntax-keyword">await</span> client.<span class="syntax-function">postConstraint</span>({
-    id: <span class="syntax-string">'safety-check-01'</span>,
-    type: <span class="syntax-constant">'STATUS_DEPENDENCY'</span>,
-    selector: {
-      tags: [<span class="syntax-string">'production'</span>, <span class="syntax-string">'critical'</span>]
-    },
-    logic: {
-      <span class="syntax-comment">// Ensures no deployment happens with critical violations</span>
-      condition: <span class="syntax-string">'system.health_score &gt; 0.95'</span>,
-      on_violation: <span class="syntax-string">'BLOCK_DEPLOYMENT'</span>,
-      severity: <span class="syntax-constant">'CRITICAL'</span>
-    }
-  });
-
-  console.<span class="syntax-function">log</span>(<span class="syntax-string">'Constraint active: Verification logic deployed.'</span>);
-}
-
-<span class="syntax-function">enforceSystemSafety</span>();</code></pre>
-</div>
-<!-- Terminal Footer / Success Gauge -->
-<div class="p-6 bg-surface-container-low/30">
-<div class="flex items-center justify-between mb-2">
-<span class="text-[10px] font-mono text-outline">VERIFICATION SUCCESS RATE</span>
-<span class="text-[10px] font-mono text-tertiary">99.8%</span>
-</div>
-<div class="flex gap-1">
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary rounded-sm"></div>
-<div class="h-1.5 flex-1 bg-tertiary/20 rounded-sm"></div>
-</div>
-<p class="mt-4 text-[11px] text-on-surface-variant font-mono leading-tight">
-<span class="text-tertiary">✔</span> System state validated against 14 active constraints. <br/>
-<span class="text-primary">ℹ</span> Latency: 12ms
-                    </p>
-</div>
-</div>
 </main>
-</div>
-<!-- Terminal Panel -->
-<div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
-<div class="flex items-center justify-between mb-2">
-<span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal — SDK Session</span>
-<button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
-</div>
-<div class="space-y-1">
-<p><span class="text-outline">$</span> npm install @invariant/sdk-node</p>
-<p><span class="text-outline">→</span> added 42 packages in 3.2s</p>
-<p><span class="text-outline">$</span> node -e "require('@invariant/sdk-node')"</p>
-<p><span class="text-outline">→</span> [INFO] InvariantClient initialized — region: us-east-1</p>
-<p><span class="text-outline">→</span> [INFO] 14 constraints loaded — verification rate: 99.8%</p>
-<p><span class="text-[#adc6ff]">▸</span> _</p>
-</div>
 </div>
 
 <script>
-function toggleTerminal() {
-  document.getElementById('terminal-panel').classList.toggle('hidden');
-}
-
 function filterDocs(query) {
   const q = query.toLowerCase();
   document.querySelectorAll('section[id]').forEach(section => {
     const text = section.textContent.toLowerCase();
     section.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<span class="material-symbols-outlined text-xs">check</span> Copied!';
+    btn.classList.add('text-tertiary');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('text-tertiary'); }, 1800);
+  }).catch(() => {
+    btn.innerHTML = '<span class="material-symbols-outlined text-xs">error</span> Failed';
+    setTimeout(() => { btn.innerHTML = '<span class="material-symbols-outlined text-xs">content_copy</span> Copy'; }, 1800);
   });
 }
 </script>
@@ -349,31 +382,14 @@ function filterDocs(query) {
 <div class="hidden lg:block border-t border-outline-variant/10 bg-surface-container-lowest px-16 py-4">
 <div class="max-w-3xl flex items-center justify-between">
 <span class="text-[10px] font-mono text-outline">© 2026 Invariant</span>
-<div class="flex gap-6">
+<div class="flex flex-wrap gap-6">
 <a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="docs.html">Docs</a>
 <a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="https://github.com/jackalkahwati/invariant" target="_blank">GitHub</a>
 <a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="docs.html#api-reference">API Reference</a>
+<a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="privacy.html">Privacy</a>
+<a class="text-[10px] font-mono text-outline hover:text-primary transition-colors" href="terms.html">Terms</a>
 </div>
 </div>
 </div>
 
-<!-- Mobile Bottom Nav (Suppressed for deep content pages as per hierarchy rules, but keeping a minimized version for navigation fallback if needed) -->
-<div class="md:hidden fixed bottom-0 left-0 right-0 bg-surface-container border-t border-outline-variant/10 flex justify-around items-center h-16 px-4 z-50">
-<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
-<span class="material-symbols-outlined text-xl">public</span>
-<span class="text-[10px]">World</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
-<span class="material-symbols-outlined text-xl">bolt</span>
-<span class="text-[10px]">Actions</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-[#adc6ff]">
-<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">description</span>
-<span class="text-[10px] font-bold">Docs</span>
-</button>
-<button class="flex flex-col items-center gap-1 text-[#94a3b8]">
-<span class="material-symbols-outlined text-xl">terminal</span>
-<span class="text-[10px]">Terminal</span>
-</button>
-</div>
 </body></html>

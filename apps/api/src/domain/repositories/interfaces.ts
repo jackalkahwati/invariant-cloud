@@ -1,5 +1,5 @@
 /**
- * Repository interfaces (ports) — domain layer.
+ * Repository interfaces (ports), domain layer.
  * Infrastructure implementations must implement these.
  */
 
@@ -119,6 +119,7 @@ export interface IActionRepository {
   updateProposal(id: string, data: Partial<ActionProposal>): Promise<ActionProposal>;
   createValidation(data: Omit<ActionValidation, 'id' | 'createdAt'>): Promise<ActionValidation>;
   findValidationsByProposalId(proposalId: string): Promise<ActionValidation[]>;
+  findAll(filter?: { limit?: number; status?: string }): Promise<ActionProposal[]>;
 }
 
 // ── Observation ──────────────────────────────────────────────

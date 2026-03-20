@@ -3,7 +3,9 @@
 // V = entities, E = claims, C = constraints, D = dependencies, B = branches
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // Vercel serverless runs on Linux (glibc + OpenSSL 3)
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -687,6 +689,7 @@ model Workspace {
 
 enum WorkspaceTier {
   FREE
+  STARTER
   TEAM
   ENTERPRISE
 }

@@ -88,11 +88,18 @@
 <body class="bg-surface text-on-surface font-body min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
 
 <!-- Top nav -->
-<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] border-b border-outline-variant/10">
-  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk'] hover:text-primary transition-colors">Invariant</a>
-  <div class="flex items-center gap-3">
-    <a href="login.html" class="text-sm text-outline hover:text-primary transition-colors">Sign in</a>
-    <a href="register.html" class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-xs px-3 py-1.5 rounded font-bold">Sign up</a>
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight border-b border-outline-variant/10">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter hover:text-primary transition-colors">Invariant</a>
+    <div class="hidden md:flex gap-6">
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="index.html">Home</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="docs.html">Docs</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="pricing.html">Pricing</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant-cloud" target="_blank">GitHub</a>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
   </div>
 </nav>
 
@@ -167,21 +174,51 @@
       </form>
 
       <!-- Footer links -->
-      <div class="mt-6 pt-6 border-t border-outline-variant/15 text-center">
+      <div class="mt-6 pt-6 border-t border-outline-variant/15 text-center space-y-2">
         <p class="text-sm text-outline">
           Don't have an account?
           <a href="register.html" class="text-primary hover:underline font-medium">Sign up</a>
+        </p>
+        <p class="text-xs text-outline/50">
+          <a href="privacy.html" class="hover:text-primary hover:underline">Privacy</a>
+          <span class="mx-2 text-outline/30">·</span>
+          <a href="terms.html" class="hover:text-primary hover:underline">Terms</a>
         </p>
       </div>
     </div>
   </div>
 </main>
 
+<script src="api-base.js"></script>
 <script>
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000'
-  : '';
-document.getElementById('github-oauth-btn').href = API_BASE + '/auth/github';
+const API_BASE = window.INVARIANT_API_BASE;
+
+const githubBtn = document.getElementById('github-oauth-btn');
+
+if (window.invariantDesktop) {
+  // In Electron: open OAuth in a popup so main window doesn't go black
+  githubBtn.removeAttribute('href');
+  githubBtn.style.cursor = 'pointer';
+  githubBtn.addEventListener('click', () => {
+    githubBtn.style.opacity = '0.6';
+    githubBtn.querySelector('span') && (githubBtn.querySelector('span').textContent = 'Opening…');
+    window.invariantDesktop.startGitHubOAuth();
+    window.invariantDesktop.onOAuthToken(({ token, apiKey }) => {
+      if (token) {
+        localStorage.setItem('inv_token', token);
+        if (apiKey) localStorage.setItem('inv_api_key', apiKey);
+        window.location.href = 'account.html';
+      } else {
+        githubBtn.style.opacity = '';
+        document.getElementById('error-msg').textContent = 'GitHub sign-in failed. Please try again.';
+        document.getElementById('error-msg').classList.remove('hidden');
+      }
+    });
+  });
+} else {
+  // In browser: normal redirect
+  githubBtn.href = API_BASE + '/auth/github';
+}
 
 // Show GitHub OAuth error if redirected back with ?error=
 (function checkOAuthError() {

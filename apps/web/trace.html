@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invariant | Trace Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'Inter', sans-serif; }
+  .font-headline { font-family: 'Space Grotesk', sans-serif; }
+  .font-mono { font-family: 'Fira Code', monospace; }
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  .glass-panel {
+    background: rgba(34, 42, 61, 0.8);
+    backdrop-filter: blur(16px);
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #0b1326; }
+  ::-webkit-scrollbar-thumb { background: #2d3449; border-radius: 10px; }
+
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    bottom: -8px;
+    width: 1px;
+    background: rgba(66, 71, 84, 0.4);
+  }
+  .timeline-item { position: relative; padding-left: 44px; }
+  .timeline-dot {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+  }
+
+  .session-card { cursor: pointer; transition: all 0.15s; }
+  .session-card:hover { background: rgba(34, 42, 61, 0.6); }
+  .session-card.active { background: rgba(34, 42, 61, 0.9); border-color: rgba(77, 142, 255, 0.5); }
+</style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#adc6ff",
+          "on-secondary": "#472a00",
+          "on-tertiary-container": "#00311f",
+          "tertiary-fixed": "#6ffbbe",
+          "on-error": "#690005",
+          "surface-container": "#171f33",
+          "secondary-container": "#ee9800",
+          "on-secondary-fixed": "#2a1700",
+          "on-tertiary-fixed": "#002113",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#d8e2ff",
+          "inverse-on-surface": "#283044",
+          "on-tertiary-fixed-variant": "#005236",
+          "on-surface-variant": "#c2c6d6",
+          "secondary": "#ffb95f",
+          "on-surface": "#dae2fd",
+          "surface-bright": "#31394d",
+          "on-primary": "#002e6a",
+          "inverse-surface": "#dae2fd",
+          "on-secondary-fixed-variant": "#653e00",
+          "surface-container-highest": "#2d3449",
+          "inverse-primary": "#005ac2",
+          "tertiary-container": "#00a572",
+          "surface-variant": "#2d3449",
+          "on-background": "#dae2fd",
+          "on-secondary-container": "#5b3800",
+          "outline": "#8c909f",
+          "surface": "#0b1326",
+          "on-primary-container": "#00285d",
+          "primary-container": "#4d8eff",
+          "on-tertiary": "#003824",
+          "error-container": "#93000a",
+          "outline-variant": "#424754",
+          "surface-dim": "#0b1326",
+          "on-primary-fixed": "#001a42",
+          "on-primary-fixed-variant": "#004395",
+          "tertiary-fixed-dim": "#4edea3",
+          "surface-container-low": "#131b2e",
+          "tertiary": "#4edea3",
+          "error": "#ffb4ab",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-container-lowest": "#060e20",
+          "secondary-fixed": "#ffddb8",
+          "surface-container-high": "#222a3d",
+          "surface-tint": "#adc6ff",
+          "background": "#0b1326",
+          "primary-fixed-dim": "#adc6ff"
+        },
+        fontFamily: {
+          "headline": ["Space Grotesk"],
+          "body": ["Inter"],
+          "label": ["Inter"],
+          "mono": ["Fira Code"]
+        },
+        borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+      },
+    },
+  }
+</script>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30 selection:text-primary overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-[#131b2e] py-4 shrink-0 z-50">
+  <div class="px-6 mb-8 pt-9">
+    <a href="index.html" class="group block">
+      <h1 class="text-lg font-headline text-[#dae2fd] tracking-tight group-hover:text-primary transition-colors">Invariant Engine</h1>
+      <p class="text-[10px] font-mono text-outline uppercase tracking-widest">v2.4.0-stable</p>
+    </a>
+  </div>
+  <nav class="flex-1 px-3 space-y-1">
+    <!-- World State -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="dashboard.html">
+      <span class="material-symbols-outlined text-[20px]">public</span>
+      <span class="text-sm">World State</span>
+    </a>
+    <!-- Actions & Audit -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="audit.html">
+      <span class="material-symbols-outlined text-[20px]">bolt</span>
+      <span class="text-sm">Actions &amp; Audit</span>
+    </a>
+    <!-- Constraints -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="constraints.html">
+      <span class="material-symbols-outlined text-[20px]">gavel</span>
+      <span class="text-sm">Constraints</span>
+    </a>
+    <!-- Traces (Active) -->
+    <a class="flex items-center gap-3 px-3 py-2.5 bg-[#222a3d] text-[#adc6ff] border-r-2 border-[#3B82F6] font-medium transition-all duration-200" href="trace.html">
+      <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">timeline</span>
+      <span class="text-sm">Traces</span>
+    </a>
+    <!-- Documentation -->
+    <a class="flex items-center gap-3 px-3 py-2.5 text-[#94a3b8] hover:bg-[#222a3d]/50 hover:text-[#dae2fd] transition-all duration-200" href="https://invariant.me/docs.html" target="_blank">
+      <span class="material-symbols-outlined text-[20px]">description</span>
+      <span class="text-sm">Documentation</span>
+    </a>
+  </nav>
+  <div class="px-3 mt-auto space-y-1 border-t border-outline-variant/10 pt-4">
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all cursor-pointer" onclick="toggleTerminal()">
+      <span class="material-symbols-outlined text-[18px]">terminal</span>
+      <span class="text-xs font-mono">Terminal</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all" href="audit.html">
+      <span class="material-symbols-outlined text-[18px]">list_alt</span>
+      <span class="text-xs font-mono">Logs</span>
+    </a>
+    <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:text-[#dae2fd] transition-all cursor-pointer" onclick="window.invariantDesktop && window.invariantDesktop.checkForUpdates()">
+      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 18;">upgrade</span>
+      <span class="text-xs font-mono">Check for Updates</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface relative overflow-hidden">
+
+  <!-- TopNavBar -->
+  <header class="flex justify-between items-center w-full px-6 h-16 shrink-0 bg-[#0b1326] z-40" style="-webkit-app-region: drag;">
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold text-[#dae2fd] tracking-tighter font-headline">Invariant</span>
+      <nav class="hidden lg:flex items-center gap-6" style="-webkit-app-region: no-drag;">
+        <a class="text-sm text-[#adc6ff] font-bold border-b-2 border-[#adc6ff] py-1" href="index.html">Coherence: Φ(0.98)</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4" style="-webkit-app-region: no-drag;">
+      <div class="relative group hidden sm:block">
+        <input class="bg-surface-container-low border-none rounded-lg text-sm px-4 py-1.5 w-64 focus:ring-1 focus:ring-primary text-on-surface placeholder:text-outline/50 transition-all" placeholder="Search sessions..." type="text" oninput="filterSessions(this.value)"/>
+        <span class="material-symbols-outlined absolute right-3 top-1.5 text-outline/50 text-sm">search</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="flex-1 overflow-auto p-6 flex flex-col gap-6">
+
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl font-headline font-bold text-[#dae2fd] tracking-tight">Trace Explorer</h2>
+        <p class="text-xs font-mono text-outline uppercase tracking-widest mt-1">Record and replay agent execution sessions</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-surface-container-high rounded border border-outline-variant/20">
+          <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+          <span class="font-mono text-xs text-on-surface" id="poll-status">Live, polling 10s</span>
+        </div>
+        <button onclick="openNewSessionModal()" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-sm font-bold rounded-lg hover:opacity-90 transition-opacity">
+          <span class="material-symbols-outlined text-sm">add</span>
+          New Session
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="grid grid-cols-3 gap-4">
+      <!-- Active Sessions -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary text-[18px]">play_circle</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Active Sessions</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-tertiary" id="stat-active">-</div>
+        <div class="text-xs text-on-surface-variant">Currently recording</div>
+      </div>
+      <!-- Total Events -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-[18px]">timeline</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Total Events</span>
+        </div>
+        <div class="text-4xl font-headline font-bold text-primary" id="stat-events">-</div>
+        <div class="text-xs text-on-surface-variant">Across all sessions</div>
+      </div>
+      <!-- Last Replay -->
+      <div class="bg-[#131b2e] rounded-xl p-5 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-secondary text-[18px]">replay</span>
+          <span class="text-[10px] font-mono text-outline uppercase tracking-widest">Last Replay</span>
+        </div>
+        <div class="text-lg font-mono font-bold text-secondary truncate" id="stat-last-replay">-</div>
+        <div class="text-xs text-on-surface-variant" id="stat-last-replay-time">No replays yet</div>
+      </div>
+    </div>
+
+    <!-- Two-panel Layout -->
+    <div class="flex gap-6 flex-1 min-h-0">
+
+      <!-- Left: Sessions List (1/3) -->
+      <div class="w-1/3 flex flex-col bg-[#131b2e] rounded-xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+          <h3 class="text-xs font-mono text-outline uppercase tracking-widest">Sessions</h3>
+          <span class="text-[10px] font-mono text-outline" id="session-count">0 sessions</span>
+        </div>
+        <div id="sessions-list" class="flex-1 overflow-y-auto divide-y divide-outline-variant/5">
+          <!-- Sessions rendered here -->
+          <div class="flex flex-col items-center justify-center h-full py-16 text-outline">
+            <span class="material-symbols-outlined text-4xl mb-3 opacity-40">timeline</span>
+            <p class="text-xs font-mono uppercase tracking-widest opacity-40">Loading sessions...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Timeline (2/3) -->
+      <div class="flex-1 flex flex-col bg-[#131b2e] rounded-xl overflow-hidden">
+        <div class="px-5 py-4 border-b border-outline-variant/10 flex items-center justify-between shrink-0">
+          <div>
+            <h3 class="text-xs font-mono text-outline uppercase tracking-widest">Timeline</h3>
+            <p class="text-[10px] font-mono text-outline/50 mt-0.5" id="timeline-session-label">Select a session to view events</p>
+          </div>
+          <div class="flex gap-2">
+            <button id="replay-btn" onclick="replayCurrentSession()" class="hidden items-center gap-2 px-3 py-1.5 bg-surface-container-high text-xs font-mono text-on-surface hover:text-primary border border-outline-variant/20 rounded transition-colors">
+              <span class="material-symbols-outlined text-sm">replay</span>
+              Replay
+            </button>
+            <button id="export-btn" onclick="exportTimeline()" class="hidden items-center gap-2 px-3 py-1.5 bg-surface-container-high text-xs font-mono text-on-surface hover:text-primary border border-outline-variant/20 rounded transition-colors">
+              <span class="material-symbols-outlined text-sm">download</span>
+              Export
+            </button>
+          </div>
+        </div>
+        <div id="timeline-content" class="flex-1 overflow-y-auto p-5">
+          <!-- Timeline empty state -->
+          <div id="timeline-empty" class="flex flex-col items-center justify-center h-full text-outline">
+            <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-3xl text-outline/50">account_tree</span>
+            </div>
+            <p class="text-sm font-mono text-outline/60 uppercase tracking-widest mb-2">No session selected</p>
+            <p class="text-xs text-outline/40 text-center max-w-xs">Choose a session from the left panel to view its execution timeline and event trace.</p>
+          </div>
+          <!-- Timeline events rendered here -->
+          <div id="timeline-events" class="space-y-2 hidden"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Stats Bar -->
+    <div class="h-10 flex items-center justify-between px-2 text-[10px] font-mono text-outline uppercase tracking-wider shrink-0">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+          <span id="footer-status">Trace Engine Active</span>
+        </div>
+        <span id="footer-sessions">Sessions:, </span>
+        <span id="footer-events">Events:, </span>
+      </div>
+      <div class="flex items-center gap-6">
+        <span id="footer-updated">Last updated:, </span>
+        <a href="privacy.html" class="hover:text-primary normal-case hidden sm:inline">Privacy</a>
+        <a href="terms.html" class="hover:text-primary normal-case hidden sm:inline">Terms</a>
+        <span>© 2026 Invariant</span>
+      </div>
+    </div>
+
+  </div><!-- end page content -->
+</main>
+</div>
+
+<!-- Background Decoration -->
+<div class="fixed inset-0 pointer-events-none z-[-1] opacity-40">
+  <div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full"></div>
+  <div class="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] bg-tertiary/5 blur-[120px] rounded-full"></div>
+</div>
+
+<!-- Terminal Panel -->
+<div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
+  <div class="flex items-center justify-between mb-2">
+    <span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal, Trace Session</span>
+    <button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
+  </div>
+  <div id="terminal-lines" class="space-y-1">
+    <p><span class="text-outline">-</span> [INFO] Trace Explorer initialized</p>
+    <p><span class="text-outline">-</span> [INFO] Polling for sessions every 10s</p>
+    <p><span class="text-[#adc6ff]">▸</span> _</p>
+  </div>
+</div>
+
+<!-- New Session Modal -->
+<div id="new-session-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div class="bg-[#222a3d]/90 backdrop-blur border border-outline-variant/30 rounded-xl p-8 w-full max-w-md shadow-2xl">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+        <span class="material-symbols-outlined text-primary">add_circle</span>
+      </div>
+      <div>
+        <h3 class="text-lg font-headline font-bold text-on-surface">New Trace Session</h3>
+        <p class="text-xs text-on-surface-variant">Start recording an agent execution trace</p>
+      </div>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="text-[10px] font-mono text-outline uppercase tracking-widest block mb-1.5">Session Name</label>
+        <input id="session-name" type="text" placeholder="e.g. deploy-agent-run-42" class="w-full bg-[#131b2e] border border-outline-variant/20 rounded-lg text-sm text-on-surface p-3 focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-outline/40"/>
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-outline uppercase tracking-widest block mb-1.5">Description</label>
+        <textarea id="session-desc" rows="2" placeholder="What is this trace capturing?" class="w-full bg-[#131b2e] border border-outline-variant/20 rounded-lg text-sm text-on-surface p-3 resize-none focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-outline/40"></textarea>
+      </div>
+      <div>
+        <label class="text-[10px] font-mono text-outline uppercase tracking-widest block mb-1.5">Entity IDs <span class="text-outline/50">(comma-separated, optional)</span></label>
+        <input id="session-entities" type="text" placeholder="e.g. agent-1, gateway-alpha, db-primary" class="w-full bg-[#131b2e] border border-outline-variant/20 rounded-lg text-sm text-on-surface p-3 focus:ring-1 focus:ring-primary focus:outline-none placeholder:text-outline/40"/>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6 justify-end">
+      <button onclick="closeNewSessionModal()" class="px-5 py-2 border border-outline-variant/30 text-on-surface text-sm font-bold rounded hover:bg-surface-container-high transition-colors">Cancel</button>
+      <button onclick="createSession()" class="px-5 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-sm font-bold rounded hover:opacity-90 transition-opacity">Start Session</button>
+    </div>
+  </div>
+</div>
+
+<script src="api-base.js"></script>
+<script>
+const API_BASE = window.INVARIANT_API_BASE;
+const API_KEY = localStorage.getItem('inv_api_key') || 'dev-api-key';
+const HEADERS = { 'X-API-Key': API_KEY, 'Content-Type': 'application/json' };
+
+let selectedSessionId = null;
+let allSessions = [];
+let lastReplayName = null;
+
+// ───────────────────────────────────── Utilities ──────────────────────────────────────
+
+function toggleTerminal() {
+  document.getElementById('terminal-panel').classList.toggle('hidden');
+}
+
+function termLog(lines) {
+  const container = document.getElementById('terminal-lines');
+  if (!container) return;
+  const now = new Date().toISOString().substring(11, 19);
+  lines.forEach(line => {
+    const p = document.createElement('p');
+    p.innerHTML = `<span class="text-outline">${now}</span> ${line}`;
+    container.insertBefore(p, container.lastElementChild);
+  });
+}
+
+function fmtTime(iso) {
+  if (!iso) return '-';
+  try { return new Date(iso).toISOString().replace('T', ' ').substring(0, 19) + ' UTC'; }
+  catch { return iso; }
+}
+
+function fmtRelative(iso) {
+  if (!iso) return '-';
+  const diff = Date.now() - new Date(iso).getTime();
+  if (diff < 60000) return `${Math.floor(diff / 1000)}s ago`;
+  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+  return `${Math.floor(diff / 3600000)}h ago`;
+}
+
+// ───────────────────────────────────── Rendering ──────────────────────────────────────
+
+const EVENT_TYPE_COLORS = {
+  CLAIM_ADDED: 'tertiary',
+  CONTRADICTION_DETECTED: 'error',
+  CONSTRAINT_VIOLATED: 'error',
+  ACTION_PROPOSED: 'primary',
+  ACTION_VALIDATED: 'tertiary',
+  SETTLING_PASS: 'primary',
+  ENTITY_CREATED: 'tertiary',
+  COHERENCE_UPDATE: 'primary',
+  OBSERVATION_INGESTED: 'outline',
+};
+
+const EVENT_TYPE_ICONS = {
+  CLAIM_ADDED: 'add_circle',
+  CONTRADICTION_DETECTED: 'warning',
+  CONSTRAINT_VIOLATED: 'report',
+  ACTION_PROPOSED: 'send',
+  ACTION_VALIDATED: 'verified',
+  SETTLING_PASS: 'sync',
+  ENTITY_CREATED: 'hub',
+  COHERENCE_UPDATE: 'analytics',
+  OBSERVATION_INGESTED: 'visibility',
+};
+
+function renderSessionCard(session, isActive) {
+  const statusActive = session.status === 'ACTIVE';
+  const statusColor = statusActive ? 'tertiary' : 'outline';
+  const statusLabel = statusActive ? 'ACTIVE' : 'ENDED';
+  const time = fmtTime(session.startedAt || session.createdAt);
+  const eventCount = session.eventCount ?? session._count?.events ?? 0;
+  const isSelected = session.id === selectedSessionId;
+
+  return `
+    <div class="session-card px-5 py-4 border border-transparent rounded-lg mx-2 my-1 ${isSelected ? 'active border-primary-container/50 bg-[#222a3d]/90' : ''}"
+         data-session-id="${session.id}"
+         onclick="selectSession('${session.id}')">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm font-bold text-on-surface truncate max-w-[160px]">${session.name || session.id.substring(0, 12)}</span>
+        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded ${statusActive ? 'bg-tertiary/10 text-tertiary' : 'bg-surface-container-highest text-outline'} shrink-0">${statusLabel}</span>
+      </div>
+      <p class="text-[10px] text-on-surface-variant mb-2 truncate">${session.description || 'No description'}</p>
+      <div class="flex items-center justify-between text-[10px] font-mono text-outline">
+        <span>${eventCount} event${eventCount !== 1 ? 's' : ''}</span>
+        <span>${fmtRelative(session.startedAt || session.createdAt)}</span>
+      </div>
+      ${isSelected ? `
+      <div class="mt-3 pt-3 border-t border-outline-variant/10 flex gap-2">
+        <button onclick="event.stopPropagation(); replayCurrentSession()" class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-high text-[10px] font-mono text-on-surface-variant hover:text-primary rounded transition-colors">
+          <span class="material-symbols-outlined text-xs">replay</span>Replay
+        </button>
+        <button onclick="event.stopPropagation(); exportTimeline()" class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container-high text-[10px] font-mono text-on-surface-variant hover:text-primary rounded transition-colors">
+          <span class="material-symbols-outlined text-xs">download</span>Export
+        </button>
+      </div>` : ''}
+    </div>`;
+}
+
+function renderTimelineEvent(event, index) {
+  const type = event.type || 'UNKNOWN';
+  const color = EVENT_TYPE_COLORS[type] || 'outline';
+  const icon = EVENT_TYPE_ICONS[type] || 'circle';
+  const time = fmtTime(event.createdAt || event.timestamp);
+  const entityIds = event.entityIds?.join(', ') || event.entityId || '-';
+  const data = event.data ? JSON.stringify(event.data, null, 2) : null;
+  const dataPreview = event.data ? Object.entries(event.data).slice(0, 3).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join(' · ') : '';
+
+  return `
+    <div class="timeline-item pb-4">
+      <div class="timeline-dot bg-${color}/20 border border-${color}/40">
+        <span class="material-symbols-outlined text-${color}" style="font-size:10px; font-variation-settings: 'FILL' 1;">${icon}</span>
+      </div>
+      <div class="bg-surface-container-lowest rounded-lg p-3 border border-outline-variant/10 hover:border-outline-variant/30 transition-colors group">
+        <div class="flex items-start justify-between gap-3 mb-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] font-mono px-1.5 py-0.5 bg-${color}/10 text-${color} rounded">${type}</span>
+            ${entityIds !== '-' ? `<span class="text-[10px] font-mono text-outline/60 truncate max-w-[180px]">${entityIds}</span>` : ''}
+          </div>
+          <span class="text-[10px] font-mono text-outline/50 shrink-0">${time}</span>
+        </div>
+        ${dataPreview ? `<p class="text-[11px] font-mono text-on-surface-variant mt-1 leading-relaxed">${dataPreview}</p>` : ''}
+        ${data ? `
+        <details class="mt-2">
+          <summary class="text-[10px] font-mono text-outline/50 cursor-pointer hover:text-outline transition-colors select-none">Show raw data</summary>
+          <pre class="mt-2 p-2 bg-surface-container-high rounded text-[10px] font-mono text-on-surface-variant overflow-auto max-h-32">${data}</pre>
+        </details>` : ''}
+      </div>
+    </div>`;
+}
+
+// ───────────────────────────────────── Data loading ──────────────────────────────────
+
+async function loadSessions() {
+  try {
+    const res = await fetch(`${API_BASE}/trace/sessions`, { headers: HEADERS });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    allSessions = Array.isArray(data) ? data : (data.sessions || []);
+
+    const activeCount = allSessions.filter(s => s.status === 'ACTIVE').length;
+    const totalEvents = allSessions.reduce((sum, s) => sum + (s.eventCount ?? s._count?.events ?? 0), 0);
+
+    document.getElementById('stat-active').textContent = activeCount;
+    document.getElementById('stat-events').textContent = totalEvents;
+    document.getElementById('session-count').textContent = `${allSessions.length} session${allSessions.length !== 1 ? 's' : ''}`;
+    document.getElementById('footer-sessions').textContent = `Sessions: ${allSessions.length}`;
+    document.getElementById('footer-events').textContent = `Events: ${totalEvents}`;
+    document.getElementById('footer-updated').textContent = `Last updated: ${new Date().toISOString().substring(11, 19)} UTC`;
+
+    renderSessionsList();
+    termLog([`[INFO] Loaded ${allSessions.length} trace session(s), ${activeCount} active`]);
+  } catch (e) {
+    // API not available, show placeholder state
+    document.getElementById('stat-active').textContent = '0';
+    document.getElementById('stat-events').textContent = '0';
+    document.getElementById('sessions-list').innerHTML = `
+      <div class="flex flex-col items-center justify-center h-full py-16 text-outline px-5">
+        <span class="material-symbols-outlined text-4xl mb-3 opacity-30">cloud_off</span>
+        <p class="text-xs font-mono uppercase tracking-widest opacity-40 text-center">API unavailable</p>
+        <p class="text-[10px] text-outline/30 text-center mt-1">Start the Invariant engine to see sessions</p>
+      </div>`;
+    termLog([`[WARN] Could not load sessions: ${e.message}`]);
+  }
+}
+
+function renderSessionsList(filter = '') {
+  const list = document.getElementById('sessions-list');
+  const filtered = filter
+    ? allSessions.filter(s => (s.name || '').toLowerCase().includes(filter) || (s.description || '').toLowerCase().includes(filter))
+    : allSessions;
+
+  if (filtered.length === 0) {
+    list.innerHTML = `
+      <div class="flex flex-col items-center justify-center h-full py-16 text-outline">
+        <span class="material-symbols-outlined text-4xl mb-3 opacity-40">search_off</span>
+        <p class="text-xs font-mono uppercase tracking-widest opacity-40">No sessions found</p>
+      </div>`;
+    return;
+  }
+
+  // Sort: ACTIVE first, then by time descending
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1;
+    if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1;
+    return new Date(b.startedAt || b.createdAt) - new Date(a.startedAt || a.createdAt);
+  });
+
+  list.innerHTML = sorted.map(s => renderSessionCard(s)).join('');
+}
+
+async function selectSession(sessionId) {
+  selectedSessionId = sessionId;
+  const session = allSessions.find(s => s.id === sessionId);
+
+  // Re-render session list to show active state
+  renderSessionsList();
+
+  const label = document.getElementById('timeline-session-label');
+  const empty = document.getElementById('timeline-empty');
+  const events = document.getElementById('timeline-events');
+
+  if (session) {
+    label.textContent = `Session: ${session.name || sessionId.substring(0, 12)} · ${session.status}`;
+  }
+
+  // Show loading
+  empty.classList.add('hidden');
+  events.classList.remove('hidden');
+  events.innerHTML = `<div class="flex items-center justify-center py-12 text-outline"><span class="material-symbols-outlined animate-spin mr-2">refresh</span><span class="font-mono text-xs">Loading events...</span></div>`;
+
+  // Show header buttons
+  document.getElementById('replay-btn').classList.remove('hidden');
+  document.getElementById('replay-btn').classList.add('flex');
+  document.getElementById('export-btn').classList.remove('hidden');
+  document.getElementById('export-btn').classList.add('flex');
+
+  try {
+    const res = await fetch(`${API_BASE}/trace/sessions/${sessionId}/events`, { headers: HEADERS });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const evList = Array.isArray(data) ? data : (data.events || []);
+
+    if (evList.length === 0) {
+      events.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-12 text-outline">
+          <span class="material-symbols-outlined text-3xl mb-3 opacity-40">inbox</span>
+          <p class="text-xs font-mono uppercase tracking-widest opacity-40">No events recorded yet</p>
+        </div>`;
+      return;
+    }
+
+    events.innerHTML = evList.map((e, i) => renderTimelineEvent(e, i)).join('');
+    termLog([`[INFO] Loaded ${evList.length} event(s) for session ${sessionId.substring(0, 8)}`]);
+  } catch (e) {
+    events.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12 text-outline">
+        <span class="material-symbols-outlined text-3xl mb-3 opacity-40">cloud_off</span>
+        <p class="text-xs font-mono uppercase tracking-widest opacity-40">Could not load events</p>
+        <p class="text-[10px] text-outline/30 text-center mt-1">${e.message}</p>
+      </div>`;
+    termLog([`[ERROR] Failed to load events: ${e.message}`]);
+  }
+}
+
+// ───────────────────────────────────── Actions ──────────────────────────────────────
+
+async function replayCurrentSession() {
+  if (!selectedSessionId) return;
+  const btn = document.getElementById('replay-btn');
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">refresh</span> Replaying...`;
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/trace/sessions/${selectedSessionId}/replay`, {
+      method: 'POST',
+      headers: HEADERS,
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const session = allSessions.find(s => s.id === selectedSessionId);
+    lastReplayName = session?.name || selectedSessionId.substring(0, 12);
+    document.getElementById('stat-last-replay').textContent = lastReplayName;
+    document.getElementById('stat-last-replay-time').textContent = fmtRelative(new Date().toISOString());
+    termLog([`[REPLAY] Session ${selectedSessionId.substring(0, 8)} replay initiated`]);
+    await loadSessions();
+  } catch (e) {
+    termLog([`[ERROR] Replay failed: ${e.message}`]);
+  } finally {
+    btn.innerHTML = origHTML;
+    btn.disabled = false;
+  }
+}
+
+function exportTimeline() {
+  const session = allSessions.find(s => s.id === selectedSessionId);
+  if (!session) return;
+  const eventsEl = document.getElementById('timeline-events');
+  const data = {
+    session: { id: session.id, name: session.name, status: session.status, startedAt: session.startedAt },
+    exportedAt: new Date().toISOString(),
+    events: `[See network tab for raw event data from GET /trace/sessions/${session.id}/events]`,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `trace_${(session.name || session.id).replace(/\s+/g, '_')}.json`;
+  a.click();
+  termLog([`[EXPORT] Timeline exported for session ${session.id.substring(0, 8)}`]);
+}
+
+// ───────────────────────────────────── Modal ──────────────────────────────────────
+
+function openNewSessionModal() {
+  document.getElementById('new-session-modal').classList.remove('hidden');
+}
+
+function closeNewSessionModal() {
+  document.getElementById('new-session-modal').classList.add('hidden');
+}
+
+async function createSession() {
+  const name = document.getElementById('session-name').value.trim();
+  const description = document.getElementById('session-desc').value.trim();
+  const entityRaw = document.getElementById('session-entities').value.trim();
+  const entityIds = entityRaw ? entityRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+  if (!name) { alert('Session name is required.'); return; }
+
+  const btn = document.querySelector('#new-session-modal button[onclick="createSession()"]');
+  btn.disabled = true;
+  btn.textContent = 'Starting...';
+
+  try {
+    const res = await fetch(`${API_BASE}/trace/sessions`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ name, description, entityIds }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const session = await res.json();
+    closeNewSessionModal();
+    document.getElementById('session-name').value = '';
+    document.getElementById('session-desc').value = '';
+    document.getElementById('session-entities').value = '';
+    termLog([`[INFO] New trace session created: ${session.id?.substring(0, 8)}, ${name}`]);
+    await loadSessions();
+    if (session.id) selectSession(session.id);
+  } catch (e) {
+    termLog([`[ERROR] Failed to create session: ${e.message}`]);
+    alert(`Failed to create session: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Start Session';
+  }
+}
+
+function filterSessions(query) {
+  renderSessionsList(query.toLowerCase());
+}
+
+// ───────────────────────────────────── Bootstrap ──────────────────────────────────────
+
+loadSessions();
+setInterval(loadSessions, 10000);
+</script>
+</body></html>

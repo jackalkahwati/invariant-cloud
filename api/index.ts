@@ -1,12 +1,17 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { buildApp } from '../apps/api/src/app.js';
 
-type FastifyApp = Awaited<ReturnType<typeof buildApp>>;
-let app: FastifyApp | null = null;
+// Vercel compiles this file as CJS (no "type":"module" in root package.json).
+// apps/api is ESM ("type":"module"), so we must use a dynamic import() to
+// load the compiled ESM output — require() would throw ERR_REQUIRE_ESM.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let app: any = null;
 
-async function getApp(): Promise<FastifyApp> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getApp(): Promise<any> {
   if (!app) {
-    app = await buildApp();
+    // Dynamic import works from CJS → ESM
+    const mod = await import('../apps/api/dist/app.js');
+    app = await mod.buildApp();
   }
   return app;
 }

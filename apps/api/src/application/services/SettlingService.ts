@@ -1,5 +1,5 @@
 /**
- * SettlingService — Discrete Fixed-Point Reconciliation
+ * SettlingService, Discrete Fixed-Point Reconciliation
  *
  * Implements the settling operator T:
  *   G^(r+1) = T(G^(r))

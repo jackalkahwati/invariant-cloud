@@ -112,7 +112,7 @@ export class PolicyService {
         case 'DENY':
           decision.allowed = false;
           decision.effect = 'DENY';
-          // Deny is final — stop evaluating
+          // Deny is final, stop evaluating
           return decision;
 
         case 'REQUIRE_APPROVAL':
@@ -134,7 +134,7 @@ export class PolicyService {
           break;
 
         case 'ALLOW':
-          // Explicit allow — keep going (lower-priority rules could still block)
+          // Explicit allow, keep going (lower-priority rules could still block)
           break;
       }
     }
@@ -257,7 +257,7 @@ function evaluateCondition(
     }
 
     default:
-      // Unknown condition type — conservative: treat as triggered
+      // Unknown condition type, conservative: treat as triggered
       return false;
   }
 }

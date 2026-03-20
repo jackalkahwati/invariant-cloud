@@ -82,11 +82,19 @@
 <body class="bg-surface text-on-surface font-body min-h-screen selection:bg-primary-container selection:text-on-primary-container">
 
 <!-- Top nav -->
-<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] border-b border-outline-variant/10">
-  <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter font-['Space_Grotesk'] hover:text-primary transition-colors">Invariant</a>
+<nav class="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-[#0b1326] font-['Space_Grotesk'] tracking-tight border-b border-outline-variant/10">
+  <div class="flex items-center gap-8">
+    <a href="index.html" class="text-xl font-bold text-[#dae2fd] tracking-tighter hover:text-primary transition-colors">Invariant</a>
+    <div class="hidden md:flex gap-6">
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="index.html">Home</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="docs.html">Docs</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="pricing.html">Pricing</a>
+      <a class="text-[#94a3b8] hover:text-[#adc6ff] transition-colors h-16 flex items-center" href="https://github.com/jackalkahwati/invariant-cloud" target="_blank">GitHub</a>
+    </div>
+  </div>
   <div class="flex items-center gap-4">
     <a href="login.html" class="text-sm text-outline hover:text-primary transition-colors">Sign in</a>
-    <a href="register.html" class="bg-gradient-to-br from-primary to-primary-container text-on-primary-container text-xs px-3 py-1.5 rounded font-bold">Sign up</a>
+    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
     <button id="signout-btn" onclick="signOut()" class="hidden text-sm text-outline hover:text-error transition-colors">Sign out</button>
   </div>
 </nav>
@@ -130,31 +138,30 @@
           <p id="trial-info" class="hidden text-xs text-outline font-mono"></p>
         </div>
         <div id="upgrade-section" class="hidden">
-          <button
-            id="upgrade-btn"
-            onclick="startUpgrade()"
-            class="cta-primary text-on-primary font-bold text-sm px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+          <a
+            href="pricing.html#cloud-plans"
+            class="cta-primary text-on-primary font-bold text-sm px-4 py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
           >
             <span class="material-symbols-outlined text-sm">rocket_launch</span>
-            <span id="upgrade-btn-text">Upgrade to Team</span>
-          </button>
-          <p class="text-xs text-outline mt-2 text-right">14-day free trial</p>
+            <span>Choose a cloud plan</span>
+          </a>
+          <p class="text-xs text-outline mt-2 text-right">Starter or Team, 14-day trial on Stripe checkout</p>
         </div>
       </div>
     </div>
 
-    <!-- Usage (only for TEAM tier) -->
+    <!-- Usage (Starter / Team / Enterprise, v0: claims counter until billable units ship) -->
     <div id="usage-card" class="hidden bg-surface-container-low rounded-xl p-6 border border-outline-variant/20">
       <h2 class="font-['Space_Grotesk'] text-lg font-bold text-on-surface mb-4">Usage This Month</h2>
       <div class="space-y-3">
         <div class="flex justify-between text-sm mb-1">
-          <span class="text-on-surface-variant">Claims</span>
+          <span class="text-on-surface-variant">Claims recorded</span>
           <span id="claims-label" class="text-primary font-mono text-xs"></span>
         </div>
         <div class="w-full bg-surface-container rounded-full h-2">
           <div id="claims-bar" class="cta-primary h-2 rounded-full transition-all" style="width: 0%"></div>
         </div>
-        <p class="text-xs text-outline">10,000,000 claims included per month</p>
+        <p id="usage-limit-hint" class="text-xs text-outline"></p>
       </div>
     </div>
 
@@ -176,6 +183,12 @@
       </div>
     </div>
 
+    <p class="text-center text-xs text-outline/60 pt-8">
+      <a href="privacy.html" class="hover:text-primary hover:underline">Privacy</a>
+      <span class="mx-2 text-outline/30">·</span>
+      <a href="terms.html" class="hover:text-primary hover:underline">Terms</a>
+    </p>
+
   </div>
 </main>
 
@@ -187,7 +200,7 @@
       <h2 class="font-['Space_Grotesk'] text-xl font-bold text-on-surface">New API Key Created</h2>
     </div>
     <div class="bg-surface-container-lowest rounded-lg p-4 mb-4 border border-outline-variant/20">
-      <p class="text-xs font-mono text-outline uppercase tracking-wider mb-2">Save this — it won't be shown again</p>
+      <p class="text-xs font-mono text-outline uppercase tracking-wider mb-2">Save this, it won't be shown again</p>
       <code id="newkey-display" class="font-mono text-sm text-primary break-all block"></code>
     </div>
     <button
@@ -207,10 +220,9 @@
   </div>
 </div>
 
+<script src="api-base.js"></script>
 <script>
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3000'
-  : '';
+const API_BASE = window.INVARIANT_API_BASE;
 let currentWorkspace = null;
 let newKeyValue = '';
 
@@ -225,6 +237,7 @@ function getToken() {
 }
 
 function tierBadgeClasses(tier) {
+  if (tier === 'STARTER') return 'text-primary border-primary/30 bg-primary/10';
   if (tier === 'TEAM') return 'text-tertiary border-tertiary/30 bg-tertiary/10';
   if (tier === 'ENTERPRISE') return 'text-secondary border-secondary/30 bg-secondary/10';
   return 'text-outline border-outline/30 bg-outline/10';
@@ -285,7 +298,13 @@ async function loadWorkspace() {
     tierBadge.className = `text-xs font-mono font-bold px-2 py-0.5 rounded border ${tierBadgeClasses(ws.tier)}`;
 
     // Plan card
-    document.getElementById('plan-tier-label').textContent = ws.tier === 'FREE' ? 'Free (Self-Hosted)' : ws.tier === 'TEAM' ? 'Team — Cloud' : 'Enterprise — Cloud';
+    const tierLabels = {
+      FREE: 'Free (self-hosted)',
+      STARTER: 'Starter, Cloud',
+      TEAM: 'Team, Cloud',
+      ENTERPRISE: 'Enterprise, Cloud',
+    };
+    document.getElementById('plan-tier-label').textContent = tierLabels[ws.tier] || ws.tier;
     const statusChip = document.getElementById('plan-status-chip');
     statusChip.textContent = ws.status;
     statusChip.className = `text-xs font-mono px-2 py-0.5 rounded border ${statusChipClasses(ws.status)}`;
@@ -300,15 +319,19 @@ async function loadWorkspace() {
       document.getElementById('upgrade-section').classList.remove('hidden');
     }
 
-    // Usage (TEAM only)
-    if (ws.tier === 'TEAM' || ws.tier === 'ENTERPRISE') {
+    // Usage (paid cloud, v0 compares claims to tier marketing cap)
+    if (ws.tier === 'STARTER' || ws.tier === 'TEAM' || ws.tier === 'ENTERPRISE') {
       const usageCard = document.getElementById('usage-card');
       usageCard.classList.remove('hidden');
       const claims = ws.claimsThisMonth || 0;
-      const limit = 10000000;
+      const limit = ws.tier === 'STARTER' ? 1_000_000 : 10_000_000;
       const pct = Math.min((claims / limit) * 100, 100).toFixed(1);
       document.getElementById('claims-label').textContent = `${claims.toLocaleString()} / ${limit.toLocaleString()}`;
       document.getElementById('claims-bar').style.width = `${pct}%`;
+      document.getElementById('usage-limit-hint').textContent =
+        ws.tier === 'STARTER'
+          ? '~1M billable units/mo included (v0: claims shown; see docs/billing-pricing.md). Soft limits pre-launch.'
+          : '~10M billable units/mo included (v0: claims shown). Soft limits pre-launch.';
     }
 
     // API Keys
@@ -408,40 +431,6 @@ async function revokeKey(keyId) {
     }
   } catch {
     alert('Could not reach the API.');
-  }
-}
-
-async function startUpgrade() {
-  const token = getToken();
-  const btn = document.getElementById('upgrade-btn');
-  const btnText = document.getElementById('upgrade-btn-text');
-  btn.disabled = true;
-  btnText.textContent = 'Redirecting…';
-
-  try {
-    const ws = JSON.parse(localStorage.getItem('inv_workspace') || '{}');
-    const userEmail = document.getElementById('user-email').textContent;
-
-    const res = await fetch(`${API_BASE}/checkout/session`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        workspaceId: currentWorkspace?.id || ws.id,
-        email: userEmail,
-      }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data.error || 'Could not start checkout');
-      btn.disabled = false;
-      btnText.textContent = 'Upgrade to Team';
-      return;
-    }
-    window.location.href = data.url;
-  } catch {
-    alert('Could not reach the API. Make sure the server is running on localhost:3000.');
-    btn.disabled = false;
-    btnText.textContent = 'Upgrade to Team';
   }
 }
 

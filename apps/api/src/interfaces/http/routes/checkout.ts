@@ -1,8 +1,8 @@
 /**
  * Stripe Checkout Routes
  *
- * POST /checkout/session  — create a Stripe Checkout session (Team tier)
- * POST /checkout/webhook  — handle Stripe webhook events
+ * POST /checkout/session , create a Stripe Checkout session (Starter / Team / Enterprise)
+ * POST /checkout/webhook , handle Stripe webhook events
  */
 
 import type { FastifyInstance } from 'fastify';
@@ -17,16 +17,16 @@ function getStripe(): Stripe | null {
 }
 
 export async function checkoutRoutes(app: FastifyInstance) {
-  app.post<{ Body?: { workspaceId?: string; email?: string; tier?: 'team' | 'enterprise' } }>('/checkout/session', {
+  app.post<{ Body?: { workspaceId?: string; email?: string; tier?: 'starter' | 'team' | 'enterprise' } }>('/checkout/session', {
     schema: {
       tags: ['Billing'],
-      summary: 'Create a Stripe Checkout session (team or enterprise tier)',
+      summary: 'Create a Stripe Checkout session (starter, team, or enterprise tier)',
       body: {
         type: 'object',
         properties: {
           workspaceId: { type: 'string' },
           email:       { type: 'string' },
-          tier:        { type: 'string', enum: ['team', 'enterprise'] },
+          tier:        { type: 'string', enum: ['starter', 'team', 'enterprise'] },
         },
       },
     },
@@ -35,10 +35,14 @@ export async function checkoutRoutes(app: FastifyInstance) {
     if (!stripe) return reply.status(503).send({ error: 'Stripe is not configured. Set STRIPE_SECRET_KEY.' });
 
     const tier = req.body?.tier ?? 'team';
-    const priceId = tier === 'enterprise' ? stripeConfig.enterprisePriceId : stripeConfig.teamPriceId;
+    const priceId =
+      tier === 'enterprise' ? stripeConfig.enterprisePriceId
+        : tier === 'starter' ? stripeConfig.starterPriceId
+          : stripeConfig.teamPriceId;
 
+    const tierKey = tier === 'enterprise' ? 'ENTERPRISE' : tier === 'starter' ? 'STARTER' : 'TEAM';
     if (!priceId) return reply.status(503).send({
-      error: `STRIPE_${tier.toUpperCase()}_PRICE_ID is not set. Create a recurring price in your Stripe dashboard.`,
+      error: `Set STRIPE_${tierKey}_PRICE_ID (or STRIPE_TEAM_PRICE_ID for team) in env. Create a recurring price in Stripe.`,
     });
 
     const session = await stripe.checkout.sessions.create({
@@ -88,7 +92,10 @@ export async function checkoutRoutes(app: FastifyInstance) {
           // Retrieve subscription to read the tier metadata we embedded
           const sub = await stripe.subscriptions.retrieve(session.subscription as string);
           const tierMeta = sub.metadata?.tier ?? 'team';
-          const newTier = tierMeta === 'enterprise' ? 'ENTERPRISE' : 'TEAM';
+          const newTier =
+            tierMeta === 'enterprise' ? 'ENTERPRISE'
+              : tierMeta === 'starter' ? 'STARTER'
+                : 'TEAM';
 
           const workspace = await prisma.workspace.update({
             where: { id: workspaceId },

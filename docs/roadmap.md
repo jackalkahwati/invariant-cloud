@@ -1,4 +1,4 @@
-# Coherence Engine — Roadmap
+# Coherence Engine, Roadmap
 
 ## v1 (Current MVP)
 
@@ -19,7 +19,7 @@
 - [x] Agent SDK
 - [x] Engineering scenario seed
 
-## v2 — Planned Extensions
+## v2, Planned Extensions
 
 ### Semantic Contradiction Detection
 - Embed claim values into vector space (sentence-transformers or via LLM)

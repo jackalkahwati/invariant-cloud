@@ -115,17 +115,15 @@
 <span class="material-symbols-outlined text-lg">gavel</span>
 <span>Constraints</span>
 </a>
-<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="docs.html">
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="trace.html">
+<span class="material-symbols-outlined text-lg">timeline</span>
+<span>Traces</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 transition-all duration-200 ease-in-out" href="https://invariant.me/docs.html" target="_blank">
 <span class="material-symbols-outlined text-lg">description</span>
 <span>Documentation</span>
 </a>
 </nav>
-<div class="px-4 mt-6">
-<button class="w-full py-2.5 gradient-cta text-on-primary-container font-bold rounded shadow-lg shadow-primary/10 flex items-center justify-center gap-2 active:opacity-80 transition-opacity">
-<span class="material-symbols-outlined text-sm">rocket_launch</span>
-                    Deploy Agent
-                </button>
-</div>
 <div class="mt-auto px-3 space-y-1 border-t border-outline-variant/10 pt-4">
 <a class="flex items-center gap-3 px-3 py-2 text-[#94a3b8] hover:bg-[#222a3d]/50 cursor-pointer" onclick="toggleTerminal()">
 <span class="material-symbols-outlined text-lg">terminal</span>
@@ -383,6 +381,8 @@
 <span class="material-symbols-outlined text-outline text-sm">schedule</span>
 <span class="text-[10px] font-mono text-outline">TIMESTAMP: 2023-10-24 14:02:11 UTC</span>
 </div>
+<a href="privacy.html" class="text-[10px] font-mono text-outline hover:text-primary hidden lg:inline">Privacy</a>
+<a href="terms.html" class="text-[10px] font-mono text-outline hover:text-primary hidden lg:inline">Terms</a>
 <span class="text-[10px] font-mono text-outline hidden lg:inline">© 2026 Invariant</span>
 </div>
 <div class="flex gap-3">
@@ -396,15 +396,15 @@
 <!-- Terminal Panel -->
 <div id="terminal-panel" class="hidden fixed bottom-0 left-64 right-0 h-48 bg-[#060e20] border-t border-outline-variant/20 font-mono text-xs text-[#4edea3] p-4 overflow-y-auto z-50 transition-all">
 <div class="flex items-center justify-between mb-2">
-<span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal — Trace inv_9921_xaa_882</span>
+<span class="text-[10px] uppercase tracking-widest text-outline">Invariant Terminal, Trace inv_9921_xaa_882</span>
 <button onclick="toggleTerminal()" class="text-outline hover:text-on-surface text-xs">✕ close</button>
 </div>
 <div class="space-y-1">
 <p><span class="text-outline">14:02:09</span> [INFO] Validation sweep initiated for POST /actions/deploy</p>
-<p><span class="text-outline">14:02:10</span> [INFO] Claim #104 verified — coverage 94.2% — COMMITTED</p>
-<p><span class="text-outline">14:02:11</span> [ERROR] Claim #152 CONFLICT — /src/auth.core deleted by agent-alpha-09</p>
-<p><span class="text-outline">14:02:11</span> [BLOCK] Action #153 halted — reason: FS_CONTRADICTION</p>
-<p><span class="text-outline">14:02:12</span> [INFO] Admissibility score Ψ = 0.32 — below threshold 0.85</p>
+<p><span class="text-outline">14:02:10</span> [INFO] Claim #104 verified, coverage 94.2%, COMMITTED</p>
+<p><span class="text-outline">14:02:11</span> [ERROR] Claim #152 CONFLICT, /src/auth.core deleted by agent-alpha-09</p>
+<p><span class="text-outline">14:02:11</span> [BLOCK] Action #153 halted, reason: FS_CONTRADICTION</p>
+<p><span class="text-outline">14:02:12</span> [INFO] Admissibility score Ψ = 0.32, below threshold 0.85</p>
 <p><span class="text-[#adc6ff]">▸</span> _</p>
 </div>
 </div>
@@ -422,12 +422,13 @@
 </div>
 </div>
 
+<script src="api-base.js"></script>
 <script>
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000'
-  : 'https://invariant-api-450112670986.us-central1.run.app';
+const API_BASE = window.INVARIANT_API_BASE;
 const API_KEY = localStorage.getItem('inv_api_key') || 'dev-api-key';
 const HEADERS = { 'X-API-Key': API_KEY };
+
+let currentActionId = null; // set to the most recent BLOCKED action ID
 
 function toggleTerminal() {
   document.getElementById('terminal-panel').classList.toggle('hidden');
@@ -467,7 +468,7 @@ function renderAuditFromEvents(contradictions, auditEvents) {
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-mono text-${color}">CONTRADICTION — ${c.severity}</span>
+            <span class="text-xs font-mono text-${color}">CONTRADICTION, ${c.severity}</span>
             <span class="text-on-surface font-semibold text-sm">${c.description || c.type}</span>
           </div>
           <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Score: ${c.score?.toFixed(3)} · Type: ${c.type} · Status: ${c.status}</div>
@@ -532,10 +533,10 @@ function renderAuditTrail(contradictions, actions) {
         </div>
         <div class="flex-1">
           <div class="flex items-center gap-2 mb-1">
-            <span class="text-xs font-mono text-${color}">CONTRADICTION — ${c.severity}</span>
+            <span class="text-xs font-mono text-${color}">CONTRADICTION, ${c.severity}</span>
             <span class="text-on-surface font-semibold text-sm truncate">${c.type || 'STATE_CONFLICT'}</span>
           </div>
-          <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Score: ${c.score?.toFixed(3)} — Claims ${c.claimAId?.substring(0,8)} vs ${c.claimBId?.substring(0,8)} — Status: ${c.status}</div>
+          <div class="text-xs text-on-surface-variant mb-3 leading-relaxed">Score: ${c.score?.toFixed(3)}, Claims ${c.claimAId?.substring(0,8)} vs ${c.claimBId?.substring(0,8)}, Status: ${c.status}</div>
           <div class="flex gap-2 flex-wrap">
             <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-${color} rounded">SCORE:${c.score?.toFixed(2)}</span>
             <span class="text-[9px] font-mono bg-surface-container-highest px-2 py-0.5 text-outline rounded">${time} UTC</span>
@@ -552,7 +553,7 @@ function renderAuditTrail(contradictions, actions) {
     const val = a.validation;
     const admiss = val?.admissibility || a.status;
     const color = STATUS_COLORS[admiss] || 'outline';
-    const conf = val ? (100 - val.psiScore * 100).toFixed(1) : '—';
+    const conf = val ? (100 - val.psiScore * 100).toFixed(1) : '-';
     const time = new Date(a.createdAt).toISOString().substring(11, 19);
     items.push(`
       <div class="audit-item p-6 flex items-start gap-6 hover:bg-surface-container-high/40 transition-colors">
@@ -607,9 +608,10 @@ function updatePsiGauge(actions) {
 
 async function loadAudit() {
   try {
-    const [contraRes, auditRes] = await Promise.all([
+    const [contraRes, auditRes, actionsRes] = await Promise.all([
       fetch(`${API_BASE}/contradictions`, { headers: HEADERS }),
       fetch(`${API_BASE}/audit?limit=8`, { headers: HEADERS }),
+      fetch(`${API_BASE}/actions?limit=10`, { headers: HEADERS }),
     ]);
 
     const contras = contraRes.ok ? (await contraRes.json()) : [];
@@ -617,6 +619,12 @@ async function loadAudit() {
 
     const auditEvents = auditRes.ok ? (await auditRes.json()) : [];
     const auditList = Array.isArray(auditEvents) ? auditEvents : [];
+
+    const actionsData = actionsRes.ok ? (await actionsRes.json()) : [];
+    const actionsList = Array.isArray(actionsData) ? actionsData : [];
+    const latestBlocked = actionsList.find(a => a.status === 'BLOCKED' || a.status === 'INVALID');
+    if (latestBlocked) currentActionId = latestBlocked.id;
+    else if (actionsList.length > 0) currentActionId = actionsList[0].id;
 
     renderAuditFromEvents(contraList, auditList);
 
@@ -665,10 +673,10 @@ function exportJSON() {
 
 function exportRawLogs() {
   const logs = `[2023-10-24 14:02:09 UTC] [INFO] Validation sweep initiated for POST /actions/deploy
-[2023-10-24 14:02:10 UTC] [INFO] Claim #104 PROVEN — CI/CD node-042 — conf=0.998
-[2023-10-24 14:02:11 UTC] [ERROR] Claim #152 CONFLICT — /src/auth.core deleted by agent-alpha-09 — conf=0.421
-[2023-10-24 14:02:11 UTC] [BLOCK] Action #153 halted — reason: FS_CONTRADICTION — conf=0.000
-[2023-10-24 14:02:12 UTC] [INFO] Admissibility score Ψ(a, G) = 0.32 — threshold not met (required: 0.85)
+[2023-10-24 14:02:10 UTC] [INFO] Claim #104 PROVEN, CI/CD node-042, conf=0.998
+[2023-10-24 14:02:11 UTC] [ERROR] Claim #152 CONFLICT, /src/auth.core deleted by agent-alpha-09, conf=0.421
+[2023-10-24 14:02:11 UTC] [BLOCK] Action #153 halted, reason: FS_CONTRADICTION, conf=0.000
+[2023-10-24 14:02:12 UTC] [INFO] Admissibility score Ψ(a, G) = 0.32, threshold not met (required: 0.85)
 `;
   const blob = new Blob([logs], { type: 'text/plain' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
@@ -683,21 +691,84 @@ function closeOverrideModal() {
   document.getElementById('override-modal').classList.add('hidden');
 }
 
-function submitOverride() {
+async function submitOverride() {
   const reason = document.getElementById('override-reason').value.trim();
-  if (!reason) { alert('Please provide a reason.'); return; }
-  alert('Override request submitted. Awaiting approval from System Administrator.');
-  closeOverrideModal();
+  if (!reason || reason.length < 10) { alert('Please provide a reason (at least 10 characters).'); return; }
+
+  const btn = document.querySelector('#override-modal button[onclick="submitOverride()"]');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    if (!currentActionId) {
+      // No specific action to override, log as a general audit event via a synthetic action
+      const propRes = await fetch(`${API_BASE}/actions/propose`, {
+        method: 'POST',
+        headers: { ...HEADERS, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ operation: 'MANUAL_OVERRIDE', impactedEntityIds: [], description: reason }),
+      });
+      if (propRes.ok) {
+        const prop = await propRes.json();
+        currentActionId = prop.id;
+      }
+    }
+
+    const res = await fetch(`${API_BASE}/actions/${currentActionId}/override`, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    closeOverrideModal();
+    document.getElementById('override-reason').value = '';
+    termLog([`[OVERRIDE] Manual override submitted for action ${currentActionId}, reason logged to audit`]);
+    loadAudit();
+  } catch (e) {
+    alert(`Override failed: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Request';
+  }
 }
 
-function rerunValidation() {
+async function rerunValidation() {
   const btn = document.getElementById('rerun-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin inline-block">refresh</span> Validating…';
-  setTimeout(() => {
+
+  try {
+    // Trigger a validation pass on the most recent action (or a sweep operation)
+    const op = currentActionId ? 'VALIDATION_SWEEP' : 'VALIDATION_SWEEP';
+    const res = await fetch(`${API_BASE}/actions/validate`, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        operation: op,
+        impactedEntityIds: [],
+        description: 'Manual re-validation sweep triggered from audit dashboard',
+      }),
+    });
+
+    if (res.ok) {
+      const result = await res.json();
+      const admiss = result.validation?.admissibility ?? 'UNKNOWN';
+      const psi = result.validation?.psiScore?.toFixed(3) ?? '-';
+      termLog([`[REVALIDATE] Sweep complete, admissibility=${admiss} Ψ=${psi}`]);
+    } else {
+      termLog([`[REVALIDATE] Validation sweep returned HTTP ${res.status}`]);
+    }
+    await loadAudit();
+  } catch (e) {
+    termLog([`[ERROR] Re-validation failed: ${e.message}`]);
+  } finally {
     btn.disabled = false;
     btn.innerHTML = 'Re-run Validation';
-  }, 1500);
+  }
 }
 
 function filterAudit(query) {

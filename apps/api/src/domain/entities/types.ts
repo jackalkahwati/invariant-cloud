@@ -51,7 +51,7 @@ export interface Source {
 }
 
 // ============================================================
-// CLAIM TYPES — structured assertions about entities
+// CLAIM TYPES, structured assertions about entities
 // ============================================================
 
 export type ClaimStatus =
@@ -66,7 +66,7 @@ export interface Claim {
   entityId: string;
   predicate: string;
   value: unknown;
-  confidence: number;    // [0,1] — computed via sigmoid formula
+  confidence: number;    // [0,1], computed via sigmoid formula
   sourceId: string;
   timestamp: Date;
   status: ClaimStatus;
@@ -84,7 +84,7 @@ export interface ClaimWithRelations extends Claim {
 }
 
 // ============================================================
-// CONSTRAINT TYPES — rules that must hold
+// CONSTRAINT TYPES, rules that must hold
 // ============================================================
 
 export type ConstraintType =
@@ -142,7 +142,7 @@ export interface ConstraintViolation {
 }
 
 // ============================================================
-// DEPENDENCY TYPES — signed typed relations
+// DEPENDENCY TYPES, signed typed relations
 // ============================================================
 
 /**
@@ -211,7 +211,7 @@ export interface ContradictionWithClaims extends Contradiction {
 }
 
 // ============================================================
-// BRANCH TYPES — alternative state paths
+// BRANCH TYPES, alternative state paths
 // ============================================================
 
 export type BranchStatus = 'OPEN' | 'RESOLVED' | 'MERGED' | 'REJECTED';
@@ -262,7 +262,7 @@ export interface ProvenanceRef {
 }
 
 /**
- * ActionValidation — full result of coherence checking an action.
+ * ActionValidation, full result of coherence checking an action.
  *
  * DeltaPhi(a) = Phi(G after action) - Phi(G current)
  *
