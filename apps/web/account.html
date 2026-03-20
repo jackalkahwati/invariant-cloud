@@ -93,8 +93,8 @@
     </div>
   </div>
   <div class="flex items-center gap-4">
-    <a href="login.html" class="text-sm text-outline hover:text-primary transition-colors">Sign in</a>
-    <a href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity">Sign up</a>
+    <a id="nav-signin" href="login.html" class="text-sm text-outline hover:text-primary transition-colors hidden">Sign in</a>
+    <a id="nav-signup" href="register.html" class="bg-gradient-to-br from-[#adc6ff] to-[#4d8eff] text-[#00285d] text-xs px-3 py-1.5 rounded font-bold hover:opacity-90 transition-opacity hidden">Sign up</a>
     <button id="signout-btn" onclick="signOut()" class="hidden text-sm text-outline hover:text-error transition-colors">Sign out</button>
   </div>
 </nav>
@@ -120,7 +120,7 @@
         </div>
         <p id="user-email" class="text-sm text-outline"></p>
       </div>
-      <button onclick="signOut()" class="text-sm text-outline hover:text-error border border-outline-variant/20 px-3 py-1.5 rounded-lg hover:border-error/30 transition-colors flex items-center gap-1.5">
+      <button id="inpage-signout-btn" onclick="signOut()" class="hidden text-sm text-outline hover:text-error border border-outline-variant/20 px-3 py-1.5 rounded-lg hover:border-error/30 transition-colors flex items-center gap-1.5">
         <span class="material-symbols-outlined text-sm">logout</span>
         Sign out
       </button>
@@ -289,6 +289,8 @@ async function loadWorkspace() {
     document.getElementById('loading').classList.add('hidden');
     document.getElementById('main-content').classList.remove('hidden');
     document.getElementById('signout-btn').classList.remove('hidden');
+    document.getElementById('nav-signin').classList.add('hidden');
+    document.getElementById('nav-signup').classList.add('hidden');
 
     // Header
     document.getElementById('ws-name').textContent = ws.name;
