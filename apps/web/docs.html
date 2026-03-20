@@ -200,36 +200,68 @@ Copy
 </div>
 </div>
 
-<!-- Example 2: Validate action -->
+<!-- Example 2: Create entity + assert claim -->
 <div class="rounded-xl overflow-hidden border border-outline-variant/10">
 <div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
 <div class="flex items-center gap-3">
-<span class="w-2 h-2 rounded-full bg-secondary"></span>
-<span class="font-mono text-xs text-on-surface font-bold">Validate an action</span>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-mono text-xs text-on-surface font-bold">Create entity + assert a claim</span>
 </div>
-<button onclick="copyCmd(this, `curl -X POST https://invariant.me/actions/validate -H \"X-API-Key: YOUR_KEY\" -H \"Content-Type: application/json\" -d \'{\"operation\":\"deploy_model\",\"impactedEntityIds\":[]}\' `)" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
+<button onclick="copyCmd(this, `curl -X POST https://invariant.me/entities -H \"X-API-Key: YOUR_KEY\" -H \"Content-Type: application/json\" -d \'{\"name\":\"deal_492\",\"type\":\"GENERIC\"}\'`)" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
 <span class="material-symbols-outlined text-xs">content_copy</span>
 Copy
 </button>
 </div>
 <div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
-<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Validate a proposed action before executing</span>
-<span class="syntax-keyword">curl</span> -X POST https://invariant.me/actions/validate \
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># 1. Create an entity (represents the thing you're tracking)</span>
+<span class="syntax-keyword">curl</span> -X POST https://invariant.me/entities \
   -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span> \
   -H <span class="syntax-string">"Content-Type: application/json"</span> \
-  -d <span class="syntax-string">'{"operation":"deploy_model","impactedEntityIds":[]}'</span></code></pre>
+  -d <span class="syntax-string">'{"name":"deal_492","type":"GENERIC"}'</span>
+<span class="syntax-comment"># → {"id":"cmmz7...","name":"deal_492","type":"GENERIC"}</span>
+
+<span class="syntax-comment"># 2. Assert a claim about it (use the entity id from step 1)</span>
+<span class="syntax-keyword">curl</span> -X POST https://invariant.me/claims \
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span> \
+  -H <span class="syntax-string">"Content-Type: application/json"</span> \
+  -d <span class="syntax-string">'{"entityId":"ENTITY_ID","predicate":"status","value":"open","sourceName":"crm-read-tool"}'</span></code></pre>
 </div>
 <div class="px-5 py-3 bg-surface-container-lowest/50 border-t border-outline-variant/5">
-<p class="text-[11px] text-on-surface-variant">Returns <code class="text-primary text-xs">admissibility</code> (VALID / RISKY / BLOCKED), ΔΦ coherence delta, and Ψ risk score.</p>
+<p class="text-[11px] text-on-surface-variant">Required claim fields: <code class="text-primary text-xs">entityId</code>, <code class="text-primary text-xs">predicate</code>, <code class="text-primary text-xs">value</code>, <code class="text-primary text-xs">sourceName</code>. Optional: <code class="text-primary text-xs">confidence</code> (0–1).</p>
 </div>
 </div>
 
-<!-- Example 3: Get coherence -->
+<!-- Example 3: Validate action -->
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-mono text-xs text-on-surface font-bold">Validate an action before executing</span>
+</div>
+<button onclick="copyCmd(this, `curl -X POST https://invariant.me/actions/validate -H \"X-API-Key: YOUR_KEY\" -H \"Content-Type: application/json\" -d \'{\"operation\":\"update_crm_status\",\"impactedEntityIds\":[\"ENTITY_ID\"]}\' `)" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xs">content_copy</span>
+Copy
+</button>
+</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Validate before executing — pass the entity IDs the action will affect</span>
+<span class="syntax-keyword">curl</span> -X POST https://invariant.me/actions/validate \
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span> \
+  -H <span class="syntax-string">"Content-Type: application/json"</span> \
+  -d <span class="syntax-string">'{"operation":"update_crm_status","impactedEntityIds":["ENTITY_ID"]}'</span>
+<span class="syntax-comment"># → {"proposal":{...},"validation":{"admissibility":"VALID","psiScore":0.02,"reasons":[...]}}</span></code></pre>
+</div>
+<div class="px-5 py-3 bg-surface-container-lowest/50 border-t border-outline-variant/5">
+<p class="text-[11px] text-on-surface-variant">Response: <code class="text-primary text-xs">validation.admissibility</code> (VALID / RISKY / BLOCKED), <code class="text-primary text-xs">validation.psiScore</code>, and <code class="text-primary text-xs">validation.reasons[]</code>.</p>
+</div>
+</div>
+
+<!-- Example 4: Get coherence -->
 <div class="rounded-xl overflow-hidden border border-outline-variant/10">
 <div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
 <div class="flex items-center gap-3">
 <span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="font-mono text-xs text-on-surface font-bold">Get coherence score</span>
+<span class="font-mono text-xs text-on-surface font-bold">Get world coherence score</span>
 </div>
 <button onclick="copyCmd(this, 'curl https://invariant.me/world/coherence -H \"X-API-Key: YOUR_KEY\"')" class="flex items-center gap-1.5 text-[10px] font-mono text-outline hover:text-primary transition-colors px-2 py-1 rounded hover:bg-surface-container-high">
 <span class="material-symbols-outlined text-xs">content_copy</span>
@@ -237,12 +269,13 @@ Copy
 </button>
 </div>
 <div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
-<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Fetch the global Φ(G) coherence score and breakdown</span>
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-comment"># Fetch the global Φ(G) coherence score</span>
 <span class="syntax-keyword">curl</span> https://invariant.me/world/coherence \
-  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span></code></pre>
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span>
+<span class="syntax-comment"># → {"phi":0.99,"claimsCount":12,"contradictionsCount":0,...}</span></code></pre>
 </div>
 <div class="px-5 py-3 bg-surface-container-lowest/50 border-t border-outline-variant/5">
-<p class="text-[11px] text-on-surface-variant">Returns <code class="text-primary text-xs">coherenceScore</code>, <code class="text-primary text-xs">phi</code>, and per-dimension breakdown: Vc, Vk, Vd, Vu, Vb.</p>
+<p class="text-[11px] text-on-surface-variant">Returns <code class="text-primary text-xs">phi</code> (0–1 coherence score), claim and contradiction counts.</p>
 </div>
 </div>
 
@@ -290,49 +323,86 @@ Copy
                             Posting Claims
                         </h2>
 <p class="text-on-surface-variant mb-6">
-                            Claims represent atomic units of truth about your infrastructure. Use the <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm">POST /claims</code> endpoint to update the global registry.
+                            Claims represent atomic facts about entities in your world state. Before posting a claim you need an entity to attach it to. Create one first with <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm">POST /entities</code>, then assert claims against its ID.
                         </p>
-<div class="space-y-4">
-<div class="flex items-start gap-4 p-4 rounded-lg bg-surface-container-low">
-<div class="bg-primary/20 text-primary p-2 rounded">
-<span class="material-symbols-outlined">send</span>
+<div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10 mb-6">
+<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">POST /entities — required fields</h4>
+<ul class="space-y-3 text-sm">
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">name</span>
+<span class="text-on-surface-variant">string — human-readable label</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">type</span>
+<span class="text-on-surface-variant">GENERIC | PERSON | PROJECT | FILE | TASK | AGENT | COMPONENT | ENVIRONMENT_STATE | …</span>
+</li>
+</ul>
 </div>
-<div>
-<h4 class="font-bold text-sm mb-1">Synchronous Validation</h4>
-<p class="text-xs text-on-surface-variant">Claims are validated against existing constraints before being committed to the World State Graph.</p>
-</div>
-</div>
+<div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10">
+<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">POST /claims — required fields</h4>
+<ul class="space-y-3 text-sm">
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">entityId</span>
+<span class="text-on-surface-variant">string — ID from POST /entities</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">predicate</span>
+<span class="text-on-surface-variant">string — the property being asserted, e.g. "status", "temperature"</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">value</span>
+<span class="text-on-surface-variant">any — the value of that property</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">sourceName</span>
+<span class="text-on-surface-variant">string — name of the agent or tool asserting this claim</span>
+</li>
+<li class="flex justify-between pb-2">
+<span class="font-mono text-primary">confidence</span>
+<span class="text-on-surface-variant">number (0–1), optional — defaults to 1.0</span>
+</li>
+</ul>
 </div>
 </section>
-<!-- Section: Python SDK -->
-<section class="mb-20" id="python-sdk">
+
+<!-- Section: SDK Quickstart -->
+<section class="mb-20" id="sdk-quickstart">
 <h2 class="text-2xl font-bold font-headline mb-6 flex items-center gap-3">
-<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-secondary text-sm">Py</span>
-Python SDK
+<span class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-secondary text-sm">JS</span>
+SDK Quickstart
 </h2>
 <p class="text-on-surface-variant mb-6">
-Install the official Python client for synchronous and async environments. Built on <code class="bg-surface-container-high px-1.5 py-0.5 rounded text-sm">httpx</code> with Pydantic v2 models.
+Install the Node.js SDK and run the full assert → validate flow in under 10 lines.
 </p>
-<div class="bg-surface-container-lowest p-4 rounded-xl border-b-2 border-secondary/20 relative group mb-8">
-<code class="text-primary-fixed text-sm">pip install invariant-sdk</code>
-<button onclick="navigator.clipboard.writeText('pip install invariant-sdk')" class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors" title="Copy to clipboard">
-<span class="material-symbols-outlined text-base">content_copy</span>
-</button>
-</div>
 <div class="rounded-xl overflow-hidden border border-outline-variant/10">
 <div class="flex items-center justify-between px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10">
-<span class="font-mono text-xs text-on-surface font-bold">Quick example</span>
+<span class="font-mono text-xs text-on-surface font-bold">Full flow — create entity, assert claim, validate action</span>
 </div>
 <div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
-<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-keyword">from</span> invariant_sdk <span class="syntax-keyword">import</span> InvariantClient
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-keyword">import</span> { InvariantClient } <span class="syntax-keyword">from</span> <span class="syntax-string">'invariant-sdk'</span>;
 
-client = <span class="syntax-function">InvariantClient</span>(api_key=<span class="syntax-string">"YOUR_KEY"</span>)
+<span class="syntax-keyword">const</span> inv = <span class="syntax-keyword">new</span> InvariantClient({ baseUrl: <span class="syntax-string">'https://invariant.me'</span>, apiKey: <span class="syntax-string">'YOUR_KEY'</span> });
 
-result = client.actions.<span class="syntax-function">validate</span>(
-    operation=<span class="syntax-string">"deploy_model"</span>,
-    impacted_entity_ids=[]
-)
-<span class="syntax-function">print</span>(result.admissibility)  <span class="syntax-comment"># VALID | RISKY | BLOCKED</span></code></pre>
+<span class="syntax-comment">// 1. Create the entity you want to track</span>
+<span class="syntax-keyword">const</span> entity = <span class="syntax-keyword">await</span> inv.entities.create({ name: <span class="syntax-string">'deal_492'</span>, type: <span class="syntax-string">'GENERIC'</span> });
+
+<span class="syntax-comment">// 2. Assert a claim about its current state</span>
+<span class="syntax-keyword">await</span> inv.claims.create({
+  entityId: entity.id,
+  predicate: <span class="syntax-string">'status'</span>,
+  value: <span class="syntax-string">'open'</span>,
+  sourceName: <span class="syntax-string">'crm-read-tool'</span>
+});
+
+<span class="syntax-comment">// 3. Validate an action before executing it</span>
+<span class="syntax-keyword">const</span> result = <span class="syntax-keyword">await</span> inv.actions.validate({
+  operation: <span class="syntax-string">'update_crm_status'</span>,
+  impactedEntityIds: [entity.id]
+});
+
+<span class="syntax-keyword">if</span> (result.validation.admissibility !== <span class="syntax-string">'BLOCKED'</span>) {
+  <span class="syntax-comment">// safe to proceed</span>
+}</code></pre>
 </div>
 </div>
 </section>
@@ -344,22 +414,30 @@ result = client.actions.<span class="syntax-function">validate</span>(
                             Defining Constraints
                         </h2>
 <p class="text-on-surface-variant mb-6">
-                            Constraints are the guardrails of your system. They are evaluated whenever a new claim is proposed. A <code class="text-secondary">STATUS_DEPENDENCY</code> ensures that sensitive actions are blocked if health checks fail.
+                            Constraints define rules that must hold across entities. When a constraint is violated, actions against affected entities are flagged or blocked.
                         </p>
 <div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10">
-<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">Configuration Parameters</h4>
-<ul class="space-y-4 text-sm">
+<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">POST /constraints — fields</h4>
+<ul class="space-y-3 text-sm">
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
-<span class="font-mono text-primary">enforcement_level</span>
-<span class="text-on-surface-variant">CRITICAL | WARNING | ADVISORY</span>
+<span class="font-mono text-primary">name</span>
+<span class="text-on-surface-variant">string — required</span>
 </li>
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
-<span class="font-mono text-primary">target_node</span>
-<span class="text-on-surface-variant">UUID String</span>
+<span class="font-mono text-primary">description</span>
+<span class="text-on-surface-variant">string — required, human-readable explanation</span>
 </li>
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
-<span class="font-mono text-primary">dependency_type</span>
-<span class="text-on-surface-variant">NODE_STATE | TRAFFIC_LOAD</span>
+<span class="font-mono text-primary">rule</span>
+<span class="text-on-surface-variant">string — the constraint expression</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">entityIds</span>
+<span class="text-on-surface-variant">string[] — entity IDs this constraint applies to</span>
+</li>
+<li class="flex justify-between pb-2">
+<span class="font-mono text-primary">severity</span>
+<span class="text-on-surface-variant">SOFT | HARD — HARD blocks, SOFT flags as RISKY</span>
 </li>
 </ul>
 </div>

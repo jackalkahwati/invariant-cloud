@@ -43,6 +43,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.post<{
     Body: { email: string; password: string; name?: string; workspaceName?: string }
   }>('/auth/register', {
+    config: { rateLimit: { max: 20, timeWindow: '1 minute', keyGenerator: (req: { ip: string }) => req.ip } },
     schema: {
       tags: ['Auth'],
       summary: 'Register a new user and workspace',
@@ -115,6 +116,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.post<{
     Body: { email: string; password: string }
   }>('/auth/login', {
+    config: { rateLimit: { max: 20, timeWindow: '1 minute', keyGenerator: (req: { ip: string }) => req.ip } },
     schema: {
       tags: ['Auth'],
       summary: 'Login with email and password',

@@ -236,24 +236,9 @@ export async function buildApp() {
   await app.register(planRoutes);
   // Auth and Workspace (registered before API key hook would block them, /auth/ is skipped in preHandler)
   // Auth routes carry a tighter rate limit: 20 req/min per IP to deter brute-force.
-  await app.register(async (authApp) => {
-    await authApp.register(rateLimit, {
-      max: 20,
-      timeWindow: '1 minute',
-      keyGenerator: (req) => req.ip,
-      errorResponseBuilder: (_req, context) => ({
-        error: 'Rate limit exceeded',
-        retryAfter: Math.ceil((context as unknown as { ttl: number }).ttl / 1000),
-      }),
-      addHeaders: {
-        'x-ratelimit-limit': true,
-        'x-ratelimit-remaining': true,
-        'x-ratelimit-reset': true,
-        'retry-after': true,
-      },
-    });
-    await authApp.register(authRoutes);
-  });
+  // Per-route config overrides the global rate-limit plugin (avoids nested re-registration
+  // which causes 500 instead of 429 when the limit fires).
+  await app.register(authRoutes);
   await app.register(workspaceRoutes);
   // Webhooks
   await app.register(webhookRoutes);

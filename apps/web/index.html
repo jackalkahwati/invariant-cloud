@@ -470,7 +470,7 @@
   impactedEntityIds: [<span style="color:#4edea3">'deal_492'</span>]
 });
 
-<span style="color:#adc6ff">if</span> (result.admissibility !== <span style="color:#4edea3">'BLOCKED'</span>) {
+<span style="color:#adc6ff">if</span> (result.validation.admissibility !== <span style="color:#4edea3">'BLOCKED'</span>) {
   <span style="color:#adc6ff">await</span> crm.<span style="color:#ffb95f">updateDeal</span>(<span style="color:#4edea3">'deal_492'</span>, { status: <span style="color:#4edea3">'closed'</span> });
 }</code></pre>
       </div>
