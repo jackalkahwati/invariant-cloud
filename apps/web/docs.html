@@ -416,30 +416,43 @@ Install the Node.js SDK and run the full assert → validate flow in under 10 li
 <p class="text-on-surface-variant mb-6">
                             Constraints define rules that must hold across entities. When a constraint is violated, actions against affected entities are flagged or blocked.
                         </p>
-<div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10">
-<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">POST /constraints — fields</h4>
+<div class="p-6 rounded-xl bg-surface-container-high/50 border border-outline-variant/10 mb-4">
+<h4 class="text-sm font-bold mb-4 uppercase tracking-widest text-outline">POST /constraints — required fields</h4>
 <ul class="space-y-3 text-sm">
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
 <span class="font-mono text-primary">name</span>
-<span class="text-on-surface-variant">string — required</span>
+<span class="text-on-surface-variant">string</span>
 </li>
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
 <span class="font-mono text-primary">description</span>
-<span class="text-on-surface-variant">string — required, human-readable explanation</span>
+<span class="text-on-surface-variant">string — human-readable explanation</span>
 </li>
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
-<span class="font-mono text-primary">rule</span>
-<span class="text-on-surface-variant">string — the constraint expression</span>
+<span class="font-mono text-primary">type</span>
+<span class="text-on-surface-variant">NUMERIC_RANGE | STATUS_DEPENDENCY | VERIFICATION_REQUIRED | MUTUAL_EXCLUSION | COMPLETENESS | CUSTOM</span>
+</li>
+<li class="flex justify-between border-b border-outline-variant/10 pb-2">
+<span class="font-mono text-primary">expression</span>
+<span class="text-on-surface-variant">object — constraint parameters (shape depends on type)</span>
 </li>
 <li class="flex justify-between border-b border-outline-variant/10 pb-2">
 <span class="font-mono text-primary">entityIds</span>
-<span class="text-on-surface-variant">string[] — entity IDs this constraint applies to</span>
+<span class="text-on-surface-variant">string[] — optional, entity IDs this constraint applies to</span>
 </li>
 <li class="flex justify-between pb-2">
-<span class="font-mono text-primary">severity</span>
-<span class="text-on-surface-variant">SOFT | HARD — HARD blocks, SOFT flags as RISKY</span>
+<span class="font-mono text-primary">weight</span>
+<span class="text-on-surface-variant">number (0–10), optional — constraint weight in scoring</span>
 </li>
 </ul>
+</div>
+<div class="rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="px-4 py-2.5 bg-surface-container-low border-b border-outline-variant/10 font-mono text-xs text-on-surface font-bold">Example</div>
+<div class="px-5 py-4 bg-[#060e20] overflow-x-auto">
+<pre class="font-mono text-sm leading-relaxed"><code><span class="syntax-keyword">curl</span> -X POST https://invariant.me/constraints \
+  -H <span class="syntax-string">"X-API-Key: YOUR_KEY"</span> \
+  -H <span class="syntax-string">"Content-Type: application/json"</span> \
+  -d <span class="syntax-string">'{"name":"no-close-after-refund","description":"Cannot close after refund initiated","type":"STATUS_DEPENDENCY","expression":{"condition":"refund_active","blocked_status":"closed"},"entityIds":["ENTITY_ID"]}'</span></code></pre>
+</div>
 </div>
 </section>
 </div>

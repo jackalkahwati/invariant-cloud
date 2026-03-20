@@ -6,6 +6,24 @@ import { prisma } from '../../../infrastructure/database/prisma.js';
 import { authConfig, githubConfig } from '../../../infrastructure/config.js';
 import { sendWelcomeEmail } from '../../../application/services/EmailService.js';
 
+// Simple in-process IP rate limiter for auth endpoints (20 req/min per IP).
+// Using an explicit preHandler avoids @fastify/rate-limit scoping issues that
+// cause 500 instead of 429 in the serverless environment.
+const authRateMap = new Map<string, { count: number; reset: number }>();
+function checkAuthRateLimit(ip: string): { allowed: boolean; retryAfter: number } {
+  const now = Date.now();
+  let entry = authRateMap.get(ip);
+  if (!entry || entry.reset < now) {
+    entry = { count: 0, reset: now + 60_000 };
+    authRateMap.set(ip, entry);
+  }
+  entry.count++;
+  if (entry.count > 20) {
+    return { allowed: false, retryAfter: Math.ceil((entry.reset - now) / 1000) };
+  }
+  return { allowed: true, retryAfter: 0 };
+}
+
 /** Generate a new API key: inv_<12 random hex chars> */
 function generateRawApiKey(): string {
   return 'inv_' + crypto.randomBytes(24).toString('hex');
@@ -43,7 +61,6 @@ export async function authRoutes(app: FastifyInstance) {
   app.post<{
     Body: { email: string; password: string; name?: string; workspaceName?: string }
   }>('/auth/register', {
-    config: { rateLimit: { max: 20, timeWindow: '1 minute', keyGenerator: (req: { ip: string }) => req.ip } },
     schema: {
       tags: ['Auth'],
       summary: 'Register a new user and workspace',
@@ -59,6 +76,9 @@ export async function authRoutes(app: FastifyInstance) {
       },
     },
   }, async (req, reply) => {
+    const rl = checkAuthRateLimit(req.ip);
+    if (!rl.allowed) return reply.status(429).send({ error: 'Rate limit exceeded', retryAfter: rl.retryAfter });
+
     const { email, password, name, workspaceName } = req.body;
 
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -116,7 +136,6 @@ export async function authRoutes(app: FastifyInstance) {
   app.post<{
     Body: { email: string; password: string }
   }>('/auth/login', {
-    config: { rateLimit: { max: 20, timeWindow: '1 minute', keyGenerator: (req: { ip: string }) => req.ip } },
     schema: {
       tags: ['Auth'],
       summary: 'Login with email and password',
@@ -130,6 +149,9 @@ export async function authRoutes(app: FastifyInstance) {
       },
     },
   }, async (req, reply) => {
+    const rl = checkAuthRateLimit(req.ip);
+    if (!rl.allowed) return reply.status(429).send({ error: 'Rate limit exceeded', retryAfter: rl.retryAfter });
+
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
