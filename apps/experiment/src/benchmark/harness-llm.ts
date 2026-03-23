@@ -16,14 +16,14 @@
 
 import { randomUUID } from "crypto";
 import { execSync, spawnSync } from "child_process";
-import { resolve, join } from "path";
-import { existsSync, rmSync, mkdirSync, writeFileSync, readFileSync } from "fs";
+import { resolve, join, dirname } from "path";
+import { existsSync, rmSync, mkdirSync, writeFileSync, readFileSync, readdirSync } from "fs";
 import { WorldStateStore } from "../state/store.js";
 import { createOptimizedTaskPackets } from "../tasks/schema.js";
 import { TaskOrchestrator } from "../orchestrator/orchestrator.js";
 import { Integrator } from "../integrator/integrator.js";
 import { RepairExecutor } from "../orchestrator/repair-executor.js";
-import { LLMWorker, LLMWorkerPool, LLMWorkerConfig } from "../workers/llm-worker.js";
+import { LLMWorker, LLMWorkerPool, LLMWorkerConfig, PriorRepairRound } from "../workers/llm-worker.js";
 import { BACKOFF_RETRY_POLICY, DEFAULT_RECOVERY_POLICY } from "../workers/recovery.js";
 import {
   InstrumentationCollector,
@@ -206,6 +206,51 @@ function resetFixture(): void {
   for (const [rel, content] of Object.entries(BASE_FILES)) {
     const abs = join(FIXTURE_ROOT, rel);
     mkdirSync(join(FIXTURE_ROOT, rel.split("/").slice(0, -1).join("/")), { recursive: true });
+    writeFileSync(abs, content, "utf8");
+  }
+}
+
+// ─── Fixture snapshot / restore ───────────────────────────────────────────────
+
+/** Maps relative path (e.g. "src/routes/admin.ts") → file content */
+type FixtureSnapshot = Map<string, string>;
+
+/**
+ * Walk fixture-app/src and fixture-app/tests and snapshot every .ts file.
+ * Used to preserve the best-known-good state across repair rounds.
+ */
+function snapshotFixtureFiles(root: string): FixtureSnapshot {
+  const snapshot: FixtureSnapshot = new Map();
+
+  const walk = (dir: string, rel_prefix: string) => {
+    if (!existsSync(dir)) return;
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const abs = join(dir, entry.name);
+      const rel = `${rel_prefix}/${entry.name}`;
+      if (entry.isDirectory() && entry.name !== "node_modules") {
+        walk(abs, rel);
+      } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+        try {
+          snapshot.set(rel, readFileSync(abs, "utf8"));
+        } catch { /* skip unreadable */ }
+      }
+    }
+  };
+
+  walk(join(root, "src"), "src");
+  walk(join(root, "tests"), "tests");
+  return snapshot;
+}
+
+/**
+ * Restore fixture-app files from a snapshot.
+ * Files present in the snapshot are overwritten; files NOT in the snapshot are
+ * left untouched (they weren't present when the snapshot was taken).
+ */
+function restoreFixtureSnapshot(snapshot: FixtureSnapshot, root: string): void {
+  for (const [rel, content] of snapshot) {
+    const abs = join(root, rel);
+    mkdirSync(dirname(abs), { recursive: true });
     writeFileSync(abs, content, "utf8");
   }
 }
@@ -474,6 +519,16 @@ export class LLMBenchmarkHarness {
       );
       let prev_pass_rate = current_vitest.pass_rate;
 
+      // Best-state tracking: snapshot the filesystem at the highest pass rate seen.
+      // If a later repair round regresses, we roll back to this snapshot.
+      let best_pass_rate = current_vitest.pass_rate;
+      let best_vitest = current_vitest;
+      let best_snapshot = snapshotFixtureFiles(FIXTURE_ROOT);
+
+      // Accumulated repair history passed to each subsequent round so Claude
+      // knows what was already fixed and must not accidentally undo.
+      const prior_repairs: PriorRepairRound[] = [];
+
       for (let round = 1; round <= cfg.max_repair_rounds; round++) {
         if (current_vitest.failed === 0) break;
 
@@ -483,7 +538,7 @@ export class LLMBenchmarkHarness {
         console.log(
           `\n[LLM Bench] Repair round ${round}/${cfg.max_repair_rounds} — targeting ${current_vitest.failed} failing test(s)...`
         );
-        const { files_patched } = await repair_worker.repair(failing_section, round);
+        const { files_patched } = await repair_worker.repair(failing_section, round, prior_repairs);
 
         console.log(`[LLM Bench] Re-running vitest after repair round ${round}...`);
         const new_vitest = runVitestOnFixture();
@@ -513,6 +568,34 @@ export class LLMBenchmarkHarness {
           current_vitest = new_vitest;
           break;
         }
+
+        // Regression guard: if this round dropped below the best pass rate we've
+        // seen, restore the best-known filesystem state and stop repairing.
+        if (new_vitest.pass_rate < best_pass_rate) {
+          console.log(
+            `[LLM Bench] Regression detected: ${(new_vitest.pass_rate * 100).toFixed(0)}% < ` +
+            `best ${(best_pass_rate * 100).toFixed(0)}%. ` +
+            `Restoring best-known state and stopping.`
+          );
+          restoreFixtureSnapshot(best_snapshot, FIXTURE_ROOT);
+          current_vitest = best_vitest; // report final result at the best state
+          break;
+        }
+
+        // Update best state whenever pass rate improves
+        if (new_vitest.pass_rate > best_pass_rate) {
+          best_pass_rate = new_vitest.pass_rate;
+          best_vitest = new_vitest;
+          best_snapshot = snapshotFixtureFiles(FIXTURE_ROOT);
+          console.log(`[LLM Bench] New best: ${(best_pass_rate * 100).toFixed(0)}% — snapshot saved.`);
+        }
+
+        // Carry this round's repair forward so the next round won't undo it
+        prior_repairs.push({
+          round,
+          files_patched,
+          failing_output_targeted: failing_section,
+        });
 
         if (improvement_pp <= 0 && round > 1) {
           console.log(`[LLM Bench] No improvement (${arrow}${improvement_pp.toFixed(1)}pp), stopping repair.`);

@@ -82,6 +82,20 @@ const WRITE_FILES_TOOL: Anthropic.Tool = {
   },
 };
 
+// ─── Repair History ───────────────────────────────────────────────────────────
+
+/**
+ * Record of a single completed repair round — passed to the next round so
+ * Claude knows what was already fixed and must not regress.
+ */
+export interface PriorRepairRound {
+  round: number;
+  /** Paths written during this round */
+  files_patched: string[];
+  /** The raw vitest "Failed Tests" section that this round targeted */
+  failing_output_targeted: string;
+}
+
 // ─── LLM Worker ───────────────────────────────────────────────────────────────
 
 export class LLMWorker {
@@ -431,34 +445,68 @@ ${JSON.stringify(task.required_contract_versions, null, 2)}`;
    * Given the raw vitest "Failed Tests" section, asks Claude to patch the
    * broken files. Reads ALL current fixture-app source as context so Claude
    * can see the full implementation state.
+   *
+   * @param prior_repairs - History of completed repair rounds. Passed so the
+   *   model knows which files were already fixed and must not be regressed.
    */
   async repair(
     failing_output: string,
-    round: number
+    round: number,
+    prior_repairs: PriorRepairRound[] = []
   ): Promise<{ files_patched: string[]; elapsed_ms: number }> {
     const start = Date.now();
 
     const all_files = this.readAllFixtureFiles();
 
-    const context = `You are a TypeScript code repair agent. Integration tests are failing on an Express.js application. Fix ONLY what is needed to make the failing tests pass.
+    const prior_history =
+      prior_repairs.length === 0
+        ? "(this is the first repair round — no prior fixes to preserve)"
+        : prior_repairs
+            .map(
+              (p) =>
+                `Round ${p.round}: patched [${p.files_patched.join(", ")}]\n` +
+                `  Targeted failures:\n${p.failing_output_targeted
+                  .split("\n")
+                  .slice(0, 6)
+                  .map((l) => `    ${l}`)
+                  .join("\n")}`
+            )
+            .join("\n\n");
 
-## Round ${round} — Failing Tests
+    const preserved_files =
+      prior_repairs.length === 0
+        ? ""
+        : `\n## ⚠️  PRESERVED FILES — DO NOT REGRESS\nThe following files were patched in earlier rounds and those tests are NOW PASSING.\nYou MUST carry all of their current working logic forward verbatim.\nOnly add or change what is needed for the NEW failures listed below.\nFiles to preserve:\n${[
+            ...new Set(prior_repairs.flatMap((p) => p.files_patched)),
+          ]
+            .map((f) => `  - ${f}`)
+            .join("\n")}`;
+
+    const context = `You are a TypeScript code repair agent. Integration tests are failing on an Express.js application. Fix ONLY what is needed to make the failing tests pass.
+${preserved_files}
+## Round ${round} — Currently Failing Tests (NEW failures to fix this round)
 
 ${failing_output}
 
-## Current Implementation
+## Prior Repair History
+${prior_history}
+
+## Current Implementation (filesystem state after all prior rounds)
 ${all_files}
 
 ## Repair Instructions
 1. Read each failing test carefully — the test file shows the exact HTTP contract expected.
 2. Find the root cause: wrong status code, missing route, unhandled request body, runtime error, etc.
-3. Write a minimal fix — only change broken behavior, do not rewrite working code.
+3. Write a MINIMAL fix — only change the specific route/function that is broken.
 4. Key rules:
    - Use 403 (Forbidden) when a user lacks a required role, 401 (Unauthorized) when there is no session at all.
    - For POST handlers, ensure express.json() middleware is mounted in the app (src/app.ts or src/routes.ts).
    - For 500 errors, add try/catch or fix the underlying crash.
    - If a route is not found, check that the Router is exported and mounted in src/routes.ts.
-5. Call write_files with COMPLETE file contents (not diffs). Paths must be relative to fixture-app/ root (e.g. "src/routes.ts").`;
+5. CRITICAL — Minimal patching rule: When you write a file that already exists, copy ALL of its
+   current working code verbatim and ONLY change the broken part. Do NOT restructure, rename, or
+   remove any code that is currently making tests pass. If in doubt, keep the old code.
+6. Call write_files with COMPLETE file contents (not diffs). Paths must be relative to fixture-app/ root (e.g. "src/routes.ts").`;
 
     const llm_start = Date.now();
     const stream = this.client.messages.stream({
