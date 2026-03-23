@@ -8,8 +8,8 @@
 import express from "express";
 import type { Application } from "express";
 import ssoRouter from "./auth/sso-routes";
-import auditRouter from "./routes/audit.routes";
-import adminRouter from "./roles/admin-routes";
+import { auditRouter } from "./audit/audit-routes";
+import adminRouter from "./routes/admin.routes";
 
 export const app: Application = express();
 app.use(express.json());
