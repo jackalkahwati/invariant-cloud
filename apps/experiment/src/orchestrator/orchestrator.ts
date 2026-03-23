@@ -15,6 +15,14 @@ import { SimulatedWorker, WorkerPool, WorkerResult } from "../workers/worker.js"
 import { RecoveryPolicy, DEFAULT_RECOVERY_POLICY } from "../workers/recovery.js";
 import { logger } from "../logger/logger.js";
 
+/** Minimal pool interface — satisfied by both WorkerPool and LLMWorkerPool */
+export interface IWorkerPool {
+  getAvailable(): { worker_id: string; execute(task: TaskPacket): Promise<WorkerResult> } | null;
+  markBusy(worker_id: string): void;
+  markFree(worker_id: string): void;
+  readonly total: number;
+}
+
 // ─── Orchestrator Config ──────────────────────────────────────────────────────
 
 export interface OrchestratorConfig {
@@ -45,6 +53,11 @@ export interface OrchestratorConfig {
    * complete. Runs concurrently with remaining task execution.
    */
   on_feature_group_complete?: (feature: string, task_ids: string[]) => void;
+  /**
+   * Optional custom worker pool. When provided, overrides the default
+   * SimulatedWorker/WorkerPool (e.g. plug in LLMWorkerPool).
+   */
+  worker_pool?: IWorkerPool;
 }
 
 const DEFAULT_CONFIG: OrchestratorConfig = {
@@ -73,7 +86,7 @@ export interface OrchestrationResult {
 // ─── Orchestrator ─────────────────────────────────────────────────────────────
 
 export class TaskOrchestrator {
-  private pool: WorkerPool;
+  private pool: IWorkerPool;
   private validator: ActionValidator;
 
   constructor(
@@ -82,7 +95,7 @@ export class TaskOrchestrator {
   ) {
     const cfg = { ...DEFAULT_CONFIG, ...config };
     this.validator = new ActionValidator(store);
-    this.pool = new WorkerPool(store, this.validator, cfg.max_workers, {
+    this.pool = cfg.worker_pool ?? new WorkerPool(store, this.validator, cfg.max_workers, {
       action_delay_ms: cfg.action_delay_ms ?? 50,
       recovery_policy: cfg.recovery_policy ?? DEFAULT_RECOVERY_POLICY,
     });
@@ -144,10 +157,19 @@ export class TaskOrchestrator {
     if (cfg.mode === "serial") {
       // Execute tasks one at a time, in dependency order
       const ordered = this.topologicalSort(tasks);
-      const worker = new SimulatedWorker(this.store, this.validator, {
-        action_delay_ms: cfg.action_delay_ms ?? 50,
-        recovery_policy: cfg.recovery_policy ?? DEFAULT_RECOVERY_POLICY,
-      });
+      // Use pool's first available worker when a custom pool is provided,
+      // otherwise fall back to a dedicated SimulatedWorker for serial mode.
+      const serial_worker = cfg.worker_pool
+        ? (cfg.worker_pool.getAvailable() ?? null)
+        : new SimulatedWorker(this.store, this.validator, {
+            action_delay_ms: cfg.action_delay_ms ?? 50,
+            recovery_policy: cfg.recovery_policy ?? DEFAULT_RECOVERY_POLICY,
+          });
+
+      if (!serial_worker) {
+        throw new Error("Serial mode: no worker available from custom pool");
+      }
+      const worker = serial_worker;
 
       for (const task of ordered) {
         if (Date.now() - start > cfg.timeout_ms) {

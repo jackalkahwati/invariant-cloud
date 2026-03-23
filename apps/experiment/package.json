@@ -15,13 +15,21 @@
     "bench": "tsx src/cli/run.ts --mode both --output results/latest.json"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "@types/express": "^5.0.6",
+    "@types/node-fetch": "^2.6.13",
+    "@types/supertest": "^7.2.0",
+    "express": "^5.2.1",
+    "https-proxy-agent": "^8.0.0",
+    "node-fetch": "^3.3.2",
+    "supertest": "^7.2.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.11.5",
+    "@vitest/coverage-v8": "^1.4.0",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2",
-    "vitest": "^1.4.0",
-    "@vitest/coverage-v8": "^1.4.0"
+    "vitest": "^1.4.0"
   }
 }

@@ -32,17 +32,22 @@ import {
   formatV3Report,
   formatV3CompactSweep,
 } from "../benchmark/harness-v3.js";
+import {
+  LLMBenchmarkHarness,
+  formatLLMReport,
+} from "../benchmark/harness-llm.js";
 import { logger } from "../logger/logger.js";
 
 // ─── Arg Parsing ──────────────────────────────────────────────────────────────
 
 function parseArgs(): {
-  version: 1 | 2 | 3;
+  version: 1 | 2 | 3 | "llm";
   mode: "serial" | "parallel" | "both";
   workers: number;
   delay: number;
   sweep: boolean;
   fixture: "original" | "optimized";
+  model?: string;
   output?: string;
   silent: boolean;
   verbose: boolean;
@@ -59,14 +64,18 @@ function parseArgs(): {
       ? mode_raw
       : "both";
 
-  const version_raw = parseInt(get("--version", "1"), 10);
-  const version: 1 | 2 | 3 = version_raw === 3 ? 3 : version_raw === 2 ? 2 : 1;
+  const version_raw = get("--version", "1");
+  const version: 1 | 2 | 3 | "llm" =
+    version_raw === "llm" ? "llm" :
+    version_raw === "3" ? 3 :
+    version_raw === "2" ? 2 : 1;
 
   const fixture_raw = get("--fixture", "optimized");
   const fixture: "original" | "optimized" =
     fixture_raw === "original" ? "original" : "optimized";
 
   const output_raw = get("--output", "");
+  const model_raw = get("--model", "");
 
   return {
     version,
@@ -75,6 +84,7 @@ function parseArgs(): {
     delay: parseInt(get("--delay", "15"), 10),
     sweep: args.includes("--sweep"),
     fixture,
+    model: model_raw || undefined,
     output: output_raw || undefined,
     silent: args.includes("--silent"),
     verbose: args.includes("--verbose"),
@@ -87,12 +97,14 @@ async function main(): Promise<void> {
   const args = parseArgs();
 
   const vLabel =
+    args.version === "llm" ? "LLM (Real Workers)" :
     args.version === 3 ? "V3 (Optimized)" : args.version === 2 ? "V2 (Repair Loop)" : "V1";
   console.log(`\n🚀 Parallel Coding Runtime — Benchmark ${vLabel}\n`);
   console.log(`  Version: ${args.version}`);
   console.log(`  Mode:    ${args.mode}`);
   console.log(`  Workers: ${args.workers}`);
-  console.log(`  Delay:   ${args.delay}ms per action`);
+  if (args.version !== "llm") console.log(`  Delay:   ${args.delay}ms per action`);
+  if (args.version === "llm" && args.model) console.log(`  Model:   ${args.model}`);
   if (args.version === 3) {
     console.log(`  Fixture: ${args.fixture}`);
     console.log(`  Sweep:   ${args.sweep ? "yes (2,4,8,12 workers)" : "no"}`);
@@ -108,7 +120,29 @@ async function main(): Promise<void> {
   let report: string;
   let thesis_supported: boolean | undefined;
 
-  if (args.version === 3) {
+  if (args.version === "llm") {
+    const harness = new LLMBenchmarkHarness({
+      mode: args.mode,
+      parallel_workers: args.workers,
+      model: args.model,
+      silent: args.silent,
+    });
+    const output = await harness.run();
+    report = formatLLMReport(output);
+    thesis_supported = output.result.comparison?.thesis_supported;
+
+    if (args.output) {
+      const dir = dirname(args.output);
+      mkdirSync(dir, { recursive: true });
+      const artifact = {
+        ...output,
+        log_entries: args.verbose
+          ? output.log_entries
+          : `[${output.log_entries.length} entries — use --verbose to include]`,
+      };
+      writeFileSync(args.output, JSON.stringify(artifact, null, 2));
+    }
+  } else if (args.version === 3) {
     const harness = new BenchmarkHarnessV3({
       mode: args.mode,
       parallel_workers: args.workers,

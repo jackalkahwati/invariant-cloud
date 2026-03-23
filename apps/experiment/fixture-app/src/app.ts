@@ -1,44 +1,24 @@
 /**
- * Fixture App — Main Entrypoint
+ * Fixture App — Express entry point
  *
- * A compact, realistic web app that serves as the benchmark target.
- * The benchmark scenario adds:
- *   1. Enterprise SSO (SAML/OIDC)
- *   2. Audit Logging
- *   3. Admin Role Management
- *
- * This file intentionally represents the "before" state — minimal auth,
- * no SSO, no audit, basic roles only.
+ * BASE file. Feature tasks DO NOT touch this.
+ * integration-wiring mounts feature routes and wires auth here.
  */
 
-export interface AppConfig {
-  port: number;
-  host: string;
-  jwt_secret: string;
-  database_url: string;
-}
+import express from "express";
+import type { Application } from "express";
+import ssoRouter from "./auth/sso-routes";
+import auditRouter from "./routes/audit.routes";
+import adminRouter from "./roles/admin-routes";
 
-export interface AppContext {
-  config: AppConfig;
-  started_at: Date;
-  version: string;
-}
+export const app: Application = express();
+app.use(express.json());
 
-export function createApp(config: AppConfig): AppContext {
-  return {
-    config,
-    started_at: new Date(),
-    version: "1.0.0",
-  };
-}
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: Date.now() });
+});
 
-// Routes registered (will be extended by benchmark tasks)
-export const registeredRoutes: string[] = [
-  "GET /health",
-  "POST /auth/login",
-  "POST /auth/register",
-  "GET /users",
-  "GET /users/:id",
-  "PUT /users/:id",
-  "DELETE /users/:id",
-];
+// Mount feature routes
+app.use("/api/auth/sso", ssoRouter);
+app.use("/api/audit", auditRouter);
+app.use("/api/admin", adminRouter);
