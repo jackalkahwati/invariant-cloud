@@ -1,6 +1,1 @@
-/**
- * Central routes aggregation
- * This module serves as a placeholder for route configuration
- */
-
-export {};
+// Route aggregator — written by integration-wiring task
