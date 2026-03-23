@@ -17,6 +17,12 @@ import { randomUUID } from "crypto";
 import { WorldStateStore, ActionRecord, Claim } from "../state/store.js";
 import { TaskPacket, ProposedAction } from "../tasks/schema.js";
 import { ActionValidator } from "../validation/validator.js";
+import {
+  RecoveryPolicy,
+  DEFAULT_RECOVERY_POLICY,
+  isRecoverable,
+  RecoveryState,
+} from "./recovery.js";
 import { logger } from "../logger/logger.js";
 
 // ─── Worker Configuration ─────────────────────────────────────────────────────
@@ -28,12 +34,15 @@ export interface WorkerConfig {
   jitter_factor: number;
   /** Probability [0,1] that a worker proposes a "risky" action */
   risky_action_probability: number;
+  /** Recovery policy for blocked actions (V2) */
+  recovery_policy: RecoveryPolicy;
 }
 
 const DEFAULT_CONFIG: WorkerConfig = {
   action_delay_ms: 50,
   jitter_factor: 0.3,
   risky_action_probability: 0.1,
+  recovery_policy: DEFAULT_RECOVERY_POLICY,
 };
 
 // ─── Worker Output ────────────────────────────────────────────────────────────
@@ -46,6 +55,7 @@ export interface WorkerResult {
   actions_attempted: number;
   actions_executed: number;
   actions_blocked: number;
+  actions_recovered: number;  // V2: blocked actions that recovered via retry
   files_modified: string[];
   contracts_updated: Record<string, number>;
   elapsed_ms: number;
@@ -86,6 +96,8 @@ export class SimulatedWorker {
     let actions_attempted = 0;
     let actions_executed = 0;
     let actions_blocked = 0;
+    let actions_recovered = 0;
+    const recovery_policy = this.config.recovery_policy;
 
     try {
       // Generate the sequence of actions this task would take
@@ -98,8 +110,46 @@ export class SimulatedWorker {
         await this.delay(this.jitteredDelay());
 
         // Validate before executing
-        const action_id = randomUUID();
-        const validation = this.validator.validate(action, activeTask, action_id);
+        let action_id = randomUUID();
+        let validation = this.validator.validate(action, activeTask, action_id);
+
+        // ── V2 Recovery Loop ─────────────────────────────────────────────────
+        if (
+          validation.admissibility === "BLOCKED" &&
+          isRecoverable(validation.reasons, recovery_policy)
+        ) {
+          const recovery: RecoveryState = {
+            action_id,
+            attempts: 0,
+            recovered: false,
+            recovery_reason: "",
+          };
+
+          for (let attempt = 1; attempt <= recovery_policy.max_attempts; attempt++) {
+            recovery.attempts = attempt;
+            // Exponential backoff: base * 2^(attempt-1)
+            const backoff = recovery_policy.backoff_base_ms * Math.pow(2, attempt - 1);
+            await this.delay(backoff);
+
+            // Re-validate after backoff (lock may have been released)
+            action_id = randomUUID();
+            validation = this.validator.validate(action, activeTask, action_id);
+
+            if (validation.admissibility !== "BLOCKED") {
+              recovery.recovered = true;
+              recovery.recovery_reason = `Recovered after ${attempt} attempt(s) (${backoff}ms backoff)`;
+              actions_recovered++;
+              logger.info(`[RECOVERY] Action recovered after ${attempt} attempt(s)`, {
+                task_id: activeTask.task_id,
+                action_type: action.action_type,
+                target: this.extractTarget(action),
+                attempts: attempt,
+              });
+              break;
+            }
+          }
+        }
+        // ─────────────────────────────────────────────────────────────────────
 
         const record: ActionRecord = {
           action_id,
@@ -123,7 +173,7 @@ export class SimulatedWorker {
             action_type: action.action_type,
             reasons: validation.reasons,
           });
-          // Blocked actions do not proceed — task may need escalation
+          // Still blocked after recovery attempts — skip this action
           continue;
         }
 
@@ -197,6 +247,7 @@ export class SimulatedWorker {
         actions_attempted,
         actions_executed,
         actions_blocked,
+        actions_recovered,
         files_modified,
         contracts_updated,
         elapsed_ms: Date.now() - start,
@@ -215,6 +266,7 @@ export class SimulatedWorker {
         actions_attempted,
         actions_executed,
         actions_blocked,
+        actions_recovered,
         files_modified,
         contracts_updated,
         elapsed_ms: Date.now() - start,

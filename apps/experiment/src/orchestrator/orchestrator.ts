@@ -12,6 +12,7 @@ import { WorldStateStore } from "../state/store.js";
 import { TaskPacket } from "../tasks/schema.js";
 import { ActionValidator } from "../validation/validator.js";
 import { SimulatedWorker, WorkerPool, WorkerResult } from "../workers/worker.js";
+import { RecoveryPolicy, DEFAULT_RECOVERY_POLICY } from "../workers/recovery.js";
 import { logger } from "../logger/logger.js";
 
 // ─── Orchestrator Config ──────────────────────────────────────────────────────
@@ -27,6 +28,8 @@ export interface OrchestratorConfig {
   mode: "serial" | "parallel";
   /** Action delay per worker (for reproducible benchmarks) */
   action_delay_ms?: number;
+  /** Recovery policy for workers (V2) */
+  recovery_policy?: RecoveryPolicy;
 }
 
 const DEFAULT_CONFIG: OrchestratorConfig = {
@@ -66,6 +69,7 @@ export class TaskOrchestrator {
     this.validator = new ActionValidator(store);
     this.pool = new WorkerPool(store, this.validator, cfg.max_workers, {
       action_delay_ms: cfg.action_delay_ms ?? 50,
+      recovery_policy: cfg.recovery_policy ?? DEFAULT_RECOVERY_POLICY,
     });
     this.config = cfg;
   }
@@ -127,6 +131,7 @@ export class TaskOrchestrator {
       const ordered = this.topologicalSort(tasks);
       const worker = new SimulatedWorker(this.store, this.validator, {
         action_delay_ms: cfg.action_delay_ms ?? 50,
+        recovery_policy: cfg.recovery_policy ?? DEFAULT_RECOVERY_POLICY,
       });
 
       for (const task of ordered) {
