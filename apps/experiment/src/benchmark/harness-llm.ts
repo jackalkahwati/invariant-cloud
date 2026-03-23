@@ -128,6 +128,16 @@ const LLM_WRITTEN_DIRS = [
   "src/auth/extensions",
   "src/audit",
   "src/roles",
+  "tests",
+];
+
+/** Loose files written by LLM tasks (not inside a dedicated subdir) */
+const LLM_WRITTEN_FILES = [
+  "src/auth/middleware.ts",
+  "src/auth/sso-provider.ts",
+  "src/auth/sso-routes.ts",
+  "src/auth/token-exchange.ts",
+  "src/auth/types.ts",
 ];
 
 /** Baseline content for files that must exist before LLM runs */
@@ -163,6 +173,14 @@ function resetFixture(): void {
       rmSync(abs, { recursive: true, force: true });
     }
     mkdirSync(abs, { recursive: true });
+  }
+
+  // Remove loose LLM-written files
+  for (const file of LLM_WRITTEN_FILES) {
+    const abs = join(FIXTURE_ROOT, file);
+    if (existsSync(abs)) {
+      rmSync(abs, { force: true });
+    }
   }
 
   // Restore base files

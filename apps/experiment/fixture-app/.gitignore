@@ -1,0 +1,11 @@
+# LLM-generated implementation files — written fresh each benchmark run
+src/audit/
+src/auth/extensions/
+src/auth/middleware.ts
+src/auth/sso-provider.ts
+src/auth/sso-routes.ts
+src/auth/token-exchange.ts
+src/auth/types.ts
+src/roles/
+src/routes/
+tests/integration.test.ts
