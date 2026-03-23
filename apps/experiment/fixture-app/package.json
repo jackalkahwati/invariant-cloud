@@ -1,0 +1,14 @@
+{
+  "name": "@coherence-engine/fixture-app",
+  "version": "1.0.0",
+  "description": "Benchmark fixture app — realistic web app target for the parallel runtime benchmark",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2",
+    "vitest": "^1.4.0"
+  }
+}

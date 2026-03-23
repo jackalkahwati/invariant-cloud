@@ -22,3 +22,4 @@ apps/api/tests/**/*.d.ts.map
 .env*.local
 apps/web/.vercel
 apps/web/.env.local
+apps/experiment/results/

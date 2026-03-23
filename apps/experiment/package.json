@@ -1,0 +1,27 @@
+{
+  "name": "@coherence-engine/experiment",
+  "version": "0.1.0",
+  "description": "Experimental parallel coding runtime benchmark — proves bounded multi-agent execution beats serial",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/cli/run.ts",
+    "run:serial": "tsx src/cli/run.ts --mode serial",
+    "run:parallel": "tsx src/cli/run.ts --mode parallel",
+    "run:both": "tsx src/cli/run.ts --mode both",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "bench": "tsx src/cli/run.ts --mode both --output results/latest.json"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2",
+    "vitest": "^1.4.0",
+    "@vitest/coverage-v8": "^1.4.0"
+  }
+}
