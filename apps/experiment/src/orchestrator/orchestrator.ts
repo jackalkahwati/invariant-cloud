@@ -20,7 +20,11 @@ import { logger } from "../logger/logger.js";
 export interface OrchestratorConfig {
   /** Maximum concurrent workers (parallel mode) */
   max_workers: number;
-  /** Polling interval for dependency checks in ms */
+  /**
+   * Polling interval in ms — only used as a fallback when the orchestrator
+   * would otherwise spin. Set to 0 to remove entirely (V3 default).
+   * V1/V2 default was 10ms which added ~100ms of wall clock overhead.
+   */
   poll_interval_ms: number;
   /** Maximum total wall clock time before aborting */
   timeout_ms: number;
@@ -30,6 +34,17 @@ export interface OrchestratorConfig {
   action_delay_ms?: number;
   /** Recovery policy for workers (V2) */
   recovery_policy?: RecoveryPolicy;
+  /**
+   * V3: Feature group definitions for staged integration.
+   * Keys are feature names; values are arrays of task IDs in that feature.
+   * When all tasks in a group complete, on_feature_group_complete fires.
+   */
+  feature_groups?: Record<string, string[]>;
+  /**
+   * V3: Callback fired (fire-and-forget) when all tasks in a feature group
+   * complete. Runs concurrently with remaining task execution.
+   */
+  on_feature_group_complete?: (feature: string, task_ids: string[]) => void;
 }
 
 const DEFAULT_CONFIG: OrchestratorConfig = {
@@ -159,6 +174,8 @@ export class TaskOrchestrator {
       // Parallel execution — keep feeding ready tasks to available workers
       const pending = new Set(tasks.map((t) => t.task_id));
       const in_flight = new Map<string, Promise<WorkerResult>>();
+      // V3: track which feature groups have already fired the completion callback
+      const completed_feature_groups = new Set<string>();
 
       while (pending.size > 0 || in_flight.size > 0) {
         if (Date.now() - start > cfg.timeout_ms) {
@@ -191,6 +208,23 @@ export class TaskOrchestrator {
               this.pool.markFree(worker.worker_id);
               worker_results.push(result);
               if (!result.success) human_interventions++;
+
+              // V3: Staged integration — check if a feature group just completed
+              if (cfg.feature_groups && cfg.on_feature_group_complete) {
+                const feature = task.feature;
+                if (!completed_feature_groups.has(feature)) {
+                  const group_ids = cfg.feature_groups[feature] ?? [];
+                  const all_done = group_ids.length > 0 && group_ids.every(
+                    (tid) => this.store.getTask(tid)?.status === "COMPLETED"
+                  );
+                  if (all_done) {
+                    completed_feature_groups.add(feature);
+                    // Fire-and-forget: runs concurrently, does not block execution
+                    cfg.on_feature_group_complete(feature, group_ids);
+                  }
+                }
+              }
+
               return result;
             })
             .catch((err) => {
@@ -203,6 +237,7 @@ export class TaskOrchestrator {
                 actions_attempted: 0,
                 actions_executed: 0,
                 actions_blocked: 0,
+                actions_recovered: 0,  // V2/V3: explicit zero in error path
                 files_modified: [],
                 contracts_updated: {},
                 elapsed_ms: 0,
@@ -219,7 +254,9 @@ export class TaskOrchestrator {
         }
 
         if (in_flight.size > 0) {
-          // Wait for at least one task to finish before re-evaluating
+          // V3 optimization: Promise.race() already yields the event loop —
+          // no additional sleep needed. V1/V2 had await this.sleep(poll_interval_ms)
+          // here which added ~10ms × task_count of artificial overhead.
           await Promise.race(in_flight.values());
         } else if (ready.length === 0 && pending.size > 0) {
           // No progress — dependency cycle or all blocked
@@ -236,8 +273,8 @@ export class TaskOrchestrator {
           }
           break;
         }
-
-        await this.sleep(cfg.poll_interval_ms);
+        // V3: removed unconditional await this.sleep(poll_interval_ms) here.
+        // That sleep ran on EVERY loop iteration in V1/V2, adding ~100ms for 10 tasks.
       }
 
       // Wait for any remaining in-flight tasks

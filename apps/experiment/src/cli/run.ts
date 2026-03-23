@@ -6,10 +6,12 @@
  *   tsx src/cli/run.ts [options]
  *
  * Options:
- *   --version 1|2                  Benchmark version (default: 1)
+ *   --version 1|2|3                Benchmark version (default: 1)
  *   --mode serial|parallel|both    Execution mode (default: both)
  *   --workers N                    Number of parallel workers (default: 4)
  *   --delay N                      Action delay in ms (default: 20)
+ *   --sweep                        V3: run worker count sweep (2,4,8,12)
+ *   --fixture original|optimized   V3: fixture to use (default: optimized)
  *   --output PATH                  Write JSON artifact to file
  *   --silent                       Suppress structured logs
  *   --verbose                      Show all log entries in output
@@ -17,22 +19,30 @@
  * Examples:
  *   tsx src/cli/run.ts --mode both
  *   tsx src/cli/run.ts --version 2 --mode both --workers 4
- *   tsx src/cli/run.ts --mode both --output results/latest.json
+ *   tsx src/cli/run.ts --version 3 --mode both --sweep
+ *   tsx src/cli/run.ts --version 3 --fixture original --mode both
  */
 
 import { writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { BenchmarkHarness, formatBenchmarkReport } from "../benchmark/harness.js";
 import { BenchmarkHarnessV2, formatV2Report } from "../benchmark/harness-v2.js";
+import {
+  BenchmarkHarnessV3,
+  formatV3Report,
+  formatV3CompactSweep,
+} from "../benchmark/harness-v3.js";
 import { logger } from "../logger/logger.js";
 
 // ─── Arg Parsing ──────────────────────────────────────────────────────────────
 
 function parseArgs(): {
-  version: 1 | 2;
+  version: 1 | 2 | 3;
   mode: "serial" | "parallel" | "both";
   workers: number;
   delay: number;
+  sweep: boolean;
+  fixture: "original" | "optimized";
   output?: string;
   silent: boolean;
   verbose: boolean;
@@ -50,7 +60,11 @@ function parseArgs(): {
       : "both";
 
   const version_raw = parseInt(get("--version", "1"), 10);
-  const version: 1 | 2 = version_raw === 2 ? 2 : 1;
+  const version: 1 | 2 | 3 = version_raw === 3 ? 3 : version_raw === 2 ? 2 : 1;
+
+  const fixture_raw = get("--fixture", "optimized");
+  const fixture: "original" | "optimized" =
+    fixture_raw === "original" ? "original" : "optimized";
 
   const output_raw = get("--output", "");
 
@@ -58,7 +72,9 @@ function parseArgs(): {
     version,
     mode,
     workers: parseInt(get("--workers", "4"), 10),
-    delay: parseInt(get("--delay", "20"), 10),
+    delay: parseInt(get("--delay", "15"), 10),
+    sweep: args.includes("--sweep"),
+    fixture,
     output: output_raw || undefined,
     silent: args.includes("--silent"),
     verbose: args.includes("--verbose"),
@@ -70,12 +86,17 @@ function parseArgs(): {
 async function main(): Promise<void> {
   const args = parseArgs();
 
-  const vLabel = args.version === 2 ? "V2 (Repair Loop)" : "V1";
+  const vLabel =
+    args.version === 3 ? "V3 (Optimized)" : args.version === 2 ? "V2 (Repair Loop)" : "V1";
   console.log(`\n🚀 Parallel Coding Runtime — Benchmark ${vLabel}\n`);
   console.log(`  Version: ${args.version}`);
   console.log(`  Mode:    ${args.mode}`);
   console.log(`  Workers: ${args.workers}`);
   console.log(`  Delay:   ${args.delay}ms per action`);
+  if (args.version === 3) {
+    console.log(`  Fixture: ${args.fixture}`);
+    console.log(`  Sweep:   ${args.sweep ? "yes (2,4,8,12 workers)" : "no"}`);
+  }
   console.log(`  Output:  ${args.output ?? "(stdout only)"}\n`);
 
   if (!args.silent) {
@@ -87,7 +108,34 @@ async function main(): Promise<void> {
   let report: string;
   let thesis_supported: boolean | undefined;
 
-  if (args.version === 2) {
+  if (args.version === 3) {
+    const harness = new BenchmarkHarnessV3({
+      mode: args.mode,
+      parallel_workers: args.workers,
+      action_delay_ms: args.delay,
+      silent: args.silent,
+      fixture: args.fixture,
+      worker_sweep: args.sweep ? [2, 4, 8, 12] : undefined,
+    });
+    const output = await harness.run();
+    report = formatV3Report(output);
+    if (args.sweep && output.sweep) {
+      report += formatV3CompactSweep(output);
+    }
+    thesis_supported = output.primary.comparison.thesis_supported;
+
+    if (args.output) {
+      const dir = dirname(args.output);
+      mkdirSync(dir, { recursive: true });
+      const artifact = {
+        ...output,
+        log_entries: args.verbose
+          ? output.log_entries
+          : `[${output.log_entries.length} entries — use --verbose to include]`,
+      };
+      writeFileSync(args.output, JSON.stringify(artifact, null, 2));
+    }
+  } else if (args.version === 2) {
     const harness = new BenchmarkHarnessV2({
       mode: args.mode,
       parallel_workers: args.workers,
@@ -103,7 +151,9 @@ async function main(): Promise<void> {
       mkdirSync(dir, { recursive: true });
       const artifact = {
         ...output,
-        log_entries: args.verbose ? output.log_entries : `[${output.log_entries.length} entries — use --verbose to include]`,
+        log_entries: args.verbose
+          ? output.log_entries
+          : `[${output.log_entries.length} entries — use --verbose to include]`,
       };
       writeFileSync(args.output, JSON.stringify(artifact, null, 2));
     }
@@ -123,7 +173,9 @@ async function main(): Promise<void> {
       mkdirSync(dir, { recursive: true });
       const artifact = {
         ...output,
-        log_entries: args.verbose ? output.log_entries : `[${output.log_entries.length} entries — use --verbose to include]`,
+        log_entries: args.verbose
+          ? output.log_entries
+          : `[${output.log_entries.length} entries — use --verbose to include]`,
       };
       writeFileSync(args.output, JSON.stringify(artifact, null, 2));
     }

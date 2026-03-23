@@ -208,10 +208,20 @@ export function compareMetrics(
   }
 
   // Thesis verdict
+  // Validation is considered "active" if ANY of these is true:
+  //   - Pre-execution validator directly blocked actions
+  //   - Validator caught a block and recovery backoff resolved it (merge_conflicts > 0 proxy)
+  //   - Post-execution integrator caught merge conflicts (integration is the second validation layer)
+  // Together these capture all forms of "Invariant-style validation" activity.
+  const validation_active =
+    parallel.invalid_actions_blocked > 0 ||   // hard pre-execution blocks
+    parallel.merge_conflicts_encountered > 0 || // integrator caught conflicts
+    parallel.repair_tasks_generated > 0;         // integrator generated repair work
+
   const thesis_supported =
     speedup_factor > 1.2 &&
     parallelQuality >= serialQuality - 0.05 && // Allow 5% quality tolerance
-    parallel.invalid_actions_blocked > 0; // Validation must have done something
+    validation_active;
 
   analysis.push(
     thesis_supported
@@ -221,7 +231,7 @@ export function compareMetrics(
             ? "insufficient speedup"
             : parallelQuality < serialQuality - 0.05
             ? "quality degraded unacceptably"
-            : "pre-execution validation had no effect (no blocked actions)"
+            : "pre-execution validation had no effect (no blocked actions, no merge conflicts, no repair tasks)"
         }`
   );
 

@@ -403,3 +403,245 @@ export function createBenchmarkTaskPackets(objective_id: string): TaskPacket[] {
     ),
   ];
 }
+
+// ─── V3 Optimized Task Fixture ────────────────────────────────────────────────
+
+/**
+ * Optimized benchmark task packets for V3.
+ *
+ * Key difference from V1/V2 fixture:
+ *   Each feature writes to its own dedicated route and auth fragment file.
+ *   The integration-wiring task (already last in the DAG) aggregates the fragments.
+ *
+ * This eliminates ALL hot-file contention between parallel feature tasks:
+ *   - No two feature tasks compete for routes.ts
+ *   - No two feature tasks compete for auth.ts
+ *   - Blocked actions drop to 0 in parallel mode
+ *   - Merge conflicts drop to 0 in the feature phase
+ *   - Repair loop becomes trivially fast
+ *
+ * The dependency DAG is identical to V1/V2 — only file paths change.
+ */
+export function createOptimizedTaskPackets(objective_id: string): TaskPacket[] {
+  const now = Date.now();
+
+  const base = (
+    id: string,
+    feature: string,
+    objective: string,
+    allowed: string[],
+    forbidden: string[],
+    deps: string[],
+    contracts: Record<string, number>
+  ): TaskPacket =>
+    createTaskPacket({
+      task_id: id,
+      parent_objective_id: objective_id,
+      feature,
+      objective,
+      allowed_paths: allowed,
+      forbidden_paths: forbidden,
+      dependencies: deps,
+      required_contract_versions: contracts,
+      acceptance_criteria: [
+        {
+          id: `${id}-ac-1`,
+          description: `All tests pass after completing ${id}`,
+          verification_type: "test_pass",
+          verification_target: `tests/${id}`,
+        },
+      ],
+      validation_rules: [
+        {
+          rule_id: `${id}-vr-1`,
+          description: "No writes to forbidden paths",
+          rule_type: "no_forbidden_path_write",
+        },
+        {
+          rule_id: `${id}-vr-2`,
+          description: "Dependencies must be satisfied",
+          rule_type: "dependency_satisfied",
+        },
+        {
+          rule_id: `${id}-vr-3`,
+          description: "No overlapping file ownership",
+          rule_type: "no_overlapping_ownership",
+        },
+      ],
+      escalation_rules: [
+        {
+          rule_id: `${id}-er-1`,
+          trigger: "max_retries_exceeded",
+          action: "notify_orchestrator",
+          max_retries: 3,
+        },
+        {
+          rule_id: `${id}-er-2`,
+          trigger: "unresolvable_conflict",
+          action: "escalate_to_human",
+        },
+      ],
+      assigned_worker_id: null,
+      priority: 5,
+      max_retries: 3,
+      created_at: now,
+      updated_at: now,
+    });
+
+  // Shared aggregator files — only integration-wiring may write these
+  const AGGREGATOR_FORBIDDEN = [
+    "fixture-app/src/routes.ts",
+    "fixture-app/src/auth/auth.ts",
+    "fixture-app/src/app.ts",
+  ];
+
+  return [
+    // ── SSO Feature ───────────────────────────────────────────────────────────
+    // sso-provider: unchanged — already uses unique paths
+    base(
+      "sso-provider",
+      "SSO",
+      "Implement SAML/OIDC provider adapter and token exchange logic",
+      [
+        "fixture-app/src/auth/sso-provider.ts",
+        "fixture-app/src/auth/token-exchange.ts",
+        "fixture-app/src/auth/types.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      [],
+      { "auth-contract": 1 }
+    ),
+
+    // sso-middleware: feature-local auth extension (no longer writes auth.ts)
+    base(
+      "sso-middleware",
+      "SSO",
+      "Add SSO middleware — writes to feature-local sso.ts extension module",
+      [
+        "fixture-app/src/auth/middleware.ts",
+        "fixture-app/src/auth/extensions/sso.ts",  // ← V3: feature-local, not auth.ts
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["sso-provider"],
+      { "auth-contract": 2, "middleware-contract": 1 }
+    ),
+
+    // sso-routes: feature-local route fragment (no longer writes routes.ts)
+    base(
+      "sso-routes",
+      "SSO",
+      "Add SSO route fragment — writes to feature-local sso.routes.ts",
+      [
+        "fixture-app/src/routes/sso.routes.ts",    // ← V3: feature-local, not routes.ts
+        "fixture-app/src/auth/sso-routes.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["sso-middleware"],
+      { "auth-contract": 2, "routes-contract": 2 }
+    ),
+
+    // ── Audit Logging Feature ─────────────────────────────────────────────────
+    base(
+      "audit-logger",
+      "AuditLogging",
+      "Implement structured audit logger with sink abstraction",
+      [
+        "fixture-app/src/audit/logger.ts",
+        "fixture-app/src/audit/sinks.ts",
+        "fixture-app/src/audit/types.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      [],
+      { "audit-contract": 1 }
+    ),
+
+    // audit-middleware: feature-local auth extension (no longer writes auth.ts)
+    base(
+      "audit-middleware",
+      "AuditLogging",
+      "Add audit middleware — writes to feature-local audit.ts extension module",
+      [
+        "fixture-app/src/audit/middleware.ts",
+        "fixture-app/src/auth/extensions/audit.ts",  // ← V3: feature-local, not auth.ts
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["audit-logger"],
+      { "audit-contract": 2, "middleware-contract": 1 }
+    ),
+
+    // audit-routes: feature-local route fragment (no longer writes routes.ts)
+    base(
+      "audit-routes",
+      "AuditLogging",
+      "Add audit route fragment — writes to feature-local audit.routes.ts",
+      [
+        "fixture-app/src/routes/audit.routes.ts",   // ← V3: feature-local, not routes.ts
+        "fixture-app/src/audit/audit-routes.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["audit-middleware"],
+      { "audit-contract": 2, "routes-contract": 2 }
+    ),
+
+    // ── Admin Role Management Feature ─────────────────────────────────────────
+    base(
+      "roles-schema",
+      "AdminRoles",
+      "Define role hierarchy, permissions matrix, and role assignment types",
+      [
+        "fixture-app/src/roles/schema.ts",
+        "fixture-app/src/roles/permissions.ts",
+        "fixture-app/src/roles/types.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      [],
+      { "roles-contract": 1 }
+    ),
+
+    // roles-enforcement: already uses unique guard.ts — no change needed
+    base(
+      "roles-enforcement",
+      "AdminRoles",
+      "Implement role enforcement guard — writes to feature-local guard.ts",
+      [
+        "fixture-app/src/roles/guard.ts",
+        "fixture-app/src/auth/extensions/admin.ts",  // ← V3: feature-local, not auth.ts
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["roles-schema", "sso-middleware"],
+      { "roles-contract": 2, "auth-contract": 2, "middleware-contract": 1 }
+    ),
+
+    // admin-routes: feature-local route fragment (no longer writes routes.ts)
+    base(
+      "admin-routes",
+      "AdminRoles",
+      "Add admin route fragment — writes to feature-local admin.routes.ts",
+      [
+        "fixture-app/src/routes/admin.routes.ts",   // ← V3: feature-local, not routes.ts
+        "fixture-app/src/roles/admin-routes.ts",
+      ],
+      AGGREGATOR_FORBIDDEN,
+      ["roles-enforcement", "audit-middleware"],
+      { "roles-contract": 2, "audit-contract": 2, "routes-contract": 2 }
+    ),
+
+    // ── Integration Task ───────────────────────────────────────────────────────
+    // integration-wiring: aggregates all feature fragments into shared files
+    // It is the ONLY task allowed to write routes.ts and auth.ts
+    base(
+      "integration-wiring",
+      "Integration",
+      "Aggregate feature route/auth fragments into app entrypoint and run full test suite",
+      [
+        "fixture-app/src/app.ts",
+        "fixture-app/src/routes.ts",           // Aggregates sso/audit/admin route fragments
+        "fixture-app/src/auth/auth.ts",        // Aggregates sso/audit/admin auth extensions
+        "fixture-app/tests/integration.test.ts",
+      ],
+      [],  // Integration task has no forbidden paths — it is the aggregator
+      ["sso-routes", "audit-routes", "admin-routes"],
+      { "auth-contract": 2, "audit-contract": 2, "roles-contract": 2, "routes-contract": 2 }
+    ),
+  ];
+}
