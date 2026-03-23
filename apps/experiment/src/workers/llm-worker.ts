@@ -15,7 +15,7 @@
  */
 
 import { randomUUID } from "crypto";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from "fs";
 import { dirname, join, resolve } from "path";
 import Anthropic from "@anthropic-ai/sdk";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -423,6 +423,108 @@ The integration tests at fixture-app/tests/integration.test.ts test:
 
 ## Contract Versions to Advance
 ${JSON.stringify(task.required_contract_versions, null, 2)}`;
+  }
+
+  // ─── Test-Driven Repair ─────────────────────────────────────────────────────
+
+  /**
+   * Given the raw vitest "Failed Tests" section, asks Claude to patch the
+   * broken files. Reads ALL current fixture-app source as context so Claude
+   * can see the full implementation state.
+   */
+  async repair(
+    failing_output: string,
+    round: number
+  ): Promise<{ files_patched: string[]; elapsed_ms: number }> {
+    const start = Date.now();
+
+    const all_files = this.readAllFixtureFiles();
+
+    const context = `You are a TypeScript code repair agent. Integration tests are failing on an Express.js application. Fix ONLY what is needed to make the failing tests pass.
+
+## Round ${round} — Failing Tests
+
+${failing_output}
+
+## Current Implementation
+${all_files}
+
+## Repair Instructions
+1. Read each failing test carefully — the test file shows the exact HTTP contract expected.
+2. Find the root cause: wrong status code, missing route, unhandled request body, runtime error, etc.
+3. Write a minimal fix — only change broken behavior, do not rewrite working code.
+4. Key rules:
+   - Use 403 (Forbidden) when a user lacks a required role, 401 (Unauthorized) when there is no session at all.
+   - For POST handlers, ensure express.json() middleware is mounted in the app (src/app.ts or src/routes.ts).
+   - For 500 errors, add try/catch or fix the underlying crash.
+   - If a route is not found, check that the Router is exported and mounted in src/routes.ts.
+5. Call write_files with COMPLETE file contents (not diffs). Paths must be relative to fixture-app/ root (e.g. "src/routes.ts").`;
+
+    const llm_start = Date.now();
+    const stream = this.client.messages.stream({
+      model: this.config.model,
+      max_tokens: this.config.max_tokens,
+      tools: [WRITE_FILES_TOOL],
+      tool_choice: { type: "any" },
+      messages: [{ role: "user", content: context }],
+    });
+    const response = await stream.finalMessage();
+
+    logger.info(`[LLM Repair] Round ${round} responded in ${Date.now() - llm_start}ms`, {
+      stop_reason: response.stop_reason,
+      usage: response.usage,
+    });
+
+    const tool_use = response.content.find(
+      (c): c is Anthropic.ToolUseBlock => c.type === "tool_use"
+    );
+
+    const files_patched: string[] = [];
+    if (tool_use) {
+      const { files = [] } = tool_use.input as {
+        files: Array<{ path: string; content: string; reason: string }>;
+      };
+      for (const { path, content } of files) {
+        const abs_path = join(
+          this.config.fixture_root,
+          path.replace(/^fixture-app\//, "")
+        );
+        mkdirSync(dirname(abs_path), { recursive: true });
+        writeFileSync(abs_path, content, "utf8");
+        files_patched.push(path);
+        logger.info(`[LLM Repair] Patched ${path}`);
+      }
+    }
+
+    return { files_patched, elapsed_ms: Date.now() - start };
+  }
+
+  /** Read all .ts files under fixture-app/src and fixture-app/tests */
+  private readAllFixtureFiles(): string {
+    const parts: string[] = [];
+
+    const readDir = (dir: string, rel_prefix: string) => {
+      if (!existsSync(dir)) return;
+      try {
+        const entries = readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+          const abs = join(dir, entry.name);
+          const rel = `${rel_prefix}/${entry.name}`;
+          if (entry.isDirectory() && entry.name !== "node_modules") {
+            readDir(abs, rel);
+          } else if (entry.isFile() && entry.name.endsWith(".ts")) {
+            try {
+              parts.push(`### ${rel}\n\`\`\`typescript\n${readFileSync(abs, "utf8")}\n\`\`\``);
+            } catch { /* skip unreadable */ }
+          }
+        }
+      } catch { /* skip unreadable dirs */ }
+    };
+
+    readDir(join(this.config.fixture_root, "src"), "src");
+    readDir(join(this.config.fixture_root, "tests"), "tests");
+
+    return parts.length > 0 ? parts.join("\n\n") : "(no files found)";
   }
 
   private readRelevantFiles(task: TaskPacket): string {

@@ -6,12 +6,14 @@
  *   tsx src/cli/run.ts [options]
  *
  * Options:
- *   --version 1|2|3                Benchmark version (default: 1)
+ *   --version 1|2|3|llm            Benchmark version (default: 1)
  *   --mode serial|parallel|both    Execution mode (default: both)
  *   --workers N                    Number of parallel workers (default: 4)
  *   --delay N                      Action delay in ms (default: 20)
  *   --sweep                        V3: run worker count sweep (2,4,8,12)
  *   --fixture original|optimized   V3: fixture to use (default: optimized)
+ *   --repair-until-pass            LLM: iteratively repair failing tests after draft
+ *   --repair-rounds N              LLM: max repair rounds (default: 5 with --repair-until-pass)
  *   --output PATH                  Write JSON artifact to file
  *   --silent                       Suppress structured logs
  *   --verbose                      Show all log entries in output
@@ -48,6 +50,8 @@ function parseArgs(): {
   sweep: boolean;
   fixture: "original" | "optimized";
   model?: string;
+  repair_until_pass: boolean;
+  repair_rounds: number;
   output?: string;
   silent: boolean;
   verbose: boolean;
@@ -77,6 +81,9 @@ function parseArgs(): {
   const output_raw = get("--output", "");
   const model_raw = get("--model", "");
 
+  const repair_until_pass = args.includes("--repair-until-pass");
+  const repair_rounds_raw = get("--repair-rounds", repair_until_pass ? "5" : "2");
+
   return {
     version,
     mode,
@@ -85,6 +92,8 @@ function parseArgs(): {
     sweep: args.includes("--sweep"),
     fixture,
     model: model_raw || undefined,
+    repair_until_pass,
+    repair_rounds: parseInt(repair_rounds_raw, 10),
     output: output_raw || undefined,
     silent: args.includes("--silent"),
     verbose: args.includes("--verbose"),
@@ -105,6 +114,7 @@ async function main(): Promise<void> {
   console.log(`  Workers: ${args.workers}`);
   if (args.version !== "llm") console.log(`  Delay:   ${args.delay}ms per action`);
   if (args.version === "llm" && args.model) console.log(`  Model:   ${args.model}`);
+  if (args.version === "llm") console.log(`  Repair:  ${args.repair_until_pass ? `until pass (max ${args.repair_rounds} rounds)` : "disabled"}`);
   if (args.version === 3) {
     console.log(`  Fixture: ${args.fixture}`);
     console.log(`  Sweep:   ${args.sweep ? "yes (2,4,8,12 workers)" : "no"}`);
@@ -125,6 +135,8 @@ async function main(): Promise<void> {
       mode: args.mode,
       parallel_workers: args.workers,
       model: args.model,
+      repair_until_pass: args.repair_until_pass,
+      max_repair_rounds: args.repair_rounds,
       silent: args.silent,
     });
     const output = await harness.run();

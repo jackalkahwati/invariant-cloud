@@ -23,7 +23,7 @@ import { createOptimizedTaskPackets } from "../tasks/schema.js";
 import { TaskOrchestrator } from "../orchestrator/orchestrator.js";
 import { Integrator } from "../integrator/integrator.js";
 import { RepairExecutor } from "../orchestrator/repair-executor.js";
-import { LLMWorkerPool, LLMWorkerConfig } from "../workers/llm-worker.js";
+import { LLMWorker, LLMWorkerPool, LLMWorkerConfig } from "../workers/llm-worker.js";
 import { BACKOFF_RETRY_POLICY, DEFAULT_RECOVERY_POLICY } from "../workers/recovery.js";
 import {
   InstrumentationCollector,
@@ -57,6 +57,8 @@ export interface LLMBenchmarkConfig {
   max_repair_rounds: number;
   /** Target pass rate to stop repair */
   target_pass_rate: number;
+  /** After initial vitest run, iteratively repair failing tests with the LLM */
+  repair_until_pass: boolean;
   silent: boolean;
 }
 
@@ -66,10 +68,21 @@ const DEFAULT_LLM_BENCH_CONFIG: LLMBenchmarkConfig = {
   timeout_ms: 300_000,
   max_repair_rounds: 2,
   target_pass_rate: 0.98,
+  repair_until_pass: false,
   silent: false,
 };
 
 // ─── Extended Metrics ─────────────────────────────────────────────────────────
+
+export interface RepairRound {
+  round: number;
+  pass_rate_before: number;
+  pass_rate_after: number;
+  improvement_pp: number;
+  wall_clock_ms: number;
+  failures_targeted: number;
+  files_patched: string[];
+}
 
 export interface LLMBenchmarkMetrics extends BenchmarkMetrics {
   actions_recovered: number;
@@ -78,8 +91,14 @@ export interface LLMBenchmarkMetrics extends BenchmarkMetrics {
   pass_rate_before_repair: number;
   pass_rate_after_repair: number;
   pass_rate_restored: boolean;
-  /** Ground-truth vitest test results */
+  /** Ground-truth vitest test results (initial draft, before test-driven repair) */
   vitest_results: VitestResults;
+  /** Per-round test-driven repair data (populated when repair_until_pass=true) */
+  test_driven_repair_rounds: RepairRound[];
+  /** Wall clock from mode start to initial vitest result (excludes repair) */
+  wall_clock_to_first_draft_ms: number;
+  /** Wall clock from mode start to first fully-passing vitest (undefined if not reached) */
+  wall_clock_to_full_pass_ms?: number;
   instrumentation: InstrumentationSummary;
 }
 
@@ -245,6 +264,25 @@ function runVitestOnFixture(): VitestResults {
   };
 }
 
+/** Pull the structured failure block out of vitest verbose output */
+function extractFailingSection(output: string): string {
+  // Vitest verbose output ends with "⎯⎯ Failed Tests ⎯⎯" block
+  const idx = output.indexOf("Failed Tests");
+  if (idx !== -1) return output.slice(idx, idx + 3000);
+  // Fallback: grab lines that contain the assertion errors
+  return output
+    .split("\n")
+    .filter((l) =>
+      l.includes("×") ||
+      l.includes("→ expected") ||
+      l.includes("AssertionError") ||
+      l.includes("- Expected") ||
+      l.includes("+ Received")
+    )
+    .join("\n")
+    .slice(0, 2000);
+}
+
 // ─── Harness ──────────────────────────────────────────────────────────────────
 
 export class LLMBenchmarkHarness {
@@ -313,6 +351,7 @@ export class LLMBenchmarkHarness {
     llm_config: Partial<LLMWorkerConfig>,
     worker_count: number
   ): Promise<LLMBenchmarkMetrics> {
+    const mode_start_ms = Date.now();
     const instrumentation = new InstrumentationCollector();
     const store = new WorldStateStore();
     const objective_id = `obj-llm-${run_id}-${mode}-w${worker_count}`;
@@ -419,7 +458,74 @@ export class LLMBenchmarkHarness {
 
     console.log(`[LLM Bench] Vitest: ${vitest_results.passed}/${vitest_results.total} passed (${(vitest_results.pass_rate * 100).toFixed(0)}%) in ${vitest_results.duration_ms}ms`);
 
-    // ── Phase 5: Final integration snapshot ──────────────────────────────────
+    // ── Phase 5: Test-driven repair loop ─────────────────────────────────────
+    const wall_clock_to_first_draft_ms = Date.now() - mode_start_ms;
+    const test_driven_repair_rounds: RepairRound[] = [];
+    let current_vitest = vitest_results;
+    let wall_clock_to_full_pass_ms: number | undefined;
+
+    if (current_vitest.pass_rate === 1.0) {
+      wall_clock_to_full_pass_ms = wall_clock_to_first_draft_ms;
+    } else if (cfg.repair_until_pass && current_vitest.failed > 0) {
+      const repair_worker = new LLMWorker(
+        new WorldStateStore(),
+        new ActionValidator(new WorldStateStore()),
+        llm_config
+      );
+      let prev_pass_rate = current_vitest.pass_rate;
+
+      for (let round = 1; round <= cfg.max_repair_rounds; round++) {
+        if (current_vitest.failed === 0) break;
+
+        const round_start = Date.now();
+        const failing_section = extractFailingSection(current_vitest.output);
+
+        console.log(
+          `\n[LLM Bench] Repair round ${round}/${cfg.max_repair_rounds} — targeting ${current_vitest.failed} failing test(s)...`
+        );
+        const { files_patched } = await repair_worker.repair(failing_section, round);
+
+        console.log(`[LLM Bench] Re-running vitest after repair round ${round}...`);
+        const new_vitest = runVitestOnFixture();
+        const improvement_pp = (new_vitest.pass_rate - prev_pass_rate) * 100;
+        const round_ms = Date.now() - round_start;
+
+        test_driven_repair_rounds.push({
+          round,
+          pass_rate_before: prev_pass_rate,
+          pass_rate_after: new_vitest.pass_rate,
+          improvement_pp,
+          wall_clock_ms: round_ms,
+          failures_targeted: current_vitest.failed,
+          files_patched,
+        });
+
+        const arrow = improvement_pp >= 0 ? "+" : "";
+        console.log(
+          `[LLM Bench] Round ${round}: ${(prev_pass_rate * 100).toFixed(0)}% → ` +
+          `${(new_vitest.pass_rate * 100).toFixed(0)}% (${arrow}${improvement_pp.toFixed(1)}pp) ` +
+          `in ${round_ms}ms`
+        );
+
+        if (new_vitest.pass_rate === 1.0) {
+          wall_clock_to_full_pass_ms = Date.now() - mode_start_ms;
+          console.log(`[LLM Bench] ✓ Full pass achieved after round ${round}!`);
+          current_vitest = new_vitest;
+          break;
+        }
+
+        if (improvement_pp <= 0 && round > 1) {
+          console.log(`[LLM Bench] No improvement (${arrow}${improvement_pp.toFixed(1)}pp), stopping repair.`);
+          current_vitest = new_vitest;
+          break;
+        }
+
+        prev_pass_rate = new_vitest.pass_rate;
+        current_vitest = new_vitest;
+      }
+    }
+
+    // ── Phase 7: Final integration snapshot ──────────────────────────────────
     completed_tasks = store.getTasksByStatus("COMPLETED");
     const final_integration = await integrator.integrate(completed_tasks);
     const snapshot = store.snapshot();
@@ -456,18 +562,58 @@ export class LLMBenchmarkHarness {
 
     return {
       ...base,
-      // Use vitest pass rate as ground truth (override simulated rate)
-      final_test_pass_rate: vitest_results.pass_rate,
+      // Use final vitest pass rate (post-repair if repair ran, else initial)
+      final_test_pass_rate: current_vitest.pass_rate,
       actions_recovered,
       repair_rounds_executed,
       repair_tasks_executed,
       pass_rate_before_repair,
-      pass_rate_after_repair: vitest_results.pass_rate,
-      pass_rate_restored: vitest_results.pass_rate >= cfg.target_pass_rate,
-      vitest_results,
+      pass_rate_after_repair: current_vitest.pass_rate,
+      pass_rate_restored: current_vitest.pass_rate >= cfg.target_pass_rate,
+      vitest_results,                    // initial draft results
+      test_driven_repair_rounds,
+      wall_clock_to_first_draft_ms,
+      wall_clock_to_full_pass_ms,
       instrumentation: instr_summary,
     };
   }
+}
+
+// ─── Repair Rounds Table ──────────────────────────────────────────────────────
+
+function formatRepairRoundsTable(
+  rounds: RepairRound[],
+  draft: VitestResults,
+  full_pass_ms?: number
+): string {
+  const lines: string[] = [
+    "  TEST-DRIVEN REPAIR ROUNDS",
+    `  ${"─".repeat(61)}`,
+    `  ${"Round".padEnd(7)} ${"Before".padEnd(8)} ${"After".padEnd(8)} ${"Δ".padEnd(9)} ${"Files".padEnd(7)} Time`,
+    `  ${"─".repeat(61)}`,
+    `  ${"0 (draft)".padEnd(7)} ${"—".padEnd(8)} ${(draft.pass_rate * 100).toFixed(0).padEnd(6)}%  ${"—".padEnd(9)} ${"—".padEnd(7)} —`,
+  ];
+
+  for (const r of rounds) {
+    const before = `${(r.pass_rate_before * 100).toFixed(0)}%`;
+    const after = `${(r.pass_rate_after * 100).toFixed(0)}%`;
+    const delta = `${r.improvement_pp >= 0 ? "+" : ""}${r.improvement_pp.toFixed(1)}pp`;
+    lines.push(
+      `  ${String(r.round).padEnd(7)} ${before.padEnd(8)} ${after.padEnd(8)} ${delta.padEnd(9)} ${String(r.files_patched.length).padEnd(7)} ${r.wall_clock_ms}ms`
+    );
+  }
+
+  lines.push(`  ${"─".repeat(61)}`);
+
+  const last = rounds[rounds.length - 1];
+  const final_rate = last ? last.pass_rate_after : draft.pass_rate;
+  const total_repair_ms = rounds.reduce((s, r) => s + r.wall_clock_ms, 0);
+  lines.push(`  Final: ${(final_rate * 100).toFixed(0)}%  |  ${rounds.length} repair round(s)  |  +${total_repair_ms}ms repair time`);
+  if (full_pass_ms !== undefined) {
+    lines.push(`  ✓ Full pass in ${full_pass_ms}ms total wall clock`);
+  }
+
+  return lines.join("\n");
 }
 
 // ─── Formatter ────────────────────────────────────────────────────────────────
@@ -493,8 +639,11 @@ export function formatLLMReport(output: LLMBenchmarkOutput): string {
     lines.push("─".repeat(65));
     lines.push(formatMetricsTable(serial));
     lines.push(`  LLM wall clock:        ${serial.wall_clock_ms}ms`);
-    lines.push(`  Vitest pass rate:      ${(serial.vitest_results.pass_rate * 100).toFixed(0)}% (${serial.vitest_results.passed}/${serial.vitest_results.total})`);
-    lines.push(`  Vitest duration:       ${serial.vitest_results.duration_ms}ms`);
+    lines.push(`  Draft vitest:          ${(serial.vitest_results.pass_rate * 100).toFixed(0)}% (${serial.vitest_results.passed}/${serial.vitest_results.total}) in ${serial.wall_clock_to_first_draft_ms}ms`);
+    if (serial.test_driven_repair_rounds.length > 0) {
+      lines.push("");
+      lines.push(formatRepairRoundsTable(serial.test_driven_repair_rounds, serial.vitest_results, serial.wall_clock_to_full_pass_ms));
+    }
     lines.push("");
     lines.push(formatInstrumentationTable(serial.instrumentation));
     lines.push("");
@@ -506,8 +655,11 @@ export function formatLLMReport(output: LLMBenchmarkOutput): string {
     lines.push("─".repeat(65));
     lines.push(formatMetricsTable(parallel));
     lines.push(`  LLM wall clock:        ${parallel.wall_clock_ms}ms`);
-    lines.push(`  Vitest pass rate:      ${(parallel.vitest_results.pass_rate * 100).toFixed(0)}% (${parallel.vitest_results.passed}/${parallel.vitest_results.total})`);
-    lines.push(`  Vitest duration:       ${parallel.vitest_results.duration_ms}ms`);
+    lines.push(`  Draft vitest:          ${(parallel.vitest_results.pass_rate * 100).toFixed(0)}% (${parallel.vitest_results.passed}/${parallel.vitest_results.total}) in ${parallel.wall_clock_to_first_draft_ms}ms`);
+    if (parallel.test_driven_repair_rounds.length > 0) {
+      lines.push("");
+      lines.push(formatRepairRoundsTable(parallel.test_driven_repair_rounds, parallel.vitest_results, parallel.wall_clock_to_full_pass_ms));
+    }
     lines.push("");
     lines.push(formatInstrumentationTable(parallel.instrumentation));
     lines.push("");
