@@ -3,7 +3,6 @@ import {
   settlingService, snapshotRepo, entityRepo, claimRepo,
   contradictionRepo, branchRepo, constraintRepo, auditRepo,
 } from '../../../infrastructure/container.js';
-import { computeCoherenceScore } from '../../../application/services/CoherenceEngine.js';
 
 export async function worldRoutes(app: FastifyInstance) {
   // GET /world/coherence, current coherence score and Phi breakdown

@@ -20,7 +20,9 @@
     "build": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "keywords": [
     "coherence",
@@ -32,8 +34,9 @@
     "knowledge-graph"
   ],
   "license": "MIT",
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.4.2"
+    "@vitest/coverage-v8": "^1.6.1",
+    "typescript": "^5.4.2",
+    "vitest": "^1.6.1"
   }
 }

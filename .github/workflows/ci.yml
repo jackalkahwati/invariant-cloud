@@ -1,0 +1,172 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  # ── API: lint ──────────────────────────────────────────────────────────────
+  lint-api:
+    name: Lint API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/api/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+
+  # ── API: type-check ────────────────────────────────────────────────────────
+  typecheck-api:
+    name: Typecheck API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/api/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=../../prisma/schema.prisma
+      - name: Type-check
+        run: npx tsc --noEmit
+
+  # ── API: unit + integration tests ─────────────────────────────────────────
+  # NOTE: The current test suite mocks Prisma and all repositories entirely via
+  # vi.mock(). No real database is needed. A future `test-api-db` job should add
+  # real-DB integration tests once the repository layer has a test-doubles strategy.
+  test-api:
+    name: Test API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    env:
+      NODE_ENV: test
+      API_KEY: dev-api-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/api/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=../../prisma/schema.prisma
+      - name: Run tests
+        run: npm test
+
+  # ── SDK: type-check ────────────────────────────────────────────────────────
+  typecheck-sdk:
+    name: Typecheck SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: packages/sdk/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Type-check
+        run: npm run typecheck
+
+  # ── SDK: unit tests ────────────────────────────────────────────────────────
+  test-sdk-ts:
+    name: Test TypeScript SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: packages/sdk/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+
+  # ── Python SDK: tests ──────────────────────────────────────────────────────
+  test-sdk-python:
+    name: Test Python SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/python-sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: packages/python-sdk/pyproject.toml
+      - name: Install package and dev dependencies
+        run: pip install -e ".[dev]"
+      - name: Run tests
+        run: pytest tests/ -v
+
+  # ── Build: API ─────────────────────────────────────────────────────────────
+  build-api:
+    name: Build API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/api/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=../../prisma/schema.prisma
+      - name: Build
+        run: npm run build
+
+  # ── Build: TypeScript SDK ──────────────────────────────────────────────────
+  build-sdk-ts:
+    name: Build TypeScript SDK
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/sdk
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: packages/sdk/package-lock.json
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build

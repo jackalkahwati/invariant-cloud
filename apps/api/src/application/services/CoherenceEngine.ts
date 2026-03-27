@@ -19,13 +19,10 @@ import type {
   Constraint,
   ConstraintViolation,
   Contradiction,
-  Branch,
   Dependency,
-  ActionProposal,
   CoherenceWeights,
   ActionWeights,
   EngineConfig,
-  Source,
 } from '../../domain/entities/types.js';
 
 // ============================================================

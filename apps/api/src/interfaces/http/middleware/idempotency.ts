@@ -11,7 +11,6 @@
  */
 
 import type { FastifyInstance } from 'fastify';
-import { createHash } from 'node:crypto';
 
 interface CacheEntry {
   statusCode: number;

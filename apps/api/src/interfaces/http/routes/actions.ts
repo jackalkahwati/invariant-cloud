@@ -361,7 +361,7 @@ export async function actionRoutes(app: FastifyInstance) {
         },
       },
     },
-  }, async (req, reply) => {
+  }, async (req, _reply) => {
     const { limit = 20 } = req.query as { limit?: number };
     const proposals = await actionRepo.findAll({ limit });
     return proposals;

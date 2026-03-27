@@ -28,7 +28,7 @@ import type {
   IAuditRepository,
   ISnapshotRepository,
 } from '../../domain/repositories/interfaces.js';
-import type { EngineConfig, ClaimWithRelations, Contradiction } from '../../domain/entities/types.js';
+import type { EngineConfig, ClaimWithRelations } from '../../domain/entities/types.js';
 import {
   computePhi,
   computeCoherenceScore,

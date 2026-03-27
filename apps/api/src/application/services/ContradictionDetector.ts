@@ -174,16 +174,18 @@ export class RangeThresholdConflictDetector implements ContradictionDetectorPlug
   }
 }
 
-// ── 5. Semantic Conflict, STUB ───────────────────────────────
+// ── 5. Semantic Conflict ─────────────────────────────────────
+// NOT REGISTERED in the default ContradictionDetectorRegistry.
+// To enable: pass `new SemanticConflictDetector()` in the `plugins` array.
+// Prerequisite: wire up a real embedding backend (v2) before registering —
+// the current detect() is a no-op that always returns null.
 
 export class SemanticConflictDetector implements ContradictionDetectorPlugin {
   type: ContradictionType = 'SEMANTIC';
 
-  // v1 stub: semantic detection requires embedding similarity or LLM call.
-  // Interface is preserved; implementation is deferred to v2.
   detect(_a: ClaimWithRelations, _b: ClaimWithRelations): DetectionResult | null {
     // TODO v2: embed claim values into vector space and measure semantic distance.
-    // If distance > semantic_threshold, flag as SEMANTIC contradiction.
+    // If cosine distance > semantic_threshold, return a SEMANTIC DetectionResult.
     return null;
   }
 }
@@ -194,12 +196,15 @@ export class ContradictionDetectorRegistry {
   private detectors: ContradictionDetectorPlugin[] = [];
 
   constructor(plugins?: ContradictionDetectorPlugin[]) {
+    // SemanticConflictDetector is excluded from the default registry because its v1
+    // implementation is a no-op stub (returns null for every pair). Including it would
+    // silently consume CPU on every detection pass without contributing results.
+    // Enable it explicitly by passing it in `plugins` once the v2 embedding backend is ready.
     this.detectors = plugins ?? [
       new ExactNumericConflictDetector(),
       new StatusConflictDetector(),
       new TemporalConflictDetector(),
       new RangeThresholdConflictDetector(),
-      new SemanticConflictDetector(),
     ];
   }
 

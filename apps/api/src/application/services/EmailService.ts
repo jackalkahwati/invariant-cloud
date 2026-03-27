@@ -1,5 +1,8 @@
 import nodemailer from 'nodemailer';
-import { emailConfig } from '../../infrastructure/config.js';
+import pino from 'pino';
+import { emailConfig, serverConfig } from '../../infrastructure/config.js';
+
+const logger = pino({ level: serverConfig.logLevel }).child({ module: 'EmailService' });
 
 function getTransport() {
   if (!emailConfig.enabled) return null;
@@ -14,7 +17,7 @@ function getTransport() {
 export async function sendWelcomeEmail(to: string, apiKey: string, workspaceName: string) {
   const transport = getTransport();
   if (!transport) {
-    console.log(`[Email disabled] Welcome email would go to ${to}, API key: ${apiKey}`);
+    logger.info({ to }, 'Email disabled — skipping welcome email');
     return;
   }
   await transport.sendMail({
@@ -44,7 +47,7 @@ export async function sendWelcomeEmail(to: string, apiKey: string, workspaceName
 export async function sendTeamActivationEmail(to: string, workspaceName: string) {
   const transport = getTransport();
   if (!transport) {
-    console.log(`[Email disabled] Team activation email would go to ${to}`);
+    logger.info({ to }, 'Email disabled — skipping team activation email');
     return;
   }
   await transport.sendMail({
