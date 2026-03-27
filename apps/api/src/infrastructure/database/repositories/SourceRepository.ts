@@ -1,18 +1,24 @@
 import type { ISourceRepository } from '../../../domain/repositories/interfaces.js';
 import type { Source } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaSourceRepository implements ISourceRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<Source | null> {
-    return prisma.source.findUnique({ where: { id } }) as unknown as Promise<Source | null>;
+    return this.db.source.findUnique({ where: { id } }) as unknown as Promise<Source | null>;
   }
 
   async findAll(): Promise<Source[]> {
-    return prisma.source.findMany({ orderBy: { createdAt: 'desc' } }) as unknown as Promise<Source[]>;
+    return this.db.source.findMany({ orderBy: { createdAt: 'desc' } }) as unknown as Promise<Source[]>;
   }
 
   async create(data: Omit<Source, 'id' | 'createdAt'>): Promise<Source> {
-    return prisma.source.create({
+    return this.db.source.create({
       data: {
         name: data.name,
         type: data.type,
@@ -23,11 +29,11 @@ export class PrismaSourceRepository implements ISourceRepository {
   }
 
   async update(id: string, data: Partial<Source>): Promise<Source> {
-    return prisma.source.update({ where: { id }, data: data as never }) as unknown as Promise<Source>;
+    return this.db.source.update({ where: { id }, data: data as never }) as unknown as Promise<Source>;
   }
 
   async getOrCreate(name: string, type: Source['type']): Promise<Source> {
-    const existing = await prisma.source.findFirst({ where: { name, type } });
+    const existing = await this.db.source.findFirst({ where: { name, type } });
     if (existing) return existing as Source;
     return this.create({ name, type, trustScore: 0.8, isActive: true } as never);
   }

@@ -1,4 +1,4 @@
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export type PolicyRuleCreateInput = {
   name: string;
@@ -23,21 +23,27 @@ export type ApprovalRequestCreateInput = {
 };
 
 export class PrismaPolicyRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   // ── Policy Rules ─────────────────────────────────────────────────────────────
 
   async findRuleById(id: string) {
-    return prisma.policyRule.findUnique({ where: { id } });
+    return this.db.policyRule.findUnique({ where: { id } });
   }
 
   async findActiveRules() {
-    return prisma.policyRule.findMany({
+    return this.db.policyRule.findMany({
       where: { isActive: true },
       orderBy: [{ priority: 'desc' }, { createdAt: 'asc' }],
     });
   }
 
   async createRule(data: PolicyRuleCreateInput) {
-    return prisma.policyRule.create({
+    return this.db.policyRule.create({
       data: {
         name: data.name,
         description: data.description,
@@ -55,7 +61,7 @@ export class PrismaPolicyRepository {
   }
 
   async updateRule(id: string, data: Partial<PolicyRuleCreateInput & { isActive: boolean }>) {
-    return prisma.policyRule.update({
+    return this.db.policyRule.update({
       where: { id },
       data: {
         ...(data.name !== undefined && { name: data.name }),
@@ -73,7 +79,7 @@ export class PrismaPolicyRepository {
   }
 
   async deleteRule(id: string) {
-    return prisma.policyRule.update({ where: { id }, data: { isActive: false } });
+    return this.db.policyRule.update({ where: { id }, data: { isActive: false } });
   }
 
   // ── Policy Evaluations ────────────────────────────────────────────────────────
@@ -87,7 +93,7 @@ export class PrismaPolicyRepository {
     reason?: string;
     metadata?: Record<string, unknown>;
   }) {
-    return prisma.policyEvaluation.create({
+    return this.db.policyEvaluation.create({
       data: {
         policyRuleId: data.policyRuleId,
         actionProposalId: data.actionProposalId,
@@ -103,14 +109,14 @@ export class PrismaPolicyRepository {
   // ── Approval Requests ─────────────────────────────────────────────────────────
 
   async findApprovalById(id: string) {
-    return prisma.approvalRequest.findUnique({
+    return this.db.approvalRequest.findUnique({
       where: { id },
       include: { policyRule: true },
     });
   }
 
   async findPendingApprovals() {
-    return prisma.approvalRequest.findMany({
+    return this.db.approvalRequest.findMany({
       where: { status: 'PENDING' },
       include: { policyRule: true },
       orderBy: { createdAt: 'asc' },
@@ -118,14 +124,14 @@ export class PrismaPolicyRepository {
   }
 
   async findApprovalsByProposal(actionProposalId: string) {
-    return prisma.approvalRequest.findMany({
+    return this.db.approvalRequest.findMany({
       where: { actionProposalId },
       include: { policyRule: true },
     });
   }
 
   async createApproval(data: ApprovalRequestCreateInput) {
-    return prisma.approvalRequest.create({
+    return this.db.approvalRequest.create({
       data: {
         policyRuleId: data.policyRuleId,
         actionProposalId: data.actionProposalId,
@@ -143,7 +149,7 @@ export class PrismaPolicyRepository {
     reviewedBy: string;
     reason?: string;
   }) {
-    return prisma.approvalRequest.update({
+    return this.db.approvalRequest.update({
       where: { id },
       data: {
         status: decision.approved ? 'APPROVED' : 'DENIED',
@@ -156,7 +162,7 @@ export class PrismaPolicyRepository {
 
   async expireOldApprovals() {
     const now = new Date();
-    return prisma.approvalRequest.updateMany({
+    return this.db.approvalRequest.updateMany({
       where: { status: 'PENDING', expiresAt: { lt: now } },
       data: { status: 'EXPIRED' },
     });

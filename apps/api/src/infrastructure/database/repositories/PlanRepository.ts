@@ -1,4 +1,4 @@
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export type PlanCreateInput = {
   name: string;
@@ -23,10 +23,16 @@ export type PlanStepCreateInput = {
 };
 
 export class PrismaPlanRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   // ── Plans ─────────────────────────────────────────────────────────────────────
 
   async createPlan(data: PlanCreateInput) {
-    return prisma.plan.create({
+    return this.db.plan.create({
       data: {
         name: data.name,
         description: data.description,
@@ -40,14 +46,14 @@ export class PrismaPlanRepository {
   }
 
   async findPlanById(id: string) {
-    return prisma.plan.findUnique({
+    return this.db.plan.findUnique({
       where: { id },
       include: { steps: { orderBy: { order: 'asc' } } },
     });
   }
 
   async findActivePlans() {
-    return prisma.plan.findMany({
+    return this.db.plan.findMany({
       where: { status: { in: ['ACTIVE', 'REPLANNING'] } },
       include: { steps: { orderBy: { order: 'asc' } } },
       orderBy: { createdAt: 'desc' },
@@ -55,7 +61,7 @@ export class PrismaPlanRepository {
   }
 
   async findAllPlans(limit = 50) {
-    return prisma.plan.findMany({
+    return this.db.plan.findMany({
       orderBy: { createdAt: 'desc' },
       take: limit,
       include: { steps: { orderBy: { order: 'asc' } } },
@@ -63,7 +69,7 @@ export class PrismaPlanRepository {
   }
 
   async updatePlanStatus(id: string, status: string) {
-    return prisma.plan.update({
+    return this.db.plan.update({
       where: { id },
       data: { status: status as never },
     });
@@ -72,7 +78,7 @@ export class PrismaPlanRepository {
   // ── Steps ─────────────────────────────────────────────────────────────────────
 
   async createStep(data: PlanStepCreateInput) {
-    return prisma.planStep.create({
+    return this.db.planStep.create({
       data: {
         planId: data.planId,
         name: data.name,
@@ -90,14 +96,14 @@ export class PrismaPlanRepository {
   }
 
   async findStepById(id: string) {
-    return prisma.planStep.findUnique({
+    return this.db.planStep.findUnique({
       where: { id },
       include: { plan: true },
     });
   }
 
   async findStepsByPlan(planId: string) {
-    return prisma.planStep.findMany({
+    return this.db.planStep.findMany({
       where: { planId },
       orderBy: { order: 'asc' },
     });
@@ -122,7 +128,7 @@ export class PrismaPlanRepository {
     actionProposalId?: string;
     assignedTo?: string;
   }) {
-    return prisma.planStep.update({
+    return this.db.planStep.update({
       where: { id },
       data: {
         status: status as never,

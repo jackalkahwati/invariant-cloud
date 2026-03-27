@@ -1,21 +1,27 @@
 import type { IConstraintRepository } from '../../../domain/repositories/interfaces.js';
 import type { Constraint, ConstraintViolation } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaConstraintRepository implements IConstraintRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<Constraint | null> {
-    return prisma.constraint.findUnique({ where: { id } }) as unknown as Promise<Constraint | null>;
+    return this.db.constraint.findUnique({ where: { id } }) as unknown as Promise<Constraint | null>;
   }
 
   async findAll(active?: boolean): Promise<Constraint[]> {
-    return prisma.constraint.findMany({
+    return this.db.constraint.findMany({
       where: active !== undefined ? { isActive: active } : {},
       orderBy: { createdAt: 'asc' },
     }) as unknown as Promise<Constraint[]>;
   }
 
   async create(data: Omit<Constraint, 'id' | 'createdAt' | 'updatedAt'>): Promise<Constraint> {
-    return prisma.constraint.create({
+    return this.db.constraint.create({
       data: {
         name: data.name,
         description: data.description,
@@ -31,7 +37,7 @@ export class PrismaConstraintRepository implements IConstraintRepository {
   async createViolation(
     data: Omit<ConstraintViolation, 'id' | 'createdAt'>,
   ): Promise<ConstraintViolation> {
-    return prisma.constraintViolation.create({
+    return this.db.constraintViolation.create({
       data: {
         constraintId: data.constraintId,
         entityIds: data.entityIds,
@@ -44,7 +50,7 @@ export class PrismaConstraintRepository implements IConstraintRepository {
   }
 
   async deactivateViolations(constraintId: string, entityIds: string[]): Promise<void> {
-    await prisma.constraintViolation.updateMany({
+    await this.db.constraintViolation.updateMany({
       where: {
         constraintId,
         entityIds: { hasSome: entityIds },
@@ -55,13 +61,13 @@ export class PrismaConstraintRepository implements IConstraintRepository {
   }
 
   async findActiveViolations(): Promise<ConstraintViolation[]> {
-    return prisma.constraintViolation.findMany({
+    return this.db.constraintViolation.findMany({
       where: { isActive: true },
       orderBy: { severity: 'desc' },
     }) as unknown as Promise<ConstraintViolation[]>;
   }
 
   async countActiveViolations(): Promise<number> {
-    return prisma.constraintViolation.count({ where: { isActive: true } });
+    return this.db.constraintViolation.count({ where: { isActive: true } });
   }
 }

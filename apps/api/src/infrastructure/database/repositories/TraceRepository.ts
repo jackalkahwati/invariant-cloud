@@ -1,4 +1,4 @@
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export type TraceSessionCreateInput = {
   name: string;
@@ -20,10 +20,16 @@ export type TraceEventCreateInput = {
 };
 
 export class PrismaTraceRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   // ── Sessions ──────────────────────────────────────────────────────────────────
 
   async createSession(data: TraceSessionCreateInput) {
-    return prisma.traceSession.create({
+    return this.db.traceSession.create({
       data: {
         name: data.name,
         description: data.description,
@@ -35,25 +41,25 @@ export class PrismaTraceRepository {
   }
 
   async findSessionById(id: string) {
-    return prisma.traceSession.findUnique({ where: { id } });
+    return this.db.traceSession.findUnique({ where: { id } });
   }
 
   async findActiveSessions() {
-    return prisma.traceSession.findMany({
+    return this.db.traceSession.findMany({
       where: { status: 'ACTIVE' },
       orderBy: { startedAt: 'desc' },
     });
   }
 
   async findAllSessions(limit = 50) {
-    return prisma.traceSession.findMany({
+    return this.db.traceSession.findMany({
       orderBy: { startedAt: 'desc' },
       take: limit,
     });
   }
 
   async endSession(id: string, status: 'COMPLETED' | 'FAILED' = 'COMPLETED') {
-    return prisma.traceSession.update({
+    return this.db.traceSession.update({
       where: { id },
       data: { status, endedAt: new Date() },
     });
@@ -63,14 +69,14 @@ export class PrismaTraceRepository {
 
   async appendEvent(data: TraceEventCreateInput) {
     // Get next sequence number atomically-ish
-    const last = await prisma.traceEvent.findFirst({
+    const last = await this.db.traceEvent.findFirst({
       where: { sessionId: data.sessionId },
       orderBy: { sequenceNumber: 'desc' },
       select: { sequenceNumber: true },
     });
     const sequenceNumber = (last?.sequenceNumber ?? -1) + 1;
 
-    return prisma.traceEvent.create({
+    return this.db.traceEvent.create({
       data: {
         sessionId: data.sessionId,
         type: data.type as never,
@@ -87,14 +93,14 @@ export class PrismaTraceRepository {
   }
 
   async getTimeline(sessionId: string) {
-    return prisma.traceEvent.findMany({
+    return this.db.traceEvent.findMany({
       where: { sessionId },
       orderBy: { sequenceNumber: 'asc' },
     });
   }
 
   async getTimelineSlice(sessionId: string, fromSeq: number, toSeq?: number) {
-    return prisma.traceEvent.findMany({
+    return this.db.traceEvent.findMany({
       where: {
         sessionId,
         sequenceNumber: {
@@ -107,20 +113,20 @@ export class PrismaTraceRepository {
   }
 
   async getEventsByType(sessionId: string, type: string) {
-    return prisma.traceEvent.findMany({
+    return this.db.traceEvent.findMany({
       where: { sessionId, type: type as never },
       orderBy: { sequenceNumber: 'asc' },
     });
   }
 
   async countEvents(sessionId: string) {
-    return prisma.traceEvent.count({ where: { sessionId } });
+    return this.db.traceEvent.count({ where: { sessionId } });
   }
 
   // ── Cross-session analytics ───────────────────────────────────────────────────
 
   async getRecentEvents(limit = 100) {
-    return prisma.traceEvent.findMany({
+    return this.db.traceEvent.findMany({
       orderBy: { createdAt: 'desc' },
       take: limit,
       include: { session: { select: { name: true, agentId: true } } },

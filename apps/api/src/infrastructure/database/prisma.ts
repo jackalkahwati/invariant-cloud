@@ -15,3 +15,10 @@ if (process.env['NODE_ENV'] !== 'production') {
 }
 
 export default prisma;
+
+/**
+ * The transaction client type Prisma passes into $transaction callbacks.
+ * Repos accept this type so they can be used inside a transaction
+ * (e.g. for test isolation via rollback) or with the global singleton.
+ */
+export type DbClient = Parameters<Parameters<PrismaClient['$transaction']>[0]>[0];

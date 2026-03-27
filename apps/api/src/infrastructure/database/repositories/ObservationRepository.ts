@@ -1,16 +1,22 @@
 import type { IObservationRepository } from '../../../domain/repositories/interfaces.js';
 import type { Observation } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaObservationRepository implements IObservationRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<Observation | null> {
-    const o = await prisma.observation.findUnique({ where: { id } });
+    const o = await this.db.observation.findUnique({ where: { id } });
     if (!o) return null;
     return { ...o, content: o.content as Record<string, unknown> };
   }
 
   async findUnprocessed(): Promise<Observation[]> {
-    const items = await prisma.observation.findMany({
+    const items = await this.db.observation.findMany({
       where: { processed: false },
       orderBy: { createdAt: 'asc' },
     });
@@ -18,7 +24,7 @@ export class PrismaObservationRepository implements IObservationRepository {
   }
 
   async create(data: Omit<Observation, 'id' | 'createdAt'>): Promise<Observation> {
-    const o = await prisma.observation.create({
+    const o = await this.db.observation.create({
       data: {
         sourceId: data.sourceId,
         type: data.type,
@@ -31,6 +37,6 @@ export class PrismaObservationRepository implements IObservationRepository {
   }
 
   async markProcessed(id: string): Promise<void> {
-    await prisma.observation.update({ where: { id }, data: { processed: true } });
+    await this.db.observation.update({ where: { id }, data: { processed: true } });
   }
 }

@@ -1,21 +1,27 @@
 import type { IDependencyRepository } from '../../../domain/repositories/interfaces.js';
 import type { Dependency, DependencyType } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaDependencyRepository implements IDependencyRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<Dependency | null> {
-    return prisma.dependency.findUnique({ where: { id } }) as Promise<Dependency | null>;
+    return this.db.dependency.findUnique({ where: { id } }) as Promise<Dependency | null>;
   }
 
   async findAll(): Promise<Dependency[]> {
-    return prisma.dependency.findMany({
+    return this.db.dependency.findMany({
       where: { isActive: true },
       orderBy: { createdAt: 'asc' },
     }) as Promise<Dependency[]>;
   }
 
   async findFrom(entityId: string, type?: DependencyType): Promise<Dependency[]> {
-    return prisma.dependency.findMany({
+    return this.db.dependency.findMany({
       where: {
         fromEntityId: entityId,
         isActive: true,
@@ -25,7 +31,7 @@ export class PrismaDependencyRepository implements IDependencyRepository {
   }
 
   async findTo(entityId: string, type?: DependencyType): Promise<Dependency[]> {
-    return prisma.dependency.findMany({
+    return this.db.dependency.findMany({
       where: {
         toEntityId: entityId,
         isActive: true,
@@ -35,7 +41,7 @@ export class PrismaDependencyRepository implements IDependencyRepository {
   }
 
   async create(data: Omit<Dependency, 'id' | 'createdAt'>): Promise<Dependency> {
-    return prisma.dependency.create({
+    return this.db.dependency.create({
       data: {
         fromEntityId: data.fromEntityId,
         toEntityId: data.toEntityId,
@@ -49,7 +55,7 @@ export class PrismaDependencyRepository implements IDependencyRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.dependency.update({
+    await this.db.dependency.update({
       where: { id },
       data: { isActive: false },
     });

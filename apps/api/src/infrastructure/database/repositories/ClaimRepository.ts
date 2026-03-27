@@ -1,6 +1,6 @@
 import type { IClaimRepository, ClaimFilter } from '../../../domain/repositories/interfaces.js';
 import type { Claim, ClaimWithRelations } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 const claimInclude = {
   entity: true,
@@ -9,8 +9,14 @@ const claimInclude = {
 } as const;
 
 export class PrismaClaimRepository implements IClaimRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<ClaimWithRelations | null> {
-    const claim = await prisma.claim.findUnique({
+    const claim = await this.db.claim.findUnique({
       where: { id },
       include: claimInclude,
     });
@@ -18,7 +24,7 @@ export class PrismaClaimRepository implements IClaimRepository {
   }
 
   async findAll(filter?: ClaimFilter): Promise<ClaimWithRelations[]> {
-    const claims = await prisma.claim.findMany({
+    const claims = await this.db.claim.findMany({
       where: {
         ...(filter?.entityId ? { entityId: filter.entityId } : {}),
         ...(filter?.predicate ? { predicate: filter.predicate } : {}),
@@ -35,7 +41,7 @@ export class PrismaClaimRepository implements IClaimRepository {
   }
 
   async findActive(entityId: string, predicate?: string): Promise<ClaimWithRelations[]> {
-    const claims = await prisma.claim.findMany({
+    const claims = await this.db.claim.findMany({
       where: {
         entityId,
         status: 'ACTIVE',
@@ -48,7 +54,7 @@ export class PrismaClaimRepository implements IClaimRepository {
   }
 
   async create(data: Omit<Claim, 'id' | 'createdAt' | 'updatedAt'>): Promise<Claim> {
-    return prisma.claim.create({
+    return this.db.claim.create({
       data: {
         entityId: data.entityId,
         predicate: data.predicate,
@@ -65,27 +71,27 @@ export class PrismaClaimRepository implements IClaimRepository {
   }
 
   async update(id: string, data: Partial<Claim>): Promise<Claim> {
-    return prisma.claim.update({
+    return this.db.claim.update({
       where: { id },
       data: data as never,
     }) as Promise<Claim>;
   }
 
   async supersede(id: string, supersededById: string): Promise<Claim> {
-    return prisma.claim.update({
+    return this.db.claim.update({
       where: { id },
       data: { status: 'SUPERSEDED', supersededBy: supersededById },
     }) as Promise<Claim>;
   }
 
   async invalidate(id: string): Promise<Claim> {
-    return prisma.claim.update({
+    return this.db.claim.update({
       where: { id },
       data: { status: 'INVALIDATED' },
     }) as Promise<Claim>;
   }
 
   async countActive(): Promise<number> {
-    return prisma.claim.count({ where: { status: 'ACTIVE' } });
+    return this.db.claim.count({ where: { status: 'ACTIVE' } });
   }
 }

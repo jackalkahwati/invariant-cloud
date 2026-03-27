@@ -1,10 +1,16 @@
 import type { IActionRepository } from '../../../domain/repositories/interfaces.js';
 import type { ActionProposal, ActionValidation, ProvenanceRef } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaActionRepository implements IActionRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findProposalById(id: string): Promise<ActionProposal | null> {
-    const p = await prisma.actionProposal.findUnique({ where: { id } });
+    const p = await this.db.actionProposal.findUnique({ where: { id } });
     if (!p) return null;
     return {
       ...p,
@@ -16,7 +22,7 @@ export class PrismaActionRepository implements IActionRepository {
   async createProposal(
     data: Omit<ActionProposal, 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<ActionProposal> {
-    const p = await prisma.actionProposal.create({
+    const p = await this.db.actionProposal.create({
       data: {
         operation: data.operation,
         description: data.description,
@@ -36,7 +42,7 @@ export class PrismaActionRepository implements IActionRepository {
   }
 
   async updateProposal(id: string, data: Partial<ActionProposal>): Promise<ActionProposal> {
-    const p = await prisma.actionProposal.update({
+    const p = await this.db.actionProposal.update({
       where: { id },
       data: data as never,
     });
@@ -50,7 +56,7 @@ export class PrismaActionRepository implements IActionRepository {
   async createValidation(
     data: Omit<ActionValidation, 'id' | 'createdAt'>,
   ): Promise<ActionValidation> {
-    const v = await prisma.actionValidation.create({
+    const v = await this.db.actionValidation.create({
       data: {
         actionProposalId: data.actionProposalId,
         admissibility: data.admissibility,
@@ -74,7 +80,7 @@ export class PrismaActionRepository implements IActionRepository {
   }
 
   async findValidationsByProposalId(proposalId: string): Promise<ActionValidation[]> {
-    const items = await prisma.actionValidation.findMany({
+    const items = await this.db.actionValidation.findMany({
       where: { actionProposalId: proposalId },
       orderBy: { createdAt: 'desc' },
     });
@@ -85,7 +91,7 @@ export class PrismaActionRepository implements IActionRepository {
   }
 
   async findAll({ limit = 20, status }: { limit?: number; status?: string } = {}): Promise<ActionProposal[]> {
-    const items = await prisma.actionProposal.findMany({
+    const items = await this.db.actionProposal.findMany({
       where: status ? { status: status as never } : undefined,
       orderBy: { createdAt: 'desc' },
       take: limit,

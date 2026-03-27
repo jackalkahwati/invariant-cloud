@@ -1,14 +1,20 @@
 import type { IEntityRepository } from '../../../domain/repositories/interfaces.js';
 import type { Entity, EntityType } from '../../../domain/entities/types.js';
-import prisma from '../prisma.js';
+import prisma, { type DbClient } from '../prisma.js';
 
 export class PrismaEntityRepository implements IEntityRepository {
+  private readonly db: DbClient;
+
+  constructor(client?: DbClient) {
+    this.db = client ?? prisma;
+  }
+
   async findById(id: string): Promise<Entity | null> {
-    return prisma.entity.findUnique({ where: { id } }) as unknown as Promise<Entity | null>;
+    return this.db.entity.findUnique({ where: { id } }) as unknown as Promise<Entity | null>;
   }
 
   async findAll(filter?: { type?: EntityType; isActive?: boolean }): Promise<Entity[]> {
-    return prisma.entity.findMany({
+    return this.db.entity.findMany({
       where: {
         ...(filter?.type ? { type: filter.type } : {}),
         ...(filter?.isActive !== undefined ? { isActive: filter.isActive } : {}),
@@ -18,7 +24,7 @@ export class PrismaEntityRepository implements IEntityRepository {
   }
 
   async create(data: Omit<Entity, 'id' | 'createdAt' | 'updatedAt'>): Promise<Entity> {
-    return prisma.entity.create({
+    return this.db.entity.create({
       data: {
         name: data.name,
         type: data.type,
@@ -30,14 +36,14 @@ export class PrismaEntityRepository implements IEntityRepository {
   }
 
   async update(id: string, data: Partial<Entity>): Promise<Entity> {
-    return prisma.entity.update({
+    return this.db.entity.update({
       where: { id },
       data: data as never,
     }) as unknown as Promise<Entity>;
   }
 
   async delete(id: string): Promise<void> {
-    await prisma.entity.update({
+    await this.db.entity.update({
       where: { id },
       data: { isActive: false },
     });
